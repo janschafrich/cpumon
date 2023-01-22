@@ -33,7 +33,8 @@
 #define POWER_DOMAINS   3       // pkg, cores, gpu
 
 #define MSR_PERF_STATUS         0x198
-//#define MSR_RAPL_POWER_UNIT		0x606
+#define MSR_RAPL_POWER_UNIT		0x606
+#define MSR_PKG_POWER_LIMIT     0x610
 #define IA32_PACKAGE_THERM_STATUS       0x1B1
 
 #define PKG_THERMAL_STATUS          1           // Table 2-2 IA-32 Architectural MSRs
@@ -66,6 +67,7 @@ int *temp_core_c();
 int acc_cmdln(char *cmd);
 static int open_msr(int);
 float * voltage_v();
+double * power_units();
 void power_limit_msr();
 int gpu();
 char *draw(float);
@@ -115,6 +117,8 @@ int main (int argc, char **argv){
         }
         
         printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
+
+        //power_units();
 
         freq = freq_ghz();
         load = cpucore_load();
@@ -533,6 +537,39 @@ void power_limit_msr(){
     if (pkg_pl2 == 1) printf(RED "PL2\n" DEFAULT_COLOR); 
     if (max_turbo_limit == 1) printf(RED "MC_TURBO\n" DEFAULT_COLOR); 
     if (turbo_transition_attenuation == 1) printf(RED "TRANSITION ATTENUATION\n" DEFAULT_COLOR); 
+}
+
+double * power_units(){
+    int fd;
+    unsigned long long result, lock;
+    double power_unit, energy_unit, time_unit, time_y, time_z;
+    double pkg_pl1, pkg_pl2, pkg_tw1, pkg_tw2;
+
+    fd=open_msr(0);
+    result = read_msr(fd, MSR_RAPL_POWER_UNIT);
+    close(fd);
+
+    power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
+    energy_unit = 1 / pow(2,(result&0x1F00)>>8);       // default 15,3 µJ
+    time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
+
+    printf("Power unit %f\n", power_unit); 
+    printf("Time unit %f\n", time_unit);
+
+    fd=open_msr(0);
+    result = read_msr(fd, MSR_PKG_POWER_LIMIT);
+    close(fd);
+
+    pkg_pl1 = (double)(result&0x7FFF) * power_unit;
+    time_y = (double)((result&0x3E0000)>>17);
+    time_z = (double)((result&0xC00000)>>22);
+    pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+    lock = (result>>63)&0x1;
+
+    printf("PL1 = %f W\n", pkg_pl1);
+    printf("Time Window = %f s\n", pkg_tw1);
+    printf("Lock status = %lld\n", lock);
+    return 0;
 }
 
 
