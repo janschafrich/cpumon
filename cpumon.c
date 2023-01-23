@@ -73,6 +73,7 @@ int gpu();
 char *draw(float);
 char * draw_relative(float *);
 void * draw_power(long * );
+void power_config(void);
 
 int main (int argc, char **argv){
     setlocale(LC_NUMERIC, "");
@@ -85,12 +86,8 @@ int main (int argc, char **argv){
     char *path;
     int *temp, *load, gpu_freq;
 
-    // cores
     float *freq, *voltage;
-
-    // package
     long *power;
-    int *power_limits;
 
     const uid_t root = geteuid();
 
@@ -147,15 +144,9 @@ int main (int argc, char **argv){
         power_limit_msr();
 
         if (display_power_config == 1) {
-            power_limits = power_limits_w();
-            printf("\nPower Limits: PL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
-        
-            *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-            printf("Energy-Performance-Preference: %s", *file);
-            *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-            printf("CPU Frequency Scaling Governor: %s\n", *file);   
-            }
+            power_config();
         } 
+        }
         // --------------   non root -------------------
         else {
         printf("\tf/GHz \tC0%% \tTemp/°C\n");
@@ -176,6 +167,7 @@ int main (int argc, char **argv){
 
     }
     return (EXIT_SUCCESS);
+
 }
 
 
@@ -195,6 +187,24 @@ char *read_string(const char *filepath) {     // function from data type pointer
     }
     fclose(fp);
     return file_buf;                    // return address to file
+}
+
+void power_config(void){
+    int *power_limits = power_limits_w();
+    printf("\nPower Limits: PL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+    char *file[BUFSIZE];
+    *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
+    if (strncmp(*file, "0", 1) == 0) {
+        printf("Turbo: enabled\n");     
+    } else {
+        printf("Turbo: disabled\n");
+    }      
+    *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
+    printf("Energy-Performance-Preference: %s", *file);
+    *file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
+    printf("Scaling Driver: %s",*file);
+    *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+    printf("CPU Frequency Scaling Governor: %s\n", *file);           
 }
 
 int * temp_core_c(void){
