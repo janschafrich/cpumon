@@ -137,10 +137,11 @@ int main (int argc, char **argv){
         printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
         }
         printf("\nCPU\t%.1f\t%d\n", freq[CPU_CORES], load[CPU_CORES]);
-        printf("\nGPU\t%d MHz\t\t%.2f W\n", gpu_freq, ((float)power[2])*1e-6);
+        printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
         //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
-        printf("\nPower System = %.2f W\n\n", ((double)power[3])*1e-6);
+        
         draw_power(power);
+        //printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
         power_limit_msr();
 
         if (display_power_config == 1) {
@@ -672,7 +673,7 @@ void * draw_power(long * value){
     int width = 48;                         // choose highly composite number
     long total = value[0];
       
-    char *colors[] = {MAGENTA, BLUE, RED, YELLOW, CYAN ,GREEN};
+    char *colors[] = {BLUE, RED, GREEN, YELLOW, CYAN , MAGENTA};
 
     // if there is no value for system power, plot graph relative to package power
     /*if (value[POWER_DOMAINS] == 0.0) {
@@ -691,8 +692,8 @@ void * draw_power(long * value){
         printf("%s#", colors[i]);
         }
     }
-    printf(MAGENTA "\nRest of Pkg: %.2f W",((float)value[0])*1e-6);
-    printf(BLUE "  Cores: %.2f W",((float)value[1])*1e-6);
-    printf(RED "  GPU: %.2f W",((float)value[2])*1e-6);
+    printf(BLUE "\nRest of Pkg: %.2f W",((float)value[0])*1e-6);
+    printf(RED "  Cores: %.2f W",((float)value[1])*1e-6);
+    printf(GREEN "  GPU: %.2f W",((float)value[2])*1e-6);
     printf(DEFAULT_COLOR "\n");
 }
