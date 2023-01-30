@@ -9,64 +9,19 @@
 #include <fcntl.h>                  // open()
 #include <sys/stat.h>               // open()
 #include <math.h>
-
-
-/* Terminal formatting*/
-#define BOLD        "\e[1m"
-#define BOLD_OFF    "\e[m"
-#define CLEAR       "\e[1;1H\e[2J"
-#define DEFAULT_COLOR  "\x1B[0m"
-#define BLACK       "\x1B[30m"
-#define RED         "\x1B[31m"
-#define GREEN       "\x1B[32m"
-#define YELLOW      "\x1B[33m"
-#define BLUE        "\x1B[34m"
-#define MAGENTA     "\x1B[35m"
-#define CYAN        "\x1B[36m"
-#define WHITE       "\x1B[37m"
-
-
-#define CPU_CORES   8
-#define POWER_LIMIT_COUNT 2
-#define BUFSIZE     64
-#define POLL_INTERVAL_S 1
-#define POWER_DOMAINS   3       // pkg, cores, gpu
-
-#define MSR_PERF_STATUS         0x198
-#define MSR_RAPL_POWER_UNIT		0x606
-#define MSR_PKG_POWER_LIMIT     0x610
-#define IA32_PACKAGE_THERM_STATUS       0x1B1
-
-#define PKG_THERMAL_STATUS          1           // Table 2-2 IA-32 Architectural MSRs
-#define PKG_CRITICAL_TEMPERATURE_STATUS 16
-#define PKG_POWER_LIMITATION_STATUS     1024
-
-#define MSR_CORE_PERF_LIMIT_REASONS     0x64F  // 6th gen and newer
-#define PROCHOT                         1
-#define THERMAL_STATUS                  2
-#define RESIDENCY_STATE_REGULATION_STATUS   16
-#define RUNNING_AVERAGE_THERMAL_LIMIT_STATUS 32
-#define VR_THERM_ALERT_STATUS           64
-#define VR_THERM_DESIGN_CURRENT_STATUS  128
-#define OTHER_STATUS                    256
-#define PKG_PL1_STATUS                  1024
-#define PKG_PL2_STATUS                  2048
-#define MAX_TURBO_LIMIT_STATUS          4096
-#define TURBO_TRANSITION_ATTENUATION_STATUS 8192
-
-#define CPU_TIGERLAKE       140
+#include "cpureads.h"
 
 
 char *read_string(const char *);
 char *identifiy_cpu(void);
 long * power_uw(void);
 int * power_limits_w();
-int * cpucore_load();
-float * freq_ghz();
-int *temp_core_c();
+int * cpucore_load(int);
+float * freq_ghz(int);
+int *temp_core_c(int);
 int acc_cmdln(char *cmd);
 static int open_msr(int);
-float * voltage_v();
+float * voltage_v(int);
 double * power_units();
 void power_limit_msr();
 int gpu();
@@ -75,8 +30,12 @@ char * draw_relative(float *);
 void * draw_power(long * );
 void power_config(void);
 
+
 int main (int argc, char **argv){
     setlocale(LC_NUMERIC, "");
+
+    int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    (const int)core_count;
     
     // flags
     int display_power_config = 0;
@@ -111,19 +70,20 @@ int main (int argc, char **argv){
 
         if (root != 0){
             printf("To monitor all metrics, pls run as root.\n\n");
+            printf("CPU Cores: %d\n", core_count);
         }
         
         printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
 
         //power_units();
 
-        freq = freq_ghz();
-        load = cpucore_load();
-        temp = temp_core_c();
+        freq = freq_ghz(core_count);
+        load = cpucore_load(core_count);
+        temp = temp_core_c(core_count);
         gpu_freq = gpu();
         
         if (root == 0) {
-            voltage = voltage_v();
+            voltage = voltage_v(core_count);
             power = power_uw();
         }
     
@@ -134,14 +94,14 @@ int main (int argc, char **argv){
         printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
         printf("-------------------------------------\n");
         for (int i = 0; i < CPU_CORES; i++){   
-        printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
+            printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
         }
         printf("\nCPU\t%.1f\t%d\n", freq[CPU_CORES], load[CPU_CORES]);
         printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
         //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
         
         draw_power(power);
-        //printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
+        printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
         power_limit_msr();
 
         if (display_power_config == 1) {
@@ -152,7 +112,7 @@ int main (int argc, char **argv){
         else {
         printf("\tf/GHz \tC0%% \tTemp/°C\n");
         for (int i = 0; i < CPU_CORES; i++){   
-        printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i]/10, temp[i]);
+            printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i]/10, temp[i]);
         }
         //draw_relative(load);
         printf("\nGPU\t%d\n", gpu_freq);
@@ -163,7 +123,8 @@ int main (int argc, char **argv){
             *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
         printf("CPU Frequency Scaling Governor: %s\n", *file);   
         }
- 
+    
+
        sleep (POLL_INTERVAL_S);
 
     }
@@ -208,19 +169,16 @@ void power_config(void){
     printf("CPU Frequency Scaling Governor: %s\n", *file);           
 }
 
-int * temp_core_c(void){
+int * temp_core_c(int core_count){
 
     FILE *fp;
-    int core_count = 4;
-    int hwmon = 6;
     char file_buffer[BUFSIZE];
     char *basename = "/sys/bus/platform/drivers/coretemp/coretemp.0/hwmon/";
-    char path_dir[256];
-    char path_file[256];
-    long temp[CPU_CORES/2];
-    static int temperature[CPU_CORES];
-    // determine the hwmon for CPU core temperatures
-    
+    char path_dir[300];
+    char path_file[300];
+    long temp[core_count/2];
+    int *temperature = malloc(core_count * sizeof(temperature));
+
 
     DIR *dp = opendir(basename);
     if (dp == NULL) {
@@ -234,7 +192,7 @@ int * temp_core_c(void){
     }
     closedir(dp);
 
-    for (int i = 2; i < (2 + core_count); i++){
+    for (int i = 2; i < (2 + core_count/2); i++){
         sprintf(path_file,"%s/temp%d_input", path_dir, i);       // build path
         fp = fopen(path_file,"r");
 		if (fp == NULL) {
@@ -245,7 +203,7 @@ int * temp_core_c(void){
         }
     }
 
-    for (int i = 0; i < CPU_CORES; i++) {
+    for (int i = 0; i < core_count; i++) {
        temperature[i] = (int)(temp[i/2] / 1000); // i/2 -> write value twice
     }
     
@@ -307,36 +265,9 @@ long * power_uw(void) {
     return power_uw;
 }
 
-char *identifiy_cpu(void){
-    FILE *fp = fopen("/proc/cpuinfo", "r");
-    if (fp == NULL) {
-        perror("Error opening file");
-        return (NULL);
-    } 
 
-    char file_buf[BUFSIZ];
-    char *model = malloc (sizeof *model);
-    char *line;
-    
-    
-    while(1) {
-        line = fgets(file_buf, BUFSIZ, fp);
-        if (line == NULL) break;
-    
-        if(!strncmp(line, "model name", 10)) {
-            sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
-            printf("Model: %s", model );
-            break;
-        } else {
-            printf("Error reading CPU model name from /proc/cpuinfo\n");
-        }
-    }
-    fclose(fp);
-    return model;
-}
-
-float * freq_ghz() {
-    static float freq_ghz[CPU_CORES+1];
+float * freq_ghz(int core_count) {
+    float *freq_ghz = malloc((CPU_CORES+1) * sizeof(freq_ghz));
     double total;
     char file_buf[BUFSIZE];
     char path[64];
@@ -358,13 +289,12 @@ float * freq_ghz() {
         total += freq_ghz[i];
     }
 
-    freq_ghz[CPU_CORES] = (float) (total / CPU_CORES);
-
+    freq_ghz[CPU_CORES] = (float) (total / CPU_CORES);      // append average
 
     return freq_ghz;
 }
 
-int * cpucore_load() {
+int * cpucore_load(int core_count) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
@@ -375,11 +305,11 @@ int * cpucore_load() {
     char file_buf[BUFSIZ];
     char *line;
     long long user, nice, system, idle, iowait, irq, softirq;
-    static long long work_jiffies_before[CPU_CORES+1];        // make available for use in the next interval
-    static long long total_jiffies_before[CPU_CORES+1];
-    long long work_jiffies_after[CPU_CORES+1];
-    long long total_jiffies_after[CPU_CORES+1];
-    static int load[CPU_CORES+1];
+    static long long work_jiffies_before[CPU_CORES];        // make available for use in the next interval
+    static long long total_jiffies_before[CPU_CORES];
+    long long work_jiffies_after[core_count+1];
+    long long total_jiffies_after[core_count+1];
+    int *load = malloc((core_count+1) * sizeof(load));
 
     char comparator[5];
 
@@ -391,10 +321,10 @@ int * cpucore_load() {
         // whole cpu      
         if (!strncmp(line, "cpu", 3)) {
             sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-            work_jiffies_after[CPU_CORES] = user + nice + system;
-            total_jiffies_after[CPU_CORES] = user + nice + system + idle + iowait + irq + softirq;
+            work_jiffies_after[core_count] = user + nice + system;
+            total_jiffies_after[core_count] = user + nice + system + idle + iowait + irq + softirq;
         }
-        for (int i = 0; i < CPU_CORES; i++) {
+        for (int i = 0; i < core_count; i++) {
             sprintf(comparator,"cpu%d", i);
             if (!strncmp(line, comparator, 4)) {
                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
@@ -407,12 +337,12 @@ int * cpucore_load() {
     fclose(fp);
 
     // calculate the load
-    for (int i = 0; i < (CPU_CORES+1); i++){
+    for (int i = 0; i < (core_count+1); i++){
         load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / (total_jiffies_after[i] - total_jiffies_before[i]);
     }
 
     // save the jiffy count for the next interval
-    for (int i = 0; i < (CPU_CORES+1); i++){
+    for (int i = 0; i < (core_count+1); i++){
         work_jiffies_before[i] = work_jiffies_after[i];
         total_jiffies_before[i] = total_jiffies_after[i];
     }
@@ -481,19 +411,19 @@ static long long read_msr(int fd, int which) {
 
 // ----------------- End Model Specific Registers ----------------------
 
-float * voltage_v() {
+float * voltage_v(int core_count) {
 
     int fd;
-    long long result[CPU_CORES];
-    static float voltage[CPU_CORES];
+    long long result[core_count];
+    float *voltage = malloc(core_count * sizeof(voltage));
 
-    for (int i = 0; i < CPU_CORES; i++) {
+    for (int i = 0; i < core_count; i++) {
         fd=open_msr(i);
         result[i] = read_msr(fd,MSR_PERF_STATUS); 
         close(fd);
     }
     // convert results into voltages
-    for (int i= 0; i < CPU_CORES; i++) {
+    for (int i= 0; i < core_count; i++) {
         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
