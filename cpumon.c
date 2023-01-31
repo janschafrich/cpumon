@@ -29,6 +29,7 @@ char *draw(float);
 char * draw_relative(float *);
 void * draw_power(long * );
 void power_config(void);
+void moving_average(int, float*, int*, int*, float*, float*);
 
 
 int main (int argc, char **argv){
@@ -39,6 +40,7 @@ int main (int argc, char **argv){
     
     // flags
     int display_power_config = 0;
+    int period_counter = 0;
     
     char *file[20];
     char *bar[30];
@@ -47,6 +49,12 @@ int main (int argc, char **argv){
 
     float *freq, *voltage;
     long *power;
+
+    static float freq_his[60];
+    static int load_his[60];
+    static int temp_his[60];
+    static float voltage_his[60];
+    static float power_his[60];
 
     const uid_t root = geteuid();
 
@@ -80,11 +88,25 @@ int main (int argc, char **argv){
         freq = freq_ghz(core_count);
         load = cpucore_load(core_count);
         temp = temp_core_c(core_count);
+
+        freq_his[period_counter] = *freq;
+        load_his[period_counter] = *load;
+        temp_his[period_counter] = *temp;
+
+        if (period_counter < 60/POLL_INTERVAL_S){
+            period_counter++;
+        } else {
+            period_counter = 0;
+        }
+
         gpu_freq = gpu();
         
         if (root == 0) {
             voltage = voltage_v(core_count);
             power = power_uw();
+
+            voltage_his[period_counter] = *voltage;
+            power_his[period_counter] = *power*1e-6;
         }
     
         //*bar = draw(load[CPU_CORES]);
@@ -93,10 +115,11 @@ int main (int argc, char **argv){
         if (root == 0) {
         printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
         printf("-------------------------------------\n");
-        for (int i = 0; i < CPU_CORES; i++){   
+        for (int i = 0; i < core_count; i++){   
             printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
         }
-        printf("\nCPU\t%.1f\t%d\n", freq[CPU_CORES], load[CPU_CORES]);
+        printf("\nCPU\t%.1f\t%d\t%d\t%.2f\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
+        moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
         printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
         //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
         
@@ -111,19 +134,22 @@ int main (int argc, char **argv){
         // --------------   non root -------------------
         else {
         printf("\tf/GHz \tC0%% \tTemp/°C\n");
-        for (int i = 0; i < CPU_CORES; i++){   
-            printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i]/10, temp[i]);
+        for (int i = 0; i < core_count; i++){   
+            printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i], temp[i]);
         }
+        printf("\nCPU\t%.1f\t%d\t%d\n", freq[core_count], load[core_count], temp[core_count]);
         //draw_relative(load);
         printf("\nGPU\t%d\n", gpu_freq);
-        printf("\nPkg: \t\t%d %%\n", load[CPU_CORES]/10); 
+        printf("\nPkg: \t\t%d %%\n", load[core_count]); 
     
             *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
         printf("Energy-Performance-Preference: %s", *file);
             *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
         printf("CPU Frequency Scaling Governor: %s\n", *file);   
         }
-    
+
+         
+
 
        sleep (POLL_INTERVAL_S);
 
@@ -131,7 +157,6 @@ int main (int argc, char **argv){
     return (EXIT_SUCCESS);
 
 }
-
 
 char *read_string(const char *filepath) {     // function from data type pointer
 
@@ -177,12 +202,12 @@ int * temp_core_c(int core_count){
     char path_dir[300];
     char path_file[300];
     long temp[core_count/2];
-    int *temperature = malloc(core_count * sizeof(temperature));
-
+    int *temperature = malloc((core_count+1) * sizeof(temperature));    
+    int total = 0;
 
     DIR *dp = opendir(basename);
     if (dp == NULL) {
-        perror("Erro opening directory");
+        perror("Error opening directory");
     }
     struct dirent *entry;
     while( (entry = readdir(dp)) != NULL){
@@ -205,7 +230,9 @@ int * temp_core_c(int core_count){
 
     for (int i = 0; i < core_count; i++) {
        temperature[i] = (int)(temp[i/2] / 1000); // i/2 -> write value twice
+       total += temperature[i];
     }
+    temperature[core_count] = total / core_count;
     
     return temperature;
 }
@@ -305,8 +332,8 @@ int * cpucore_load(int core_count) {
     char file_buf[BUFSIZ];
     char *line;
     long long user, nice, system, idle, iowait, irq, softirq;
-    static long long work_jiffies_before[CPU_CORES];        // make available for use in the next interval
-    static long long total_jiffies_before[CPU_CORES];
+    static long long work_jiffies_before[CPU_CORES+1];        // make available for use in the next interval
+    static long long total_jiffies_before[CPU_CORES+1];
     long long work_jiffies_after[core_count+1];
     long long total_jiffies_after[core_count+1];
     int *load = malloc((core_count+1) * sizeof(load));
@@ -415,7 +442,8 @@ float * voltage_v(int core_count) {
 
     int fd;
     long long result[core_count];
-    float *voltage = malloc(core_count * sizeof(voltage));
+    float *voltage = malloc((core_count+1) * sizeof(voltage));
+    float total;
 
     for (int i = 0; i < core_count; i++) {
         fd=open_msr(i);
@@ -427,7 +455,9 @@ float * voltage_v(int core_count) {
         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+        total += voltage[i];
     }
+    voltage[core_count] = total / core_count;   // avg
 
     return voltage;
 }
@@ -512,7 +542,6 @@ double * power_units(){
     printf("Lock status = %lld\n", lock);
     return 0;
 }
-
 
 int * power_limits_w() {
     FILE *fp;
@@ -626,4 +655,31 @@ void * draw_power(long * value){
     printf(RED "  Cores: %.2f W",((float)value[1])*1e-6);
     printf(GREEN "  GPU: %.2f W",((float)value[2])*1e-6);
     printf(DEFAULT_COLOR "\n");
+}
+
+void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, float *power){
+    /*static float freq_his[60/POLL_INTERVAL_S];
+    static int load_his[60/POLL_INTERVAL_S];
+    static int temp_his[60/POLL_INTERVAL_S];
+    static float voltage_his[60/POLL_INTERVAL_S];
+    static float power_his[60/POLL_INTERVAL_S];
+    */
+    i += 1;
+    double freq_total = 0;
+    long load_total = 0;
+    long temp_total = 0;
+    double voltage_total = 0;
+    double power_total = 0;
+
+
+    for (int j = 0; j < i; j++){
+        freq_total += (double)freq[j];
+        load_total += (long)load[j];
+        temp_total += (long)temp[j];
+        voltage_total += (double)voltage[j];
+        power_total += (double)power[j];
+    }
+        
+    printf("CPU Avg\t%.1f\t%ld\t%ld\t%.2f\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
+    printf("Avg Pwr %.2f W\n", power_total/i);
 }
