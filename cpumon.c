@@ -340,10 +340,9 @@ int * cpucore_load(int core_count) {
 
     char comparator[5];
 
-    while(1) {
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
-            break;
+            printf("Error\n");
         }
         // whole cpu      
         if (!strncmp(line, "cpu", 3)) {
@@ -352,15 +351,17 @@ int * cpucore_load(int core_count) {
             total_jiffies_after[core_count] = user + nice + system + idle + iowait + irq + softirq;
         }
         for (int i = 0; i < core_count; i++) {
+            line = fgets(file_buf, BUFSIZ, fp);
+            if (line == NULL) {
+                break;
+            }
             sprintf(comparator,"cpu%d", i);
             if (!strncmp(line, comparator, 4)) {
                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
                 work_jiffies_after[i] = user + nice + system;
                 total_jiffies_after[i] = user + nice + system + idle + iowait + irq + softirq;
-            break;
             } 
         }
-    }
     fclose(fp);
 
     // calculate the load
