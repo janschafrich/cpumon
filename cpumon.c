@@ -93,12 +93,6 @@ int main (int argc, char **argv){
         load_his[period_counter] = *load;
         temp_his[period_counter] = *temp;
 
-        if (period_counter < 60/POLL_INTERVAL_S){
-            period_counter++;
-        } else {
-            period_counter = 0;
-        }
-
         gpu_freq = gpu();
         
         if (root == 0) {
@@ -107,6 +101,16 @@ int main (int argc, char **argv){
 
             voltage_his[period_counter] = *voltage;
             power_his[period_counter] = *power*1e-6;
+            
+            if (period_counter == 1){
+                power_his[0] = *power*1e-6;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+            }
+        }
+
+        if (period_counter < 60/POLL_INTERVAL_S){   // for last minute history
+            period_counter++;
+        } else {
+            period_counter = 0;                    // reset index
         }
     
         //*bar = draw(load[CPU_CORES]);
@@ -118,7 +122,7 @@ int main (int argc, char **argv){
         for (int i = 0; i < core_count; i++){   
             printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
         }
-        printf("\nCPU\t%.1f\t%d\t%d\t%.2f\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
+        printf("\nCPU\t%.1f\t%d\t%d\t%.2f\tcurrent avg\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
         moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
         printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
         //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
@@ -681,6 +685,6 @@ void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, 
         power_total += (double)power[j];
     }
         
-    printf("CPU Avg\t%.1f\t%ld\t%ld\t%.2f\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
+    printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
     printf("Avg Pwr %.2f W\n", power_total/i);
 }
