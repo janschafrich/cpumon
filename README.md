@@ -24,6 +24,8 @@ The provided bash script copies the cpumon and ectool binaries into `/usr/local/
 
 ```bash
 chmod +x install.sh
+```
+```
 sudo ./install.sh
 ```
 Now it should be possible to run the monitor from anywhere in the system by entering `sudo cpumon`.
