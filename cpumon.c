@@ -30,6 +30,7 @@ char * draw_relative(float *);
 void * draw_power(long * );
 void power_config(void);
 void moving_average(int, float*, int*, int*, float*, float*);
+int print_fanspeed(void);
 
 
 int main (int argc, char **argv){
@@ -40,6 +41,7 @@ int main (int argc, char **argv){
     
     // flags
     int display_power_config = 0;
+    int display_history = 0;
     int period_counter = 0;
     
     char *file[20];
@@ -67,6 +69,8 @@ int main (int argc, char **argv){
         switch (c) {
             case 'p':
                 display_power_config = 1; break;
+            case 'h':
+                display_history = 1; break;
             default:
 			    fprintf(stderr,"Unknown option %c\n",c); exit(EXIT_FAILURE);
         }
@@ -82,8 +86,6 @@ int main (int argc, char **argv){
         }
         
         printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
-
-        //power_units();
 
         freq = freq_ghz(core_count);
         load = cpucore_load(core_count);
@@ -123,12 +125,19 @@ int main (int argc, char **argv){
             printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
         }
         printf("\nCPU\t%.1f\t%d\t%d\t%.2f\tcurrent avg\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
-        moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
+        
+        if (display_history == 1) {
+            moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
+        }
         printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
         //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
         
         draw_power(power);
         printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
+        print_fanspeed();
+       /*if (print_fanspeed() != 0) {
+            printf("Error accessing the embedded controller. Check if ectool is installed.\n");
+        }*/
         power_limit_msr();
 
         if (display_power_config == 1) {
@@ -687,4 +696,39 @@ void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, 
         
     printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
     printf("Avg Pwr %.2f W\n", power_total/i);
+}
+
+// requires ectool, a programm to communicate with the embedded controller build from this repository: https://github.com/DHowett/framework-ec
+int print_fanspeed(void){  // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output
+    char buf[BUFSIZE];  // response buffer
+    FILE *fp;
+
+    int *duty =  malloc(sizeof *duty);
+    if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
+        printf("Error accessing the ectool. Error opening pipe\n");
+        return -1;
+    }
+    while (fgets(buf, BUFSIZE, fp) != NULL) {
+        sscanf(buf, "%*s%*s%*s%d", duty);
+        printf("Fan speed %d %% ", (100 * *duty)/ 65536 );  // print response to console
+    }
+    if (pclose(fp)) {
+        printf("Command not found or exited with error status\n");
+        return -1;
+    }
+    
+    int *rpm =  malloc(sizeof *rpm);
+    if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
+        printf("Error accessing the ectool. Error opening pipe\n");
+        return -1;
+    }
+    while (fgets(buf, BUFSIZE, fp) != NULL) {
+        sscanf(buf, "%*s%*d%*s%d", rpm);
+        printf("(%d RPM)\n", *rpm);  // print response to console
+    }
+    if (pclose(fp)) {
+        printf("Command not found or exited with error status\n");
+        return -1;
+    }
+    return 0;
 }
