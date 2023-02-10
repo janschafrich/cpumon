@@ -16,14 +16,14 @@ char *read_string(const char *);
 char *identifiy_cpu(void);
 long * power_uw(void);
 int * power_limits_w();
-int * cpucore_load(int);
+int * cpucore_load(int, long long*, long long*);
 float * freq_ghz(int);
 int *temp_core_c(int);
 int acc_cmdln(char *cmd);
 static int open_msr(int);
 float * voltage_v(int);
 double * power_units();
-void power_limit_msr();
+void power_limit_msr(int);
 int gpu();
 char *draw(float);
 char * draw_relative(float *);
@@ -34,6 +34,14 @@ int print_fanspeed(void);
 
 
 int main (int argc, char **argv){
+    
+    FILE *fp;
+
+    if ((fp = popen("sudo modprobe msr", "r")) == NULL) {
+        printf("Error modprobe msr\n");
+        return EXIT_FAILURE;
+    }
+    
     setlocale(LC_NUMERIC, "");
 
     int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
@@ -51,6 +59,9 @@ int main (int argc, char **argv){
 
     float *freq, *voltage;
     long *power;
+
+    long long *work_jiffies_before = malloc((core_count+1) * sizeof(work_jiffies_before));                  // store for next interval
+    long long *total_jiffies_before = malloc((core_count+1) * sizeof(total_jiffies_before));
 
     static float freq_his[60];
     static int load_his[60];
@@ -88,7 +99,7 @@ int main (int argc, char **argv){
         printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
 
         freq = freq_ghz(core_count);
-        load = cpucore_load(core_count);
+        load = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
         temp = temp_core_c(core_count);
 
         freq_his[period_counter] = *freq;
@@ -130,15 +141,13 @@ int main (int argc, char **argv){
             moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
         }
         printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
-        //printf("\nPackage %.1f %% %s\n", load[CPU_CORES], *bar); 
         
         draw_power(power);
         printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
-        print_fanspeed();
-       /*if (print_fanspeed() != 0) {
+        if (print_fanspeed() != 0) {
             printf("Error accessing the embedded controller. Check if ectool is installed.\n");
-        }*/
-        power_limit_msr();
+        }
+        power_limit_msr(core_count);
 
         if (display_power_config == 1) {
             power_config();
@@ -307,13 +316,13 @@ long * power_uw(void) {
 
 
 float * freq_ghz(int core_count) {
-    float *freq_ghz = malloc((CPU_CORES+1) * sizeof(freq_ghz));
+    float *freq_ghz = malloc((core_count+1) * sizeof(freq_ghz));
     double total;
     char file_buf[BUFSIZE];
     char path[64];
     FILE *fp;
 
-    for (int i = 0; i < CPU_CORES; i++){
+    for (int i = 0; i < core_count; i++){
         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
         fp = fopen(path, "r");
         if (fp == NULL){
@@ -325,28 +334,26 @@ float * freq_ghz(int core_count) {
         freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
     }
 
-    for (int i = 0; i < CPU_CORES; i++) {
+    for (int i = 0; i < core_count; i++) {
         total += freq_ghz[i];
     }
 
-    freq_ghz[CPU_CORES] = (float) (total / CPU_CORES);      // append average
+    freq_ghz[core_count] = (float) (total / core_count);      // append average
 
     return freq_ghz;
 }
 
-int * cpucore_load(int core_count) {
+int * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
-        perror("Error Opening File");
+        perror("Error opening file");
         return NULL;
     }
 
     char file_buf[BUFSIZ];
     char *line;
     long long user, nice, system, idle, iowait, irq, softirq;
-    static long long work_jiffies_before[CPU_CORES+1];        // make available for use in the next interval
-    static long long total_jiffies_before[CPU_CORES+1];
     long long work_jiffies_after[core_count+1];
     long long total_jiffies_after[core_count+1];
     int *load = malloc((core_count+1) * sizeof(load));
@@ -476,7 +483,7 @@ float * voltage_v(int core_count) {
     return voltage;
 }
 
-void power_limit_msr(){
+void power_limit_msr(int core_count){
     int fd;
     long long result;
 
@@ -493,7 +500,7 @@ void power_limit_msr(){
     int turbo_transition_attenuation = 0;   
 
 
-    for (int i = 0; i < CPU_CORES; i++){
+    for (int i = 0; i < core_count; i++){
         fd = open_msr(i);
         result = read_msr(fd,IA32_PACKAGE_THERM_STATUS);
         close(fd);
@@ -712,8 +719,7 @@ int print_fanspeed(void){  // based on this example: https://stackoverflow.com/q
         sscanf(buf, "%*s%*s%*s%d", duty);
         printf("Fan speed %d %% ", (100 * *duty)/ 65536 );  // print response to console
     }
-    if (pclose(fp)) {
-        printf("Command not found or exited with error status\n");
+    if (pclose(fp)) {   // error
         return -1;
     }
     
@@ -727,7 +733,6 @@ int print_fanspeed(void){  // based on this example: https://stackoverflow.com/q
         printf("(%d RPM)\n", *rpm);  // print response to console
     }
     if (pclose(fp)) {
-        printf("Command not found or exited with error status\n");
         return -1;
     }
     return 0;

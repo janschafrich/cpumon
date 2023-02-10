@@ -17,6 +17,7 @@ To run the cpu monitor directly enter:
 ```bash
 sudo ./cpumon
 ```
+Fan speed is only available after install.
 
 # Install
 

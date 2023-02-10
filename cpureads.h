@@ -68,12 +68,10 @@ char *identifiy_cpu(void){
             sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
             printf("Model: %s", model );
             break;
-        } else {
-            printf("Error reading CPU model name from /proc/cpuinfo\n");
+        //} else {
+        //    printf("Error reading CPU model name from /proc/cpuinfo\n");
         }
     }
-
-    
 
     fclose(fp);
     return model;
