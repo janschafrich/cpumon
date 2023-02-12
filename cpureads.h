@@ -16,7 +16,7 @@
 #define WHITE       "\x1B[37m"
 
 
-#define CPU_CORES   8
+#define AVG_WINDOW 60
 #define POWER_LIMIT_COUNT 2
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
@@ -66,7 +66,6 @@ char *identifiy_cpu(void){
     
         if(!strncmp(line, "model name", 10)) {
             sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
-            printf("Model: %s", model );
             break;
         //} else {
         //    printf("Error reading CPU model name from /proc/cpuinfo\n");

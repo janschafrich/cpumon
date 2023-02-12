@@ -48,8 +48,8 @@ int main (int argc, char **argv){
     (const int)core_count;
     
     // flags
-    int display_power_config = 0;
-    int display_history = 0;
+    int display_power_config_flag = 0;
+    int display_moving_average_flag = 0;
     int period_counter = 0;
     
     char *file[20];
@@ -63,11 +63,11 @@ int main (int argc, char **argv){
     long long *work_jiffies_before = malloc((core_count+1) * sizeof(work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count+1) * sizeof(total_jiffies_before));
 
-    static float freq_his[60];
-    static int load_his[60];
-    static int temp_his[60];
-    static float voltage_his[60];
-    static float power_his[60];
+    static float freq_his[AVG_WINDOW];
+    static int load_his[AVG_WINDOW];
+    static int temp_his[AVG_WINDOW];
+    static float voltage_his[AVG_WINDOW];
+    static float power_his[AVG_WINDOW];
 
     const uid_t root = geteuid();
 
@@ -79,9 +79,14 @@ int main (int argc, char **argv){
     while ((c =getopt(argc, argv, "c:hmps")) != -1){
         switch (c) {
             case 'p':
-                display_power_config = 1; break;
-            case 'h':
-                display_history = 1; break;
+                display_power_config_flag = 1; break;
+            case 'a':
+                display_moving_average_flag = 1; break;
+            case 'h': 
+                //printf("\t-a    : calculates a moving average over the last minute\n");
+                printf("\t-p    : displays performance and power configurations\n");
+			    printf("\t-h    : displays this help\n");
+			    exit(EXIT_SUCCESS);
             default:
 			    fprintf(stderr,"Unknown option %c\n",c); exit(EXIT_FAILURE);
         }
@@ -120,61 +125,51 @@ int main (int argc, char **argv){
             }
         }
 
-        if (period_counter < 60/POLL_INTERVAL_S){   // for last minute history
+        if (period_counter < AVG_WINDOW/POLL_INTERVAL_S){   // for last minute history
             period_counter++;
         } else {
             period_counter = 0;                    // reset index
         }
-    
-        //*bar = draw(load[CPU_CORES]);
 
         // ------------------  output to terminal ------------------------------
         if (root == 0) {
-        printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
-        printf("-------------------------------------\n");
-        for (int i = 0; i < core_count; i++){   
-            printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
-        }
-        printf("\nCPU\t%.1f\t%d\t%d\t%.2f\tcurrent avg\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
+            printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
+            printf("-------------------------------------\n");
+            for (int i = 0; i < core_count; i++){   
+                printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
+            }
+            printf("\nCPU\t%.1f\t%d\t%d\t%.2f\tcurrent avg\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
         
-        if (display_history == 1) {
-            moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
-        }
-        printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
+            if (display_moving_average_flag == 1) {
+                moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
+            }
         
-        draw_power(power);
-        printf("\nPower System = %.2f W\n", ((double)power[3])*1e-12);
-        if (print_fanspeed() != 0) {
-            printf("Error accessing the embedded controller. Check if ectool is installed.\n");
-        }
-        power_limit_msr(core_count);
-
-        if (display_power_config == 1) {
-            power_config();
+            printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
+            draw_power(power);
+            *file = read_string("/sys/class/power_supply/BAT1/status");
+            printf("\nBattery power draw = %.2f W (%s)\n", ((double)power[3])*1e-12, *file);
+            if (print_fanspeed() != 0) {
+                printf("Error accessing the embedded controller. Check if ectool is installed.\n");
+            }
+            if (display_power_config_flag == 1) {
+                power_config();
+            } 
+            power_limit_msr(core_count);
         } 
+        else // --------------   non root ----------------------------- in Visual Code debugging requires non root 
+        {
+            printf("\tf/GHz \tC0%% \tTemp/°C\n");
+            for (int i = 0; i < core_count; i++){   
+                printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i], temp[i]);
+            }
+            printf("\nCPU\t%.1f\t%d\t%d\n", freq[core_count], load[core_count], temp[core_count]);
+            printf("\nGPU\t%d\n", gpu_freq);
+            printf("\nPkg: \t\t%d %%\n", load[core_count]); 
+            power_config();
         }
-        // --------------   non root -------------------
-        else {
-        printf("\tf/GHz \tC0%% \tTemp/°C\n");
-        for (int i = 0; i < core_count; i++){   
-            printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i], temp[i]);
-        }
-        printf("\nCPU\t%.1f\t%d\t%d\n", freq[core_count], load[core_count], temp[core_count]);
-        //draw_relative(load);
-        printf("\nGPU\t%d\n", gpu_freq);
-        printf("\nPkg: \t\t%d %%\n", load[core_count]); 
-    
-            *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-        printf("Energy-Performance-Preference: %s", *file);
-            *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-        printf("CPU Frequency Scaling Governor: %s\n", *file);   
-        }
-
-         
 
 
        sleep (POLL_INTERVAL_S);
-
     }
     return (EXIT_SUCCESS);
 
@@ -184,16 +179,22 @@ char *read_string(const char *filepath) {     // function from data type pointer
 
     FILE *fp = fopen(filepath, "r");
     static char file_buf[BUFSIZE];          // allocate memory on the heap to store file content 
-
+    int i = 0;
+    int single;
     if(fp == NULL) {
         perror("Error opening file");
         return(NULL);
     }
-
-    if (fgets(file_buf, BUFSIZE, fp) == NULL) {
-        perror("Error reading from file");
-        return(NULL);
+    while ((single = fgetc(fp)) != EOF){
+        if(single == '\n') {
+            continue;
+        } else {
+            file_buf[i] = single;
+        }
+    i++;
     }
+    file_buf[i] = NULL;                 // terminate string
+
     fclose(fp);
     return file_buf;                    // return address to file
 }
@@ -209,11 +210,11 @@ void power_config(void){
         printf("Turbo: disabled\n");
     }      
     *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-    printf("Energy-Performance-Preference: %s", *file);
+    printf("Energy-Performance-Preference: %s \n", *file);
     *file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
-    printf("Scaling Driver: %s",*file);
+    printf("Scaling Driver: %s \n",*file);
     *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-    printf("CPU Frequency Scaling Governor: %s\n", *file);           
+    printf("CPU Frequency Scaling Governor: %s \n", *file);           
 }
 
 int * temp_core_c(int core_count){
@@ -281,32 +282,31 @@ long * power_uw(void) {
     }
 
     char file_buf[BUFSIZE];
+
     long voltage_uv;
     long current_ua;
     fp = fopen("/sys/class/power_supply/BAT1/voltage_now", "r");
     if (fp == NULL){
-        perror("Error opening file\n");
+        perror("Error opening file battery voltage_now\n");
     }
     fgets(file_buf, BUFSIZE, fp);
     sscanf(file_buf, "%ld", &voltage_uv);
     fclose(fp);
-    
+        
     fp = fopen("/sys/class/power_supply/BAT1/current_now", "r");
     if (fp == NULL){
-        perror("Error opening file\n");
+        perror("Error opening file battery current_now\n");
     }
     fgets(file_buf, BUFSIZE, fp);
     sscanf(file_buf, "%ld", &current_ua);
     fclose(fp);
 
     long power_system_uw = voltage_uv * current_ua;
-    
+    power_uw[POWER_DOMAINS] = power_system_uw;
+        
     for (int i = 0; i < POWER_DOMAINS; i++){
         power_uw[i] = (long)  (double)(energy_uj_after[i] - energy_uj_before[i]) / (double) POLL_INTERVAL_S ;
-    }
-
-    power_uw[POWER_DOMAINS] = power_system_uw;
-    
+    }  
     for (int i = 0; i < POWER_DOMAINS; i++){
         energy_uj_before[i] = energy_uj_after[i];
     }	
@@ -357,8 +357,7 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     long long work_jiffies_after[core_count+1];
     long long total_jiffies_after[core_count+1];
     int *load = malloc((core_count+1) * sizeof(load));
-
-    char comparator[5];
+    char comparator[7];
 
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
@@ -375,8 +374,8 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
             if (line == NULL) {
                 break;
             }
-            sprintf(comparator,"cpu%d", i);
-            if (!strncmp(line, comparator, 4)) {
+            sprintf(comparator,"cpu%d ", i);
+            if (!strncmp(line, comparator, 5)) {
                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
                 work_jiffies_after[i] = user + nice + system;
                 total_jiffies_after[i] = user + nice + system + idle + iowait + irq + softirq;
@@ -386,7 +385,11 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
 
     // calculate the load
     for (int i = 0; i < (core_count+1); i++){
+        if (total_jiffies_after[i] - total_jiffies_before[i] != 0) {        // only divide if we sure divisor is non zero
         load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / (total_jiffies_after[i] - total_jiffies_before[i]);
+        } else {
+            load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / 1;     // pick the next closest difference to zero
+        }
     }
 
     // save the jiffy count for the next interval
@@ -487,7 +490,7 @@ void power_limit_msr(int core_count){
     int fd;
     long long result;
 
-    int prochot = 0;;               // Table 2-2 IA-32 Architectural MSRs
+    int prochot = 0;               // Table 2-2 IA-32 Architectural MSRs
     int thermal = 0;
     int residency_state = 0;
     int running_average_thermal = 0;
@@ -679,12 +682,7 @@ void * draw_power(long * value){
 }
 
 void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, float *power){
-    /*static float freq_his[60/POLL_INTERVAL_S];
-    static int load_his[60/POLL_INTERVAL_S];
-    static int temp_his[60/POLL_INTERVAL_S];
-    static float voltage_his[60/POLL_INTERVAL_S];
-    static float power_his[60/POLL_INTERVAL_S];
-    */
+
     i += 1;
     double freq_total = 0;
     long load_total = 0;
@@ -700,9 +698,11 @@ void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, 
         voltage_total += (double)voltage[j];
         power_total += (double)power[j];
     }
-        
-    printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
-    printf("Avg Pwr %.2f W\n", power_total/i);
+
+    if (i != 0){        // only divide is divisor is non zero
+        printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
+        printf("Avg Pwr %.2f W\n", power_total/i);
+    }
 }
 
 // requires ectool, a programm to communicate with the embedded controller build from this repository: https://github.com/DHowett/framework-ec
