@@ -33,8 +33,8 @@ void moving_average(int, float*, int*, int*, float*, float*);
 int print_fanspeed(void);
 
 
-int main (int argc, char **argv){
-    
+int main (int argc, char **argv)
+{   
     FILE *fp;
 
     if ((fp = popen("sudo modprobe msr", "r")) == NULL) {
@@ -146,11 +146,14 @@ int main (int argc, char **argv){
         
             printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
             draw_power(power);
+
             *file = read_string("/sys/class/power_supply/BAT1/status");
             printf("\nBattery power draw = %.2f W (%s)\n", ((double)power[3])*1e-12, *file);
+
             if (print_fanspeed() != 0) {
                 printf("Error accessing the embedded controller. Check if ectool is installed.\n");
             }
+
             if (display_power_config_flag == 1) {
                 power_config();
             } 
@@ -175,16 +178,18 @@ int main (int argc, char **argv){
 
 }
 
-char *read_string(const char *filepath) {     // function from data type pointer
-
+char *read_string(const char *filepath)     // function from data type pointer
+{     
     FILE *fp = fopen(filepath, "r");
     static char file_buf[BUFSIZE];          // allocate memory on the heap to store file content 
     int i = 0;
     int single;
+
     if(fp == NULL) {
         perror("Error opening file");
         return(NULL);
     }
+
     while ((single = fgetc(fp)) != EOF){
         if(single == '\n') {
             continue;
@@ -193,35 +198,42 @@ char *read_string(const char *filepath) {     // function from data type pointer
         }
     i++;
     }
-    file_buf[i] = NULL;                 // terminate string
 
+    file_buf[i] = NULL;                 // terminate string
     fclose(fp);
+
     return file_buf;                    // return address to file
 }
 
-void power_config(void){
+void power_config(void)
+{
     int *power_limits = power_limits_w();
     printf("\nPower Limits: PL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+
     char *file[BUFSIZE];
     *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
+
     if (strncmp(*file, "0", 1) == 0) {
         printf("Turbo: enabled\n");     
     } else {
         printf("Turbo: disabled\n");
-    }      
+    }
+         
     *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
     printf("Energy-Performance-Preference: %s \n", *file);
+
     *file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
     printf("Scaling Driver: %s \n",*file);
+    
     *file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     printf("CPU Frequency Scaling Governor: %s \n", *file);           
 }
 
-int * temp_core_c(int core_count){
-
+int * temp_core_c(int core_count)
+{
     FILE *fp;
     char file_buffer[BUFSIZE];
-    char *basename = "/sys/bus/platform/drivers/coretemp/coretemp.0/hwmon/";
+    char *basename = "/sys/devices/platform/coretemp.0/hwmon/";
     char path_dir[300];
     char path_file[300];
     long temp[core_count/2];
@@ -230,7 +242,7 @@ int * temp_core_c(int core_count){
 
     DIR *dp = opendir(basename);
     if (dp == NULL) {
-        perror("Error opening directory");
+        perror("Error opening directory /sys/bus/platform/drivers/coretemp/coretemp.0/hwmon/");
     }
     struct dirent *entry;
     while( (entry = readdir(dp)) != NULL){
@@ -260,7 +272,8 @@ int * temp_core_c(int core_count){
     return temperature;
 }
 
-long * power_uw(void) {
+long * power_uw(void) 
+{
 	FILE *fp;
     static long long energy_uj_before[POWER_DOMAINS];
     long long energy_uj_after[POWER_DOMAINS];
@@ -315,7 +328,8 @@ long * power_uw(void) {
 }
 
 
-float * freq_ghz(int core_count) {
+float * freq_ghz(int core_count) 
+{
     float *freq_ghz = malloc((core_count+1) * sizeof(freq_ghz));
     double total;
     char file_buf[BUFSIZE];
