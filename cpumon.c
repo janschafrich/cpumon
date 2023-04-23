@@ -60,8 +60,8 @@ int main (int argc, char **argv)
     float *freq, *voltage;
     long *power;
 
-    long long *work_jiffies_before = malloc((core_count+1) * sizeof(work_jiffies_before));                  // store for next interval
-    long long *total_jiffies_before = malloc((core_count+1) * sizeof(total_jiffies_before));
+    long long *work_jiffies_before = malloc((core_count+1) * sizeof(*work_jiffies_before));                  // store for next interval
+    long long *total_jiffies_before = malloc((core_count+1) * sizeof(*total_jiffies_before));
 
     static float freq_his[AVG_WINDOW];
     static int load_his[AVG_WINDOW];
@@ -237,12 +237,13 @@ int * temp_core_c(int core_count)
     char path_dir[300];
     char path_file[300];
     long temp[core_count/2];
-    int *temperature = malloc((core_count+1) * sizeof(temperature));    
+    int *temperature = malloc((core_count+1) * sizeof(*temperature));    
     int total = 0;
 
     DIR *dp = opendir(basename);
     if (dp == NULL) {
-        perror("Error opening directory /sys/bus/platform/drivers/coretemp/coretemp.0/hwmon/");
+        fprintf(stderr, "Error opening %s ", basename);
+        perror("");
     }
     struct dirent *entry;
     while( (entry = readdir(dp)) != NULL){
@@ -256,7 +257,8 @@ int * temp_core_c(int core_count)
         sprintf(path_file,"%s/temp%d_input", path_dir, i);       // build path
         fp = fopen(path_file,"r");
 		if (fp == NULL) {
-        perror("Erro opening file");
+            fprintf(stderr, "Error opening %s ", path_file);
+            perror("");
         } else {
             fscanf(fp, "%ld", &temp[i-2]);
             fclose(fp);
@@ -267,7 +269,7 @@ int * temp_core_c(int core_count)
        temperature[i] = (int)(temp[i/2] / 1000); // i/2 -> write value twice
        total += temperature[i];
     }
-    temperature[core_count] = total / core_count;
+    temperature[core_count] = total / core_count;   // write avg into last array field
     
     return temperature;
 }
@@ -286,7 +288,8 @@ long * power_uw(void)
     for (int i = 0; i < POWER_DOMAINS; i++) {
         fp = fopen(power_domains[i],"r");
 				if (fp==NULL) {
-					fprintf(stderr,"\tError opening !\n");
+					fprintf(stderr,"\tError opening %s", power_domains[i]);
+                    perror("");
 				}
 				else {
 					fscanf(fp,"%lld",&energy_uj_after[i]);
@@ -330,7 +333,7 @@ long * power_uw(void)
 
 float * freq_ghz(int core_count) 
 {
-    float *freq_ghz = malloc((core_count+1) * sizeof(freq_ghz));
+    float *freq_ghz = malloc((core_count+1) * sizeof(*freq_ghz));
     double total;
     char file_buf[BUFSIZE];
     char path[64];
@@ -361,7 +364,7 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
-        perror("Error opening file");
+        perror("Error opening file /proc/stat");
         return NULL;
     }
 
@@ -370,12 +373,12 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     long long user, nice, system, idle, iowait, irq, softirq;
     long long work_jiffies_after[core_count+1];
     long long total_jiffies_after[core_count+1];
-    int *load = malloc((core_count+1) * sizeof(load));
+    int *load = malloc((core_count+1) * sizeof(*load));
     char comparator[7];
 
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
-            printf("Error\n");
+            printf("Error %s\n", file_buf);
         }
         // whole cpu      
         if (!strncmp(line, "cpu", 3)) {
@@ -428,7 +431,7 @@ int acc_cmdln(char *cmd){
         printf(" %s", buf);  // print response to console
     }
 
-    if (pclose(fp)) {
+    if (pclose(fp) == -1) {
         printf("Command not found or exited with error status\n");
         return -1;
     }
@@ -480,7 +483,7 @@ float * voltage_v(int core_count) {
 
     int fd;
     long long result[core_count];
-    float *voltage = malloc((core_count+1) * sizeof(voltage));
+    float *voltage = malloc((core_count+1) * sizeof(*voltage));
     float total;
 
     for (int i = 0; i < core_count; i++) {
@@ -612,7 +615,7 @@ int gpu(){
 
     FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
     if (fp == NULL){
-        perror("Error opening file\n");
+        perror("Error reading GPU frequency from /sys/class/drm/card0/gt_cur_freq_mhz\n");
     }
     fgets(file_buf, BUFSIZE, fp);
     sscanf(file_buf, "%d", &freq_mhz);
