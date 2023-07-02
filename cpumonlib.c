@@ -11,6 +11,9 @@
 #include <math.h>
 #include "cpumonlib.h"
 
+
+
+
 char *read_string(const char *filepath)     // function from data type pointer
 {     
     FILE *fp = fopen(filepath, "r");
@@ -122,15 +125,15 @@ void power_config(void)
 long * power_uw(void) 
 {
 	FILE *fp;
-    static long long energy_uj_before[POWER_DOMAINS];
-    long long energy_uj_after[POWER_DOMAINS];
-    static long power_uw[POWER_DOMAINS+1];
+    static long long energy_uj_before[POWER_DOMAIN_COUNT];
+    long long energy_uj_after[POWER_DOMAIN_COUNT];
+    static long power_uw[POWER_DOMAIN_COUNT+1];
 
-    char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",
-                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",
-                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:1/energy_uj"};
+    char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
+                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",     // cores domain
+                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:1/energy_uj"};    // GPU domain
 
-    for (int i = 0; i < POWER_DOMAINS; i++) {
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
         fp = fopen(power_domains[i],"r");
 				if (fp==NULL) {
 					fprintf(stderr,"\tError opening %s", power_domains[i]);
@@ -145,30 +148,40 @@ long * power_uw(void)
     char file_buf[BUFSIZE];
 
     long voltage_uv;
-    long current_ua;
+    
     fp = fopen("/sys/class/power_supply/BAT1/voltage_now", "r");
-    if (fp == NULL){
-        perror("Error opening file battery voltage_now\n");
+
+    if (fp == NULL) // file doesnt exist
+    {  
+        voltage_uv = 0;
+    } 
+    else 
+    {
+        fgets(file_buf, BUFSIZE, fp);
+        sscanf(file_buf, "%ld", &voltage_uv);  
     }
-    fgets(file_buf, BUFSIZE, fp);
-    sscanf(file_buf, "%ld", &voltage_uv);
     fclose(fp);
-        
+       
+    long current_ua;   
     fp = fopen("/sys/class/power_supply/BAT1/current_now", "r");
-    if (fp == NULL){
-        perror("Error opening file battery current_now\n");
+    
+    if (fp == NULL) // file doesnt exist
+    { 
+        current_ua = 0;
+    } 
+    else {
+        fgets(file_buf, BUFSIZE, fp);
+        sscanf(file_buf, "%ld", &current_ua);
     }
-    fgets(file_buf, BUFSIZE, fp);
-    sscanf(file_buf, "%ld", &current_ua);
     fclose(fp);
 
     long power_system_uw = voltage_uv * current_ua;
-    power_uw[POWER_DOMAINS] = power_system_uw;
+    power_uw[POWER_DOMAIN_COUNT] = power_system_uw;
         
-    for (int i = 0; i < POWER_DOMAINS; i++){
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
         power_uw[i] = (long)  (double)(energy_uj_after[i] - energy_uj_before[i]) / (double) POLL_INTERVAL_S ;
     }  
-    for (int i = 0; i < POWER_DOMAINS; i++){
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
         energy_uj_before[i] = energy_uj_after[i];
     }	
 
@@ -176,7 +189,7 @@ long * power_uw(void)
 }
 
 
-int * temp_core_c(int core_count)
+float * temp_core_c(int core_count)
 {
     FILE *fp;
     char file_buffer[BUFSIZE];
@@ -184,7 +197,7 @@ int * temp_core_c(int core_count)
     char path_dir[300];
     char path_file[320];
     long temp[core_count/2];
-    int *temperature = malloc((core_count+1) * sizeof(*temperature));    
+    float *temperature = malloc((core_count) * sizeof(*temperature));    
     int total = 0;
 
     DIR *dp = opendir(basename);
@@ -216,7 +229,6 @@ int * temp_core_c(int core_count)
        temperature[i] = (int)(temp[i/2] / 1000); // i/2 -> write value twice
        total += temperature[i];
     }
-    temperature[core_count] = total / core_count;   // write avg into last array field
     
     return temperature;
 }
@@ -224,7 +236,7 @@ int * temp_core_c(int core_count)
 
 float * freq_ghz(int core_count) 
 {
-    float *freq_ghz = malloc((core_count+1) * sizeof(*freq_ghz));
+    float *freq_ghz = malloc((core_count) * sizeof(*freq_ghz));
     double total = 0;
     char file_buf[BUFSIZE];
     char path[64];
@@ -246,13 +258,11 @@ float * freq_ghz(int core_count)
         total += freq_ghz[i];
     }
 
-    freq_ghz[core_count] = (float) (total / core_count);      // append average
-
     return freq_ghz;
 }
 
 
-int * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
+float * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
@@ -263,21 +273,22 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     char file_buf[BUFSIZ];
     char *line;
     long long user, nice, system, idle, iowait, irq, softirq;
-    long long work_jiffies_after[core_count+1];
-    long long total_jiffies_after[core_count+1];
-    int *load = malloc((core_count+1) * sizeof(*load));
+    long long work_jiffies_after[core_count];
+    long long total_jiffies_after[core_count];
+    float *load = malloc((core_count) * sizeof(*load));
     char comparator[7];
 
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
             printf("Error %s\n", file_buf);
         }
-        // whole cpu      
+        // work jiffies for whole cpu      
         if (!strncmp(line, "cpu", 3)) {
             sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
             work_jiffies_after[core_count] = user + nice + system;
             total_jiffies_after[core_count] = user + nice + system + idle + iowait + irq + softirq;
         }
+        // work jiffies for individual cores
         for (int i = 0; i < core_count; i++) {
             line = fgets(file_buf, BUFSIZ, fp);
             if (line == NULL) {
@@ -293,7 +304,7 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     fclose(fp);
 
     // calculate the load
-    for (int i = 0; i < (core_count+1); i++){
+    for (int i = 0; i < (core_count); i++){
         if (total_jiffies_after[i] - total_jiffies_before[i] != 0) {        // only divide if we sure divisor is non zero
         load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / (total_jiffies_after[i] - total_jiffies_before[i]);
         } else {
@@ -302,7 +313,7 @@ int * cpucore_load(int core_count, long long *work_jiffies_before, long long *to
     }
 
     // save the jiffy count for the next interval
-    for (int i = 0; i < (core_count+1); i++){
+    for (int i = 0; i < (core_count); i++){
         work_jiffies_before[i] = work_jiffies_after[i];
         total_jiffies_before[i] = total_jiffies_after[i];
     }
@@ -377,7 +388,7 @@ float * voltage_v(int core_count) {
 
     int fd;
     long long result[core_count];
-    float *voltage = malloc((core_count+1) * sizeof(*voltage));
+    float *voltage = malloc((core_count) * sizeof(*voltage));
     float total;
 
     for (int i = 0; i < core_count; i++) {
@@ -392,7 +403,6 @@ float * voltage_v(int core_count) {
         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
         total += voltage[i];
     }
-    voltage[core_count] = total / core_count;   // avg
 
     return voltage;
 }
@@ -592,6 +602,40 @@ void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, 
     if (i != 0){        // only divide is divisor is non zero
         printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
         printf("Avg Pwr %.2f W\n", power_total/i);
+    }
+}
+
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float * sample_next){
+    
+    float avg = 0;
+    *samples_cumulative += *sample_next;
+    if (poll_cycle_counter != 0) 
+    {
+        avg = *samples_cumulative / (float) poll_cycle_counter;
+    }
+
+    return avg;
+}
+
+float calc_average(float *samples, int sample_count){
+    float sum = 0;
+    for (int i = 0; i < sample_count; i++){
+        sum += samples[i];
+    }
+    float avg = sum / (float)sample_count;
+    
+    return avg;
+}
+
+float min(float previous_min_value, float sample_next){
+    
+    if (sample_next < previous_min_value) 
+    {
+        return sample_next;
+    } 
+    else 
+    {
+        return previous_min_value;
     }
 }
 
