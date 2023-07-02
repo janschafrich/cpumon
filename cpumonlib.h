@@ -21,7 +21,7 @@
 #define POWER_LIMIT_COUNT 2
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
-#define POWER_DOMAINS   3       // pkg, cores, gpu
+#define POWER_DOMAIN_COUNT   3       // pkg, cores, gpu
 
 #define MSR_PERF_STATUS         0x198
 #define MSR_RAPL_POWER_UNIT		0x606
@@ -47,15 +47,24 @@
 
 #define CPU_TIGERLAKE       140
 
+// idea for the future: have a structure that holds the key metrics for each sensor
+struct sensor 
+{
+    float cpu_avg;
+    float runtime_avg;
+    float min;
+    float max;
+    float *cores[];
+};
 
 char *read_string(const char *filepath);
 char *identifiy_cpu(void);
 int * power_limits_w(void);
 void power_config(void);
 long * power_uw(void);
-int * temp_core_c(int core_count);
+float * temp_core_c(int core_count);
 float * freq_ghz(int core_count);
-int * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
+float * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
 int acc_cmdln(char *cmd);
 int open_msr(int core);
 long long read_msr(int fd, int which);
@@ -67,6 +76,9 @@ char * draw(float percentage);
 char * draw_relative(float * value_abs);
 void * draw_power(long * value);
 void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, float *power);
+float runtime_avg(long poll_cycle_counter, float * samples_cumulative, float * sample_next);
+float calc_average(float *, int);
+float min(float previous_min_value, float sample_next);
 int print_fanspeed(void);
 
 

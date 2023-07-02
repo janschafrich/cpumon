@@ -12,6 +12,7 @@
 #include "cpumonlib.h"
 
 
+
 int main (int argc, char **argv)
 {   
     FILE *fp;
@@ -29,18 +30,31 @@ int main (int argc, char **argv)
     // flags
     int display_power_config_flag = 0;
     int display_moving_average_flag = 0;
-    int period_counter = 0;
+    
     
     char *file[20];
     char *bar[30];
     char *path;
-    int *temp, *load, gpu_freq;
+    int gpu_freq;
 
-    float *freq, *voltage;
-    long *power;
+    float *freq_per_core, *load_per_core, *temp_per_core, *voltage_per_core;
+    long *power_per_domain;
 
-    long long *work_jiffies_before = malloc((core_count+1) * sizeof(*work_jiffies_before));                  // store for next interval
-    long long *total_jiffies_before = malloc((core_count+1) * sizeof(*total_jiffies_before));
+    long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
+    long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
+
+    static long period_counter = 0;
+    static long poll_cycle_counter = 0;
+
+    static float freq_cpu_avg, load_cpu_avg, temp_cpu_avg, voltage_cpu_avg, power_pkg = 0;
+    static float freq_cumulative, load_cumulative, temp_cumulative, voltage_cumulative, power_cumulative = 0;
+    static float freq_runtime_avg, load_runtime_avg, temp_runtime_avg, voltage_runtime_avg, power_runtime_avg = 0;
+
+    static struct sensor freq, load, temp, voltage, power_struct;
+
+
+    float previous_min_value = 100;
+    float previous_max_value = 0;
 
     static float freq_his[AVG_WINDOW];
     static int load_his[AVG_WINDOW];
@@ -48,15 +62,21 @@ int main (int argc, char **argv)
     static float voltage_his[AVG_WINDOW];
     static float power_his[AVG_WINDOW];
 
-    const uid_t root = geteuid();
+    int running_with_privileges;
+    if (geteuid() == 0) {
+        running_with_privileges = 1; 
+    } 
+    else {
+        running_with_privileges = 0;
+    }
 
     char *cpu_model[1];
     *cpu_model = identifiy_cpu();  
 
-    int c;
+    int command;
 
-    while ((c =getopt(argc, argv, "c:hmps")) != -1){
-        switch (c) {
+    while ((command =getopt(argc, argv, "c:hmps")) != -1){
+        switch (command) {
             case 'p':
                 display_power_config_flag = 1; break;
             case 'a':
@@ -67,40 +87,47 @@ int main (int argc, char **argv)
 			    printf("\t-h    : displays this help\n");
 			    exit(EXIT_SUCCESS);
             default:
-			    fprintf(stderr,"Unknown option %c\n",c); exit(EXIT_FAILURE);
+			    fprintf(stderr,"Unknown option %c\n",command); exit(EXIT_FAILURE);
         }
     }
     
     while (1) {
         
-        printf(CLEAR);                 // clear console
+        freq_per_core = freq_ghz(core_count);
+        load_per_core = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
+        temp_per_core = temp_core_c(core_count);
 
-        if (root != 0){
-            printf("To monitor all metrics, pls run as root.\n\n");
-            printf("CPU Cores: %d\n", core_count);
-        }
-        
-        printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
+        freq_cpu_avg = calc_average(freq_per_core, core_count);
+        load_cpu_avg = calc_average(load_per_core, core_count);
+        temp_cpu_avg = calc_average(temp_per_core, core_count);
 
-        freq = freq_ghz(core_count);
-        load = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
-        temp = temp_core_c(core_count);
+        freq_runtime_avg = runtime_avg(poll_cycle_counter, &freq_cumulative, &freq_cpu_avg);
+        load_runtime_avg = runtime_avg(poll_cycle_counter, &load_cumulative, &load_cpu_avg);
+        temp_runtime_avg = runtime_avg(poll_cycle_counter, &temp_cumulative, &temp_cpu_avg);
 
-        freq_his[period_counter] = *freq;
-        load_his[period_counter] = *load;
-        temp_his[period_counter] = *temp;
+                                                                        
+        freq_his[period_counter] = *freq_per_core;
+        load_his[period_counter] = *load_per_core;
+        temp_his[period_counter] = *temp_per_core;
 
         gpu_freq = gpu();
-        
-        if (root == 0) {
-            voltage = voltage_v(core_count);
-            power = power_uw();
 
-            voltage_his[period_counter] = *voltage;
-            power_his[period_counter] = *power*1e-6;
+        if (running_with_privileges == 1) {
+            
+            voltage_per_core = voltage_v(core_count);
+            power_per_domain = power_uw();
+
+            voltage_cpu_avg = calc_average(voltage_per_core, core_count);
+            power_pkg = power_per_domain[0];
+            
+            voltage_runtime_avg = runtime_avg(poll_cycle_counter, &voltage_cumulative, &voltage_cpu_avg);
+            power_runtime_avg = runtime_avg(poll_cycle_counter, &power_cumulative, &power_pkg);
+
+            voltage_his[period_counter] = *voltage_per_core;
+            power_his[period_counter] = *power_per_domain*1e-6;
             
             if (period_counter == 1){
-                power_his[0] = *power*1e-6;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+                power_his[0] = *power_per_domain*1e-6;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
             }
         }
 
@@ -109,28 +136,37 @@ int main (int argc, char **argv)
         } else {
             period_counter = 0;                    // reset index
         }
+        poll_cycle_counter += 1;
+        
 
         // ------------------  output to terminal ------------------------------
-        if (root == 0) {
+        printf(CLEAR);                 // clear console, print everything again
+        
+        printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
+
+        
+        if (running_with_privileges == 1) {
             printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
             printf("-------------------------------------\n");
             for (int i = 0; i < core_count; i++){   
-                printf("Core %d \t%.1f\t%-d\t%d\t%.2f\n", i, freq[i], load[i], temp[i], voltage[i]);
+                printf("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i], voltage_per_core[i]);
             }
-            printf("\nCPU\t%.1f\t%d\t%d\t%.2f\tcurrent avg\n", freq[core_count], load[core_count], temp[core_count], voltage[core_count]);
-        
+            
+            printf("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq_cpu_avg, load_cpu_avg, temp_cpu_avg, voltage_cpu_avg); 
+            printf("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq_runtime_avg, load_runtime_avg, temp_runtime_avg, voltage_runtime_avg);
+                                                                           
             if (display_moving_average_flag == 1) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
         
-            printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power[2])*1e-6);
-            draw_power(power);
+            printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power_per_domain[2])*1e-6);
+            draw_power(power_per_domain);
 
             *file = read_string("/sys/class/power_supply/BAT1/status");
-            printf("\nBattery power draw = %.2f W (%s)\n", ((double)power[3])*1e-12, *file);
+            printf("\nBattery power draw = %.2f W (%s)\n", ((double)power_per_domain[3])*1e-12, *file);
 
             if (print_fanspeed() != 0) {
-                printf("Error accessing the embedded controller. Check if ectool is installed.\n");
+                printf("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
             }
 
             if (display_power_config_flag == 1) {
@@ -138,15 +174,21 @@ int main (int argc, char **argv)
             } 
             power_limit_msr(core_count);
         } 
-        else // --------------   non root ----------------------------- in Visual Code debugging requires non root 
+        
+        // for debugging purposes, in Visual Code debugging works not in root mode
+        if (running_with_privileges == 0) 
         {
+            printf("To monitor all metrics, pls run as root.\n\n");
+
             printf("\tf/GHz \tC0%% \tTemp/°C\n");
             for (int i = 0; i < core_count; i++){   
-                printf("Core %d \t%.1f\t%d\t%d\n", i, freq[i], load[i], temp[i]);
+                printf("Core %d \t%.1f\t%.f\t%.f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i]);
             }
-            printf("\nCPU\t%.1f\t%d\t%d\n", freq[core_count], load[core_count], temp[core_count]);
+            printf("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq_cpu_avg, load_cpu_avg, temp_cpu_avg);
+            printf("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq_runtime_avg, load_runtime_avg, temp_runtime_avg);
             printf("\nGPU\t%d\n", gpu_freq);
-            printf("\nPkg: \t\t%d %%\n", load[core_count]); 
+    
+            
             power_config();
         }
 
