@@ -47,16 +47,17 @@
 
 #define CPU_TIGERLAKE       140
 
-// idea for the future: have a structure that holds the key metrics for each sensor
 struct sensor 
 {
     float cpu_avg;
     float runtime_avg;
+    float cumulative;
     float min;
     float max;
-    float *cores[];
+    float *per_core;
 };
 
+struct sensor *create_sensor(struct sensor *new_sensor);
 char *read_string(const char *filepath);
 char *identifiy_cpu(void);
 int * power_limits_w(void);

@@ -46,11 +46,16 @@ int main (int argc, char **argv)
     static long period_counter = 0;
     static long poll_cycle_counter = 0;
 
-    static float freq_cpu_avg, load_cpu_avg, temp_cpu_avg, voltage_cpu_avg, power_pkg = 0;
-    static float freq_cumulative, load_cumulative, temp_cumulative, voltage_cumulative, power_cumulative = 0;
-    static float freq_runtime_avg, load_runtime_avg, temp_runtime_avg, voltage_runtime_avg, power_runtime_avg = 0;
+    static float power_pkg = 0;
+    static float power_cumulative = 0;
+    static float power_runtime_avg = 0;
 
-    static struct sensor freq, load, temp, voltage, power_struct;
+    // idea for the future: have a structure that holds the key metrics for each sensor
+
+    struct sensor* freq = create_sensor(freq);
+    struct sensor* load = create_sensor(load);
+    struct sensor* temp = create_sensor(temp);
+    struct sensor* voltage = create_sensor(voltage);
 
 
     float previous_min_value = 100;
@@ -97,15 +102,14 @@ int main (int argc, char **argv)
         load_per_core = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
         temp_per_core = temp_core_c(core_count);
 
-        freq_cpu_avg = calc_average(freq_per_core, core_count);
-        load_cpu_avg = calc_average(load_per_core, core_count);
-        temp_cpu_avg = calc_average(temp_per_core, core_count);
+        freq->cpu_avg = calc_average(freq_per_core, core_count);
+        load->cpu_avg = calc_average(load_per_core, core_count);
+        temp->cpu_avg = calc_average(temp_per_core, core_count);
 
-        freq_runtime_avg = runtime_avg(poll_cycle_counter, &freq_cumulative, &freq_cpu_avg);
-        load_runtime_avg = runtime_avg(poll_cycle_counter, &load_cumulative, &load_cpu_avg);
-        temp_runtime_avg = runtime_avg(poll_cycle_counter, &temp_cumulative, &temp_cpu_avg);
-
-                                                                        
+        freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
+        load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
+        temp->runtime_avg = runtime_avg(poll_cycle_counter, &temp->cumulative, &temp->cpu_avg);
+                                                   
         freq_his[period_counter] = *freq_per_core;
         load_his[period_counter] = *load_per_core;
         temp_his[period_counter] = *temp_per_core;
@@ -117,10 +121,10 @@ int main (int argc, char **argv)
             voltage_per_core = voltage_v(core_count);
             power_per_domain = power_uw();
 
-            voltage_cpu_avg = calc_average(voltage_per_core, core_count);
+            voltage->cpu_avg = calc_average(voltage_per_core, core_count);
             power_pkg = power_per_domain[0];
             
-            voltage_runtime_avg = runtime_avg(poll_cycle_counter, &voltage_cumulative, &voltage_cpu_avg);
+            voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
             power_runtime_avg = runtime_avg(poll_cycle_counter, &power_cumulative, &power_pkg);
 
             voltage_his[period_counter] = *voltage_per_core;
@@ -152,8 +156,8 @@ int main (int argc, char **argv)
                 printf("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i], voltage_per_core[i]);
             }
             
-            printf("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq_cpu_avg, load_cpu_avg, temp_cpu_avg, voltage_cpu_avg); 
-            printf("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq_runtime_avg, load_runtime_avg, temp_runtime_avg, voltage_runtime_avg);
+            printf("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg, voltage->cpu_avg); 
+            printf("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg, voltage->runtime_avg);
                                                                            
             if (display_moving_average_flag == 1) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
@@ -178,14 +182,15 @@ int main (int argc, char **argv)
         // for debugging purposes, in Visual Code debugging works not in root mode
         if (running_with_privileges == 0) 
         {
+            printf("Size of structure sensor: %lu\n", sizeof(struct sensor));           
             printf("To monitor all metrics, pls run as root.\n\n");
 
             printf("\tf/GHz \tC0%% \tTemp/°C\n");
             for (int i = 0; i < core_count; i++){   
                 printf("Core %d \t%.1f\t%.f\t%.f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i]);
             }
-            printf("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq_cpu_avg, load_cpu_avg, temp_cpu_avg);
-            printf("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq_runtime_avg, load_runtime_avg, temp_runtime_avg);
+            printf("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg);
+            printf("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg);
             printf("\nGPU\t%d\n", gpu_freq);
     
             

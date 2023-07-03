@@ -11,7 +11,18 @@
 #include <math.h>
 #include "cpumonlib.h"
 
-
+struct sensor *create_sensor(struct sensor* new_sensor) {
+    
+    int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    new_sensor = malloc(sizeof(struct sensor) + sizeof(*new_sensor->per_core) * core_count);
+    new_sensor->cpu_avg = 0;
+    new_sensor->runtime_avg = 0;
+    new_sensor->cumulative = 0;
+    new_sensor->min = 1000;
+    new_sensor->max = 0;
+  
+    return new_sensor;
+}
 
 
 char *read_string(const char *filepath)     // function from data type pointer
