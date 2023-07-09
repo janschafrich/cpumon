@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <math.h>
+#include <ncurses.h>
 #include "cpumonlib.h"
 
 struct sensor *create_sensor(struct sensor* new_sensor) {
@@ -110,25 +111,24 @@ int * power_limits_w(void) {
 void power_config(void)
 {
     int *power_limits = power_limits_w();
-    printf("\nPower Limits: PL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+    printw("\nPower Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
 
     char *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
 
     if (strncmp(file, "0", 1) == 0) {
-        printf("Turbo: enabled\n");     
+        printw("Turbo: \t\t\t\tenabled\n");     
     } else {
-        printf("Turbo: disabled\n");
+        printw("Turbo: \t\t\t\tdisabled\n");
     }
     
     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-    printf("Energy-Performance-Preference: %s \n", file);
+    printw("Energy-Performance-Preference: \t%s \n", file);
 
     file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
-    printf("Scaling Driver: %s \n",file);
+    printw("Scaling Driver: \t\t%s \n",file);
     
-
     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-    printf("CPU Frequency Scaling Governor: %s \n", file);   
+    printw("CPU Frequency Scaling Governor: %s \n", file);   
        
 }
 
@@ -454,17 +454,17 @@ void power_limit_msr(int core_count){
         max_turbo_limit = result&MAX_TURBO_LIMIT_STATUS;
         turbo_transition_attenuation = result&TURBO_TRANSITION_ATTENUATION_STATUS;
 
-    if (prochot == 1) printf(RED "TEMPERATURE\n" DEFAULT_COLOR);
-    if (thermal == 1) printf(RED "POWER\n" DEFAULT_COLOR);
-    if (residency_state == 1) printf(RED "RESIDENCY\n" DEFAULT_COLOR); 
-    if (running_average_thermal == 1) printf(RED "THERMAL\n" DEFAULT_COLOR); 
-    if (vr_therm == 1) printf(RED "VOLTAGE REGULATOR\n" DEFAULT_COLOR);  
-    if (vr_therm_design_current == 1) printf(RED "CURRENT\n" DEFAULT_COLOR);   
-    if (other == 1) printf(RED "OTHER\n" DEFAULT_COLOR); 
-    if (pkg_pl1 == 1) printf(RED "PL1\n" DEFAULT_COLOR); 
-    if (pkg_pl2 == 1) printf(RED "PL2\n" DEFAULT_COLOR); 
-    if (max_turbo_limit == 1) printf(RED "MC_TURBO\n" DEFAULT_COLOR); 
-    if (turbo_transition_attenuation == 1) printf(RED "TRANSITION ATTENUATION\n" DEFAULT_COLOR); 
+    if (prochot == 1) printw("TEMPERATURE\n");
+    if (thermal == 1) printw("POWER\n");
+    if (residency_state == 1) printw("RESIDENCY\n"); 
+    if (running_average_thermal == 1) printw("THERMAL\n"); 
+    if (vr_therm == 1) printw("VOLTAGE REGULATOR\n");  
+    if (vr_therm_design_current == 1) printw("CURRENT\n");   
+    if (other == 1) printw("OTHER\n"); 
+    if (pkg_pl1 == 1) printw("PL1\n"); 
+    if (pkg_pl2 == 1) printw("PL2\n"); 
+    if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
+    if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
 }
 
 double * power_units(void){
@@ -519,78 +519,6 @@ int gpu(void){
 
 }
 
-char * draw(float percentage){
-
-    static char bar[21];
-    strcpy(bar,"\0");
-    int perc = (int)(percentage+1.0);
-    int count;
-    for (int i = 0; i < perc; i+=5) {
-        strcat(bar, "|");
-        count = i;
-    }
-    for (count; count < 95; count +=5) {
-        strcat(bar," ");
-    }
-    strcat(bar,"|");
-
-    return bar;
-    
-}
-
-char * draw_relative(float * value_abs){
-
-    int count = 5;
-    float total = 0;
-    int width = 40;
-    char bar[width];
-    strcpy(bar,"\0");
-    char *colors[] = {MAGENTA, BLUE, RED, CYAN, YELLOW, GREEN};
-
-
-    for (int i = 0; i < count; i++){
-        total += value_abs[i];
-    }
-
-    for (int i = 0; i < count; i++){
-        for (int j = 0; j < (int)(value_abs[i]/total * width + 0.5); j++ ){
-        printf("%s#", colors[i]);
-    }
-    }
-
-   printf(DEFAULT_COLOR "\n");
-}
-
-void * draw_power(long * value){
-
-    int value_count = 3;
-    int width = 48;                         // choose highly composite number
-    long total = value[0];
-      
-    char *colors[] = {BLUE, RED, GREEN, YELLOW, CYAN , MAGENTA};
-
-    // if there is no value for system power, plot graph relative to package power
-    /*if (value[POWER_DOMAINS] == 0.0) {
-        
-    
-    } else {
-        total = value[3];
-        value[3] = value[3] - value[0];          // subtract package power from system power to get "power draw of rest of hardware"
-    }
-    */
-    
-    printf("\t\tPkg Power = %.2f W\n", ((float)value[0])*1e-6);
-    value[0] = value[0] - value[1] - value[2];      // subtract cpu and uncore power from package power to get "rest of chip power"
-    for (int i = 0; i < value_count; i++){
-        for (int j = 0; j < ( (value[i] * width) / total ); j++ ){
-        printf("%s#", colors[i]);
-        }
-    }
-    printf(BLUE "\nRest of Pkg: %.2f W",((float)value[0])*1e-6);
-    printf(RED "  Cores: %.2f W",((float)value[1])*1e-6);
-    printf(GREEN "  GPU: %.2f W",((float)value[2])*1e-6);
-    printf(DEFAULT_COLOR "\n");
-}
 
 void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, float *power){
 
@@ -658,12 +586,12 @@ int print_fanspeed(void){  // based on this example: https://stackoverflow.com/q
 
     int *duty =  malloc(sizeof *duty);
     if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
-        printf("Error accessing the ectool. Error opening pipe\n");
+        printw("Error accessing the ectool. Error opening pipe\n");
         return -1;
     }
     while (fgets(buf, BUFSIZE, fp) != NULL) {
         sscanf(buf, "%*s%*s%*s%d", duty);
-        printf("Fan speed %d %% ", (100 * *duty)/ 65536 );  // print response to console
+        printw("Fan speed %d %% ", (100 * *duty)/ 65536 );  // print response to console
     }
     if (pclose(fp)) {   // error
         return -1;
@@ -671,12 +599,12 @@ int print_fanspeed(void){  // based on this example: https://stackoverflow.com/q
     
     int *rpm =  malloc(sizeof *rpm);
     if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
-        printf("Error accessing the ectool. Error opening pipe\n");
+        printw("Error accessing the ectool. Error opening pipe\n");
         return -1;
     }
     while (fgets(buf, BUFSIZE, fp) != NULL) {
         sscanf(buf, "%*s%*d%*s%d", rpm);
-        printf("(%d RPM)\n", *rpm);  // print response to console
+        printw("(%d RPM)\n", *rpm);  // print response to console
     }
     if (pclose(fp)) {
         return -1;

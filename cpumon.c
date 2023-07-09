@@ -3,13 +3,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <unistd.h>                 // uid_t
+#include <unistd.h>                 // uid_t sleep()
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>                  // open()
 #include <sys/stat.h>               // open()
+#include <ncurses.h>
 #include "cpumonlib.h"
+#include "guilib.h"
 
 
 
@@ -50,16 +52,10 @@ int main (int argc, char **argv)
     static float power_cumulative = 0;
     static float power_runtime_avg = 0;
 
-    // idea for the future: have a structure that holds the key metrics for each sensor
-
     struct sensor* freq = create_sensor(freq);
     struct sensor* load = create_sensor(load);
     struct sensor* temp = create_sensor(temp);
     struct sensor* voltage = create_sensor(voltage);
-
-
-    float previous_min_value = 100;
-    float previous_max_value = 0;
 
     static float freq_his[AVG_WINDOW];
     static int load_his[AVG_WINDOW];
@@ -68,6 +64,7 @@ int main (int argc, char **argv)
     static float power_his[AVG_WINDOW];
 
     int running_with_privileges;
+
     if (geteuid() == 0) {
         running_with_privileges = 1; 
     } 
@@ -95,8 +92,19 @@ int main (int argc, char **argv)
 			    fprintf(stderr,"Unknown option %c\n",command); exit(EXIT_FAILURE);
         }
     }
-    
+
+    init_gui();
+
+  
     while (1) {
+        
+        command = kbhit();
+        switch (command) {
+            case 'p':
+                display_power_config_flag = display_power_config_flag ^ 1; break;
+            default: 
+                sleep(POLL_INTERVAL_S);
+        }
         
         freq_per_core = freq_ghz(core_count);
         load_per_core = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
@@ -144,61 +152,64 @@ int main (int argc, char **argv)
         
 
         // ------------------  output to terminal ------------------------------
-        printf(CLEAR);                 // clear console, print everything again
         
-        printf(BOLD "\n\t\t%s\n\n" BOLD_OFF, *cpu_model);
+        clear();
 
+        attron(A_BOLD);
+        printw("\n\t\t%s\n\n", *cpu_model);
+        attroff(A_BOLD);
         
         if (running_with_privileges == 1) {
-            printf("       f/GHz \tC0%%   Temp/°C\tU/V\n");
-            printf("-------------------------------------\n");
+            printw("       f/GHz \tC0%%   Temp/°C\tU/V\n");
+            printw("-------------------------------------\n");
             for (int i = 0; i < core_count; i++){   
-                printf("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i], voltage_per_core[i]);
+                printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i], voltage_per_core[i]);
             }
             
-            printf("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg, voltage->cpu_avg); 
-            printf("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg, voltage->runtime_avg);
+            printw("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg, voltage->cpu_avg); 
+            printw("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg, voltage->runtime_avg);
                                                                            
             if (display_moving_average_flag == 1) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
         
-            printf("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power_per_domain[2])*1e-6);
+            printw("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power_per_domain[2])*1e-6);
             draw_power(power_per_domain);
 
             *file = read_string("/sys/class/power_supply/BAT1/status");
-            printf("\nBattery power draw = %.2f W (%s)\n", ((double)power_per_domain[3])*1e-12, *file);
+            printw("\n\nBattery power draw = %.2f W (%s)\n", ((double)power_per_domain[3])*1e-12, *file);
 
             if (print_fanspeed() != 0) {
-                printf("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
+                printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
             }
 
             if (display_power_config_flag == 1) {
                 power_config();
             } 
+            attron(COLOR_PAIR(RED));
             power_limit_msr(core_count);
+            attroff(COLOR_PAIR(RED));
         } 
         
         // for debugging purposes, in Visual Code debugging works not in root mode
         if (running_with_privileges == 0) 
-        {
-            printf("Size of structure sensor: %lu\n", sizeof(struct sensor));           
-            printf("To monitor all metrics, pls run as root.\n\n");
+        {       
+            printw("To monitor all metrics, pls run as root.\n\n");
 
-            printf("\tf/GHz \tC0%% \tTemp/°C\n");
+            printw("\tf/GHz \tC0%% \tTemp/°C\n");
             for (int i = 0; i < core_count; i++){   
-                printf("Core %d \t%.1f\t%.f\t%.f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i]);
+                printw("Core %d \t%.1f\t%.f\t%.f\n", i, freq_per_core[i], load_per_core[i], temp_per_core[i]);
             }
-            printf("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg);
-            printf("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg);
-            printf("\nGPU\t%d\n", gpu_freq);
+            printw("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg);
+            printw("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg);
+            printw("\nGPU\t%d\n", gpu_freq);
     
+            if (display_power_config_flag == 1){
+                power_config();
+            }
             
-            power_config();
         }
 
-
-       sleep (POLL_INTERVAL_S);
     }
     return (EXIT_SUCCESS);
 
