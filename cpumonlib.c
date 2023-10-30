@@ -15,14 +15,15 @@
 struct sensor *create_sensor(struct sensor* new_sensor) {
     
     int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
-    new_sensor = malloc(sizeof(struct sensor) + sizeof(*new_sensor->per_core) * core_count);
+    new_sensor = malloc(sizeof(struct sensor) + sizeof(float) * core_count);
     new_sensor->cpu_avg = 0;
     new_sensor->runtime_avg = 0;
     new_sensor->cumulative = 0;
     new_sensor->min = 1000;
     new_sensor->max = 0;
-  
-    return new_sensor;
+    new_sensor->per_core = 0;
+    
+    //return new_sensor;
 }
 
 
@@ -56,7 +57,6 @@ char *read_string(const char *filepath)     // function from data type pointer
 
 char *identifiy_cpu(void){
 
-
     FILE *fp = fopen("/proc/cpuinfo", "r");
     if (fp == NULL) {
         perror("Error opening file");
@@ -64,9 +64,9 @@ char *identifiy_cpu(void){
     } 
 
     char file_buf[BUFSIZ];
-    char *model = malloc (sizeof *model);
+    char *model;
+    model = malloc (sizeof *model);      // allocate memory space on heap
     char *line;
-    
     
     while(1) {
         line = fgets(file_buf, BUFSIZ, fp);
@@ -79,8 +79,9 @@ char *identifiy_cpu(void){
         //    printf("Error reading CPU model name from /proc/cpuinfo\n");
         }
     }
-
+    
     fclose(fp);
+
     return model;
 }
 
@@ -200,7 +201,7 @@ long * power_uw(void)
 }
 
 
-float * temp_core_c(int core_count)
+void temp_core_c(float *temperature, int core_count)
 {
     FILE *fp;
     char file_buffer[BUFSIZE];
@@ -208,7 +209,7 @@ float * temp_core_c(int core_count)
     char path_dir[300];
     char path_file[320];
     long temp[core_count/2];
-    float *temperature = malloc((core_count) * sizeof(*temperature));    
+    //float *temperature = malloc((core_count) * sizeof(*temperature));    
     int total = 0;
 
     DIR *dp = opendir(basename);
@@ -241,13 +242,13 @@ float * temp_core_c(int core_count)
        total += temperature[i];
     }
     
-    return temperature;
+    //return temperature;
 }
 
 
-float * freq_ghz(int core_count) 
+void freq_ghz(float *freq_ghz, int core_count) 
 {
-    float *freq_ghz = malloc((core_count) * sizeof(*freq_ghz));
+   // float *freq_ghz = malloc((core_count) * sizeof(*freq_ghz));
     double total = 0;
     char file_buf[BUFSIZE];
     char path[64];
@@ -258,7 +259,6 @@ float * freq_ghz(int core_count)
         fp = fopen(path, "r");
         if (fp == NULL){
             perror("Error opening file\n");
-            return NULL;
         }
         fgets(file_buf, BUFSIZE, fp);
         fclose(fp);
@@ -269,16 +269,15 @@ float * freq_ghz(int core_count)
         total += freq_ghz[i];
     }
 
-    return freq_ghz;
+    //return freq_ghz;
 }
 
 
-float * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
+void cpucore_load(float *load, int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
         perror("Error opening file /proc/stat");
-        return NULL;
     }
 
     char file_buf[BUFSIZ];
@@ -286,7 +285,7 @@ float * cpucore_load(int core_count, long long *work_jiffies_before, long long *
     long long user, nice, system, idle, iowait, irq, softirq;
     long long work_jiffies_after[core_count];
     long long total_jiffies_after[core_count];
-    float *load = malloc((core_count) * sizeof(*load));
+    //float *load = malloc((core_count) * sizeof(*load));
     char comparator[7];
 
         line = fgets(file_buf, BUFSIZ, fp);
@@ -328,7 +327,7 @@ float * cpucore_load(int core_count, long long *work_jiffies_before, long long *
         work_jiffies_before[i] = work_jiffies_after[i];
         total_jiffies_before[i] = total_jiffies_after[i];
     }
-    return load;
+    //return load;
 }
 
 

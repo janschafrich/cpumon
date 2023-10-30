@@ -26,20 +26,27 @@ int main (int argc, char **argv)
     
     setlocale(LC_NUMERIC, "");
 
-    int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    int core_count = -1;
+    core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+    if (core_count == -1){
+        fprintf(stderr, "Could not determine CPU core count from sysconf\n");
+        exit(EXIT_FAILURE);
+    }
     (const int)core_count;
     
     // flags
-    int display_power_config_flag = 0;
-    int display_moving_average_flag = 0;
-    
+    bool display_power_config_flag = 0;
+    bool display_moving_average_flag = 0;
     
     char *file[20];
     char *bar[30];
     char *path;
     int gpu_freq;
 
-    float *freq_per_core, *load_per_core, *temp_per_core, *voltage_per_core;
+    float *freq_per_core = malloc((core_count) * sizeof(*freq_per_core));
+    float *temp_per_core = malloc((core_count) * sizeof(*temp_per_core));
+    float *load_per_core = malloc((core_count) * sizeof(*load_per_core));
+    float *voltage_per_core = malloc((core_count) * sizeof(*voltage_per_core));
     long *power_per_domain;
 
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
@@ -56,25 +63,19 @@ int main (int argc, char **argv)
     struct sensor* load = create_sensor(load);
     struct sensor* temp = create_sensor(temp);
     struct sensor* voltage = create_sensor(voltage);
-
+    
     static float freq_his[AVG_WINDOW];
     static int load_his[AVG_WINDOW];
     static int temp_his[AVG_WINDOW];
     static float voltage_his[AVG_WINDOW];
     static float power_his[AVG_WINDOW];
 
-    int running_with_privileges;
-
+    bool running_with_privileges = FALSE;
     if (geteuid() == 0) {
-        running_with_privileges = 1; 
+        running_with_privileges = TRUE; 
     } 
-    else {
-        running_with_privileges = 0;
-    }
 
-    char *cpu_model[1];
-    *cpu_model = identifiy_cpu();  
-
+    char *cpu_model = identifiy_cpu();
     int command;
 
     while ((command =getopt(argc, argv, "c:hmps")) != -1){
@@ -106,9 +107,9 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        freq_per_core = freq_ghz(core_count);
-        load_per_core = cpucore_load(core_count, work_jiffies_before, total_jiffies_before);
-        temp_per_core = temp_core_c(core_count);
+        freq_ghz(freq_per_core, core_count);
+        cpucore_load(load_per_core ,core_count, work_jiffies_before, total_jiffies_before);
+        temp_core_c(temp_per_core, core_count);
 
         freq->cpu_avg = calc_average(freq_per_core, core_count);
         load->cpu_avg = calc_average(load_per_core, core_count);
@@ -124,7 +125,7 @@ int main (int argc, char **argv)
 
         gpu_freq = gpu();
 
-        if (running_with_privileges == 1) {
+        if (running_with_privileges == TRUE) {
             
             voltage_per_core = voltage_v(core_count);
             power_per_domain = power_uw();
@@ -156,10 +157,10 @@ int main (int argc, char **argv)
         clear();
 
         attron(A_BOLD);
-        printw("\n\t\t%s\n\n", *cpu_model);
+        printw("\n\t\t%s\n\n", cpu_model);
         attroff(A_BOLD);
         
-        if (running_with_privileges == 1) {
+        if (running_with_privileges == TRUE) {
             printw("       f/GHz \tC0%%   Temp/°C\tU/V\n");
             printw("-------------------------------------\n");
             for (int i = 0; i < core_count; i++){   
@@ -169,7 +170,7 @@ int main (int argc, char **argv)
             printw("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temp->cpu_avg, voltage->cpu_avg); 
             printw("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg, voltage->runtime_avg);
                                                                            
-            if (display_moving_average_flag == 1) {
+            if (display_moving_average_flag == TRUE) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
         
@@ -183,7 +184,7 @@ int main (int argc, char **argv)
                 printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
             }
 
-            if (display_power_config_flag == 1) {
+            if (display_power_config_flag == TRUE) {
                 power_config();
             } 
             attron(COLOR_PAIR(RED));
@@ -192,7 +193,7 @@ int main (int argc, char **argv)
         } 
         
         // for debugging purposes, in Visual Code debugging works not in root mode
-        if (running_with_privileges == 0) 
+        if (running_with_privileges == FALSE) 
         {       
             printw("To monitor all metrics, pls run as root.\n\n");
 
@@ -204,7 +205,7 @@ int main (int argc, char **argv)
             printw("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temp->runtime_avg);
             printw("\nGPU\t%d\n", gpu_freq);
     
-            if (display_power_config_flag == 1){
+            if (display_power_config_flag == TRUE){
                 power_config();
             }
             

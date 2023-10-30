@@ -3,7 +3,6 @@
 #define CPUMONLIB
 
 
-
 #define AVG_WINDOW 60
 #define POWER_LIMIT_COUNT 2
 #define BUFSIZE     64
@@ -50,9 +49,9 @@ char *identifiy_cpu(void);
 int * power_limits_w(void);
 void power_config(void);
 long * power_uw(void);
-float * temp_core_c(int core_count);
-float * freq_ghz(int core_count);
-float * cpucore_load(int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
+void temp_core_c(float *temperature, int core_count);
+void freq_ghz(float *freq_ghz, int core_count); 
+void cpucore_load(float *load, int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
 int acc_cmdln(char *cmd);
 int open_msr(int core);
 long long read_msr(int fd, int which);
@@ -60,9 +59,6 @@ float * voltage_v(int core_count);
 void power_limit_msr(int core_count);
 double * power_units(void);
 int gpu(void);
-char * draw(float percentage);
-char * draw_relative(float * value_abs);
-void * draw_power(long * value);
 void  moving_average(int i, float * freq, int *load, int *temp, float *voltage, float *power);
 float runtime_avg(long poll_cycle_counter, float * samples_cumulative, float * sample_next);
 float calc_average(float *, int);
