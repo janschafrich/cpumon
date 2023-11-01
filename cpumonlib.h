@@ -33,29 +33,31 @@
 
 #define CPU_TIGERLAKE       140
 
-struct sensor 
-{
+struct sensor {
+
     float cpu_avg;
     float runtime_avg;
     float cumulative;
-    float min;
-    float max;
-    float *per_core;
+    int min;
+    int max;
+    float per_core[];
 };
 
-struct sensor *create_sensor(struct sensor *new_sensor);
+typedef struct sensor sensor;
+
+struct sensor_ *create_sensor(struct sensor_* new_sensor, int core_count);
 char *read_string(const char *filepath);
 char *identifiy_cpu(void);
 int * power_limits_w(void);
 void power_config(void);
 long * power_uw(void);
 void temp_core_c(float *temperature, int core_count);
-void freq_ghz(float *freq_ghz, int core_count); 
+void freq_ghz(float *, int core_count); 
 void cpucore_load(float *load, int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
 int acc_cmdln(char *cmd);
 int open_msr(int core);
 long long read_msr(int fd, int which);
-float * voltage_v(int core_count);
+void voltage_v(float *voltage, int core_count);
 void power_limit_msr(int core_count);
 double * power_units(void);
 int gpu(void);

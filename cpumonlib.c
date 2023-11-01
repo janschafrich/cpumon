@@ -12,20 +12,6 @@
 #include <ncurses.h>
 #include "cpumonlib.h"
 
-struct sensor *create_sensor(struct sensor* new_sensor) {
-    
-    int core_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
-    new_sensor = malloc(sizeof(struct sensor) + sizeof(float) * core_count);
-    new_sensor->cpu_avg = 0;
-    new_sensor->runtime_avg = 0;
-    new_sensor->cumulative = 0;
-    new_sensor->min = 1000;
-    new_sensor->max = 0;
-    new_sensor->per_core = 0;
-    
-    //return new_sensor;
-}
-
 
 char *read_string(const char *filepath)     // function from data type pointer
 {     
@@ -59,14 +45,14 @@ char *identifiy_cpu(void){
 
     FILE *fp = fopen("/proc/cpuinfo", "r");
     if (fp == NULL) {
-        perror("Error opening file");
+        perror("Error opening file /proc/cpuinfo");
         return (NULL);
     } 
 
     char file_buf[BUFSIZ];
-    char *model;
-    model = malloc (sizeof *model);      // allocate memory space on heap
+    char *model = malloc (sizeof *model);
     char *line;
+    
     
     while(1) {
         line = fgets(file_buf, BUFSIZ, fp);
@@ -79,9 +65,8 @@ char *identifiy_cpu(void){
         //    printf("Error reading CPU model name from /proc/cpuinfo\n");
         }
     }
-    
-    fclose(fp);
 
+    fclose(fp);
     return model;
 }
 
@@ -204,13 +189,11 @@ long * power_uw(void)
 void temp_core_c(float *temperature, int core_count)
 {
     FILE *fp;
-    char file_buffer[BUFSIZE];
+    //char file_buffer[BUFSIZE];
     char *basename = "/sys/devices/platform/coretemp.0/hwmon/";
     char path_dir[300];
     char path_file[320];
     long temp[core_count/2];
-    //float *temperature = malloc((core_count) * sizeof(*temperature));    
-    int total = 0;
 
     DIR *dp = opendir(basename);
     if (dp == NULL) {
@@ -239,17 +222,13 @@ void temp_core_c(float *temperature, int core_count)
 
     for (int i = 0; i < core_count; i++) {
        temperature[i] = (int)(temp[i/2] / 1000); // i/2 -> write value twice
-       total += temperature[i];
     }
-    
-    //return temperature;
 }
 
 
 void freq_ghz(float *freq_ghz, int core_count) 
 {
-   // float *freq_ghz = malloc((core_count) * sizeof(*freq_ghz));
-    double total = 0;
+
     char file_buf[BUFSIZE];
     char path[64];
     FILE *fp;
@@ -262,14 +241,9 @@ void freq_ghz(float *freq_ghz, int core_count)
         }
         fgets(file_buf, BUFSIZE, fp);
         fclose(fp);
+        
         freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
     }
-
-    for (int i = 0; i < core_count; i++) {
-        total += freq_ghz[i];
-    }
-
-    //return freq_ghz;
 }
 
 
@@ -285,7 +259,6 @@ void cpucore_load(float *load, int core_count, long long *work_jiffies_before, l
     long long user, nice, system, idle, iowait, irq, softirq;
     long long work_jiffies_after[core_count];
     long long total_jiffies_after[core_count];
-    //float *load = malloc((core_count) * sizeof(*load));
     char comparator[7];
 
         line = fgets(file_buf, BUFSIZ, fp);
@@ -327,7 +300,6 @@ void cpucore_load(float *load, int core_count, long long *work_jiffies_before, l
         work_jiffies_before[i] = work_jiffies_after[i];
         total_jiffies_before[i] = total_jiffies_after[i];
     }
-    //return load;
 }
 
 
@@ -394,11 +366,10 @@ long long read_msr(int fd, int which) {
 
 // ----------------- End Model Specific Registers ----------------------
 
-float * voltage_v(int core_count) {
+void voltage_v(float *voltage, int core_count) {
 
     int fd;
     long long result[core_count];
-    float *voltage = malloc((core_count) * sizeof(*voltage));
     float total;
 
     for (int i = 0; i < core_count; i++) {
@@ -413,8 +384,6 @@ float * voltage_v(int core_count) {
         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
         total += voltage[i];
     }
-
-    return voltage;
 }
 
 
