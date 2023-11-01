@@ -38,8 +38,6 @@ int main (int argc, char **argv)
     bool display_moving_average_flag = 0;
     
     char *file[20];
-    //char *bar[30];
-    //char *path;
     int gpu_freq;
 
     long *power_per_domain;
@@ -51,21 +49,19 @@ int main (int argc, char **argv)
     static float power_cumulative = 0;
     static float power_runtime_avg = 0;
 
-
-    // TODO : create working structs
     sensor *freq = malloc( sizeof(sensor) + core_count * sizeof(freq->per_core[0]) ); 
     sensor *load = malloc( sizeof(sensor) + core_count * sizeof(load->per_core[0]) ); 
     sensor *temperature = malloc( sizeof(sensor) + core_count * sizeof(temperature->per_core[0]) ); 
     sensor *voltage = malloc( sizeof(sensor) + core_count * sizeof(voltage->per_core[0]) ); 
 
-        long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
+    long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
-    static float freq_his[AVG_WINDOW];
-    static int load_his[AVG_WINDOW];
-    static int temp_his[AVG_WINDOW];
-    static float voltage_his[AVG_WINDOW];
-    static float power_his[AVG_WINDOW];
+    float freq_his[AVG_WINDOW];
+    int load_his[AVG_WINDOW];
+    int temp_his[AVG_WINDOW];
+    float voltage_his[AVG_WINDOW];
+    float power_his[AVG_WINDOW];
 
     bool running_with_privileges = FALSE;
     if (geteuid() == 0) {
@@ -167,8 +163,8 @@ int main (int argc, char **argv)
                 printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq->per_core[i], load->per_core[i], temperature->per_core[i], voltage->per_core[i]);
             }
             
-            printw("\nCPU\t%.1f\t%.1f\t%.f\t%.2f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
-            printw("CPU\t%.1f\t%.1f\t%.f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg, voltage->runtime_avg);
+            printw("\nCPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
+            printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg, voltage->runtime_avg);
                                                                            
             if (display_moving_average_flag == TRUE) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
@@ -203,8 +199,8 @@ int main (int argc, char **argv)
             for (int i = 0; i < core_count; i++){   
                 printw("Core %d \t%.1f\t%.f\t%.f\n", i, freq->per_core[i], load->per_core[i], temperature->per_core[i]);
             }
-            printw("\nCPU\t%.1f\t%.1f\t%.f\tcurrent avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg);
-            printw("CPU\t%.1f\t%.1f\t%.f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg);
+            printw("\nCPU\t%.2f\t%.2f\t%.1f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg);
+            printw("CPU\t%.2f\t%.2f\t%.1f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg);
             printw("\nGPU\t%d\n", gpu_freq);
     
             if (display_power_config_flag == TRUE){
