@@ -49,7 +49,7 @@ struct sensor {
 
 typedef struct sensor sensor;
 
-struct sensor_ *create_sensor(struct sensor_* new_sensor, int core_count);
+//struct sensor_ *create_sensor(struct sensor_* new_sensor, int core_count);
 char *read_string(const char *filepath);
 
 char *identifiy_cpu(void);
@@ -57,22 +57,22 @@ int * power_limits_w(void);
 void power_config(void);
 long * power_uw(void);
 
-void temperature_c(float *temperature, int core_count);
-void freq_ghz(float *, int core_count); 
-void cpucore_load(float *load, int core_count, long long *work_jiffies_before, long long *total_jiffies_before);
+
+void freq_ghz(float *, float *, int core_count); 
+void cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
 
 int acc_cmdln(char *cmd);
 int open_msr(int core);
 long long read_msr(int fd, int which);
 
-void voltage_v(float *voltage, int core_count);
+void temperature_c(float *temperature, float *average, int core_count);
+void voltage_v(float *voltage, float *average, int core_count);
 void power_limit_msr(int core_count);
 double * power_units(void);
 int gpu(void);
 
 void  moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
 float runtime_avg(long poll_cycle_counter, float * samples_cumulative, float * sample_next);
-float calc_average(float *, int);
 float min(float previous_min_value, float sample_next);
 int print_fanspeed(void);
 

@@ -10,8 +10,8 @@
 #include <fcntl.h>                  // open()
 #include <sys/stat.h>               // open()
 #include <ncurses.h>
-#include "cpumonlib.h"
-#include "guilib.h"
+#include "src/cpumonlib.h"
+#include "src/guilib.h"
 
 
 
@@ -42,12 +42,12 @@ int main (int argc, char **argv)
 
     long *power_per_domain;
 
-    static long period_counter = 0;
-    static long poll_cycle_counter = 0;
+    long period_counter = 0;
+    long poll_cycle_counter = 0;
 
-    static float power_pkg = 0;
-    static float power_cumulative = 0;
-    static float power_runtime_avg = 0;
+    float power_pkg = 0;
+    //static float power_cumulative = 0;
+    //static float power_runtime_avg = 0;
 
     sensor *freq = malloc( sizeof(sensor) + core_count * sizeof(freq->per_core[0]) ); 
     sensor *load = malloc( sizeof(sensor) + core_count * sizeof(load->per_core[0]) ); 
@@ -58,8 +58,8 @@ int main (int argc, char **argv)
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
     float freq_his[AVG_WINDOW];
-    int load_his[AVG_WINDOW];
-    int temp_his[AVG_WINDOW];
+    float load_his[AVG_WINDOW];
+    float temp_his[AVG_WINDOW];
     float voltage_his[AVG_WINDOW];
     float power_his[AVG_WINDOW];
 
@@ -101,34 +101,29 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        freq_ghz(freq->per_core, core_count);
-        cpucore_load(load->per_core ,core_count, work_jiffies_before, total_jiffies_before);
-        temp_core_c(temperature->per_core, core_count);
-
-        freq->cpu_avg = calc_average(freq->per_core, core_count);
-        load->cpu_avg = calc_average(load->per_core, core_count);
-        temperature->cpu_avg = calc_average(temperature->per_core, core_count);
-
+        freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+        cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
+    
         freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
-        temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
                                                    
         freq_his[period_counter] = freq->cpu_avg;
-        load_his[period_counter] = load->per_core;
-        temp_his[period_counter] = temperature->per_core;
+        load_his[period_counter] = load->cpu_avg;
+        temp_his[period_counter] = temperature->cpu_avg;
 
         gpu_freq = gpu();
         
         if (running_with_privileges == TRUE) {
             
-            voltage_v(voltage->per_core, core_count);
+            temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
+            voltage_v(voltage->per_core, &voltage->cpu_avg, core_count);
             power_per_domain = power_uw();
 
-            voltage->cpu_avg = calc_average(voltage->per_core, core_count);
             power_pkg = power_per_domain[0];
             
+            temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
             voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
-            power_runtime_avg = runtime_avg(poll_cycle_counter, &power_cumulative, &power_pkg);
+            //power_runtime_avg = runtime_avg(poll_cycle_counter, &power_cumulative, &power_pkg);
 
             voltage_his[period_counter] = voltage->cpu_avg;
             power_his[period_counter] = *power_per_domain*1e-6;
@@ -159,17 +154,18 @@ int main (int argc, char **argv)
         if (running_with_privileges == TRUE) {
             printw("       f/GHz \tC0%%   Temp/°C\tU/V\n");
             printw("-------------------------------------\n");
-            for (int i = 0; i < core_count; i++){   
-                printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", i, freq->per_core[i], load->per_core[i], temperature->per_core[i], voltage->per_core[i]);
+            for (int core = 0; core < core_count; core++){   
+                printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
             }
             
             printw("\nCPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
             printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg, voltage->runtime_avg);
+
                                                                            
             if (display_moving_average_flag == TRUE) {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
-        
+            
             printw("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power_per_domain[2])*1e-6);
             draw_power(power_per_domain);
 
@@ -195,12 +191,12 @@ int main (int argc, char **argv)
         {       
             printw("To monitor all metrics, pls run as root.\n\n");
 
-            printw("\tf/GHz \tC0%% \tTemp/°C\n");
+            printw("\tf/GHz \tC0%% \n");
             for (int i = 0; i < core_count; i++){   
-                printw("Core %d \t%.1f\t%.f\t%.f\n", i, freq->per_core[i], load->per_core[i], temperature->per_core[i]);
+                printw("Core %d \t%.1f\t%.f\n", i, freq->per_core[i], load->per_core[i]);
             }
-            printw("\nCPU\t%.2f\t%.2f\t%.1f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg);
-            printw("CPU\t%.2f\t%.2f\t%.1f\truntime avg\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg);
+            printw("\nCPU\t%.2f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg);
+            printw("CPU\t%.2f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg);
             printw("\nGPU\t%d\n", gpu_freq);
     
             if (display_power_config_flag == TRUE){

@@ -186,12 +186,13 @@ long * power_uw(void)
 }
 
 
-void freq_ghz(float *freq_ghz, int core_count) 
+void freq_ghz(float *freq_ghz, float *average, int core_count) 
 {
 
     char file_buf[BUFSIZE];
     char path[64];
     FILE *fp;
+    float total = 0;
 
     for (int i = 0; i < core_count; i++){
         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
@@ -203,11 +204,14 @@ void freq_ghz(float *freq_ghz, int core_count)
         fclose(fp);
         
         freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+        total += freq_ghz[i];
     }
+
+    *average = total / core_count;
 }
 
 
-void cpucore_load(float *load, int core_count, long long *work_jiffies_before, long long *total_jiffies_before) {
+void cpucore_load(float *load, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
@@ -220,6 +224,7 @@ void cpucore_load(float *load, int core_count, long long *work_jiffies_before, l
     long long work_jiffies_after[core_count];
     long long total_jiffies_after[core_count];
     char comparator[7];
+    float total = 0;
 
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
@@ -253,7 +258,10 @@ void cpucore_load(float *load, int core_count, long long *work_jiffies_before, l
         } else {
             load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / 1;     // pick the next closest difference to zero
         }
+        total += load[i];
     }
+
+    *average = total / core_count;
 
     // save the jiffy count for the next interval
     for (int i = 0; i < (core_count); i++){
@@ -326,11 +334,11 @@ long long read_msr(int fd, int which) {
 
 // ----------------- End Model Specific Registers ----------------------
 
-void voltage_v(float *voltage, int core_count) {
+void voltage_v(float *voltage, float *average, int core_count) {
 
     int fd;
     uint64_t result[core_count];
-    float total;
+    float total = 0;
 
     for (int core = 0; core < core_count; core++) {
         fd=open_msr(core);
@@ -344,15 +352,16 @@ void voltage_v(float *voltage, int core_count) {
         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
         total += voltage[i];
     }
+
+    *average = total / core_count;
 }
 
-void temperature_c(float *temperature, int core_count) {
+void temperature_c(float *temperature, float * average, int core_count) {
 
     int fd;
     uint64_t register_content[core_count];
     float temperature_target[core_count];
-
-    float total;
+    float total = 0;
 
     for (int core = 0; core < core_count; core++) {
         fd=open_msr(core);
@@ -386,7 +395,9 @@ void temperature_c(float *temperature, int core_count) {
         else {
             printf("Digital temperature reading from IA_THERM_STATUS not valid\n");
         }
-    }      
+    } 
+
+    *average = total / core_count;     
 }
 
 
@@ -524,16 +535,6 @@ float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float * sa
         avg = *samples_cumulative / (float) poll_cycle_counter;
     }
 
-    return avg;
-}
-
-float calc_average(float *samples, int sample_count){
-    float sum = 0;
-    for (int i = 0; i < sample_count; i++){
-        sum += samples[i];
-    }
-    float avg = sum / (float)sample_count;
-    
     return avg;
 }
 
