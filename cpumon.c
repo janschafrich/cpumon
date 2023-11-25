@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <locale.h>
+#include <string.h>                 // strlen
+#include <stdlib.h>                 // malloc
+
 #include <unistd.h>                 // uid_t sleep()
 #include <sys/types.h>
 #include <dirent.h>
@@ -13,46 +13,30 @@
 #include "src/cpumonlib.h"
 #include "src/guilib.h"
 
-
+int core_count = 0;
+bool display_power_config_flag = 0;
+bool display_moving_average_flag = 0;
 
 int main (int argc, char **argv)
 {   
-    FILE *fp;
 
-    if ((fp = popen("sudo modprobe msr", "r")) == NULL) {
-        printf("Error modprobe msr\n");
-        return EXIT_FAILURE;
-    }
-    
-    setlocale(LC_NUMERIC, "");
-
-    int core_count = -1;
-    core_count = (const int)sysconf(_SC_NPROCESSORS_ONLN);
-    if (core_count == -1){
-        fprintf(stderr, "Could not determine CPU core count from sysconf\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    // flags
-    bool display_power_config_flag = 0;
-    bool display_moving_average_flag = 0;
+    init(&core_count);
     
     char *file[20];
     int gpu_freq;
 
-    long *power_per_domain;
+    float *power_per_domain;
 
     long period_counter = 0;
     long poll_cycle_counter = 0;
-
-    float power_pkg = 0;
-    //static float power_cumulative = 0;
-    //static float power_runtime_avg = 0;
 
     sensor *freq = malloc( sizeof(sensor) + core_count * sizeof(freq->per_core[0]) ); 
     sensor *load = malloc( sizeof(sensor) + core_count * sizeof(load->per_core[0]) ); 
     sensor *temperature = malloc( sizeof(sensor) + core_count * sizeof(temperature->per_core[0]) ); 
     sensor *voltage = malloc( sizeof(sensor) + core_count * sizeof(voltage->per_core[0]) ); 
+    struct battery battery;
+    struct power my_power;
+    
 
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
@@ -103,33 +87,34 @@ int main (int argc, char **argv)
         
         freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
         cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
+        get_power_battery_w(&battery.power_now);
     
         freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
+        battery.power_runtime_avg = runtime_avg(poll_cycle_counter, &battery.power_cumulative, &battery.power_now);
                                                    
         freq_his[period_counter] = freq->cpu_avg;
         load_his[period_counter] = load->cpu_avg;
         temp_his[period_counter] = temperature->cpu_avg;
 
         gpu_freq = gpu();
-        
+            
         if (running_with_privileges == TRUE) {
             
             temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
             voltage_v(voltage->per_core, &voltage->cpu_avg, core_count);
-            power_per_domain = power_uw();
-
-            power_pkg = power_per_domain[0];
+            power_per_domain = power_w();
+            my_power.pkg_now = power_per_domain[0];
             
             temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
             voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
-            //power_runtime_avg = runtime_avg(poll_cycle_counter, &power_cumulative, &power_pkg);
+            my_power.pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power.pkg_cumulative, &my_power.pkg_now);
 
             voltage_his[period_counter] = voltage->cpu_avg;
-            power_his[period_counter] = *power_per_domain*1e-6;
+            power_his[period_counter] = *power_per_domain;
             
             if (period_counter == 1){
-                power_his[0] = *power_per_domain*1e-6;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+                power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
             }
         }
         
@@ -166,11 +151,11 @@ int main (int argc, char **argv)
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             
-            printw("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, ((float)power_per_domain[2])*1e-6);
-            draw_power(power_per_domain);
+            printw("\nGPU\t%d MHz\t\t%.2f W\n\n", gpu_freq, power_per_domain[2]);
+            draw_power(power_per_domain, my_power.pkg_runtime_avg);
 
             *file = read_string("/sys/class/power_supply/BAT1/status");
-            printw("\n\nBattery power draw = %.2f W (%s)\n", ((double)power_per_domain[3])*1e-12, *file);
+            printw("\n\nBattery power draw = %.2f W (%s)\n", battery.power_now, *file);
 
             if (print_fanspeed() != 0) {
                 printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
@@ -198,6 +183,11 @@ int main (int argc, char **argv)
             printw("\nCPU\t%.2f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg);
             printw("CPU\t%.2f\t%.2f\truntime avg\n", freq->runtime_avg, load->runtime_avg);
             printw("\nGPU\t%d\n", gpu_freq);
+
+
+            *file = read_string("/sys/class/power_supply/BAT1/status");
+            printw("\n\nBattery power draw = %.2f W (%s)\n", battery.power_now, *file);
+            printw("Battery avg power draw = %.2f W\n", battery.power_runtime_avg);
     
             if (display_power_config_flag == TRUE){
                 power_config();
@@ -209,3 +199,5 @@ int main (int argc, char **argv)
     return (EXIT_SUCCESS);
 
 }
+
+

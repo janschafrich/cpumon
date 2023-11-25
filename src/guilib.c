@@ -18,7 +18,8 @@ void init_gui(void){
 
 int kbhit(void)
 {
-    int ch = getch();
+    int ch = 0;
+    ch = getch();
 
     if (ch != ERR) {
         return ch;
@@ -27,13 +28,14 @@ int kbhit(void)
     }
 }
 
-void * draw_power(long * value){
+void draw_power(float *value, float pkg_avg){
 
     int value_count = 3;
     int width = 48;                         // choose highly composite number
-    long total = value[0];
+    
+    float total = value[0];
 
-    printw("\t\tPkg Power = %.2f W\n", ((float)value[0])*1e-6);
+    printw("\t\tPkg Power = %.2f W / Avg = %.2f W\n", value[0], pkg_avg);
     value[0] = value[0] - value[1] - value[2];      // subtract cpu and uncore power from package power to get "rest of chip power"
     for (int i = 0; i < value_count; i++){
         switch (i) {
@@ -41,16 +43,16 @@ void * draw_power(long * value){
             case 1: attron(COLOR_PAIR(RED)); break;
             case 2: attron(COLOR_PAIR(GREEN)); break;
         }
-        for (int j = 0; j < ( (value[i] * width) / total ); j++ ){
+        for (int j = 0; j < (int)( (value[i] * width ) / total ); j++ ){
             printw("#");
         }
     }
     attron(COLOR_PAIR(BLUE));
-    printw("\nRest of Pkg: %.2f W",((float)value[0])*1e-6);
+    printw("\nRest of Pkg: %.2f W", value[0]);
     attron(COLOR_PAIR(RED));
-    printw("  Cores: %.2f W",((float)value[1])*1e-6);
+    printw("  Cores: %.2f W", value[1]);
     attron(COLOR_PAIR(GREEN));
-    printw("  GPU: %.2f W",((float)value[2])*1e-6);
+    printw("  GPU: %.2f W", value[2]);
     attron(COLOR_PAIR(WHITE));
-    //printw(DEFAULT_COLOR "\n");
+
 }

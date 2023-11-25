@@ -8,15 +8,15 @@
                 "-fdiagnostics-color=always",
                 "-fverbose-asm",
                 "-masm=intel",
-                "-ggdb3",
                 "-Wall",
+                "-ggdb3",
+                "-O2",
+
                 "${file}",
-                "${fileDirname}/src/cpumonlib.c",
-                "${fileDirname}/src/cpumonlib.h",
-                "${fileDirname}/src/guilib.c",
-                "${fileDirname}/src/guilib.h",
+                "${workspaceFolder}/src/*.c",
                 "-lm",
                 "-lncurses",
+
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],

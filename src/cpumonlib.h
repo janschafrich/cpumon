@@ -46,16 +46,35 @@ struct sensor {
     int max;
     float per_core[];
 };
-
 typedef struct sensor sensor;
 
+struct power {
+    float pkg_now;
+    float cores;
+    float gpu;
+    float pkg_cumulative;
+    float pkg_runtime_avg; 
+};
+
+struct battery {
+    float power_now;
+    float power_cumulative;
+    float power_runtime_avg;
+    int min;
+    int max;
+    char status[15];
+};
+
+
 //struct sensor_ *create_sensor(struct sensor_* new_sensor, int core_count);
+void init(int *core_count);
 char *read_string(const char *filepath);
+int read_line(char *return_string, const char *filepath);
 
 char *identifiy_cpu(void);
 int * power_limits_w(void);
 void power_config(void);
-long * power_uw(void);
+float * power_w(void);
 
 
 void freq_ghz(float *, float *, int core_count); 
@@ -65,6 +84,7 @@ int acc_cmdln(char *cmd);
 int open_msr(int core);
 long long read_msr(int fd, int which);
 
+int get_power_battery_w(float *battery_power);
 void temperature_c(float *temperature, float *average, int core_count);
 void voltage_v(float *voltage, float *average, int core_count);
 void power_limit_msr(int core_count);
@@ -72,8 +92,8 @@ double * power_units(void);
 int gpu(void);
 
 void  moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float * samples_cumulative, float * sample_next);
-float min(float previous_min_value, float sample_next);
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
+float get_min_value(float previous_min_value, float sample_next);
 int print_fanspeed(void);
 
 

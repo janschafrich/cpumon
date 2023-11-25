@@ -1,16 +1,34 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>                   // printf
+#include <stdlib.h>                 // malloc
+#include <string.h>                 // strlen
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <locale.h>
 #include <sys/stat.h>               // open()
 #include <unistd.h>
 #include <stdint.h>
 #include <math.h>
 #include <ncurses.h>
 #include "cpumonlib.h"
+
+
+void init(int *core_count)
+{
+    FILE *fp;
+
+    if ((fp = popen("sudo modprobe msr", "r")) == NULL) {
+        printf("Error modprobe msr\n");
+    }
+    
+    setlocale(LC_NUMERIC, "");
+
+    *core_count = sysconf(_SC_NPROCESSORS_ONLN);
+    if (*core_count == -1){
+        fprintf(stderr, "Could not determine CPU core count from sysconf\n");
+    }
+}
 
 
 char *read_string(const char *filepath)     // function from data type pointer
@@ -38,6 +56,26 @@ char *read_string(const char *filepath)     // function from data type pointer
     fclose(fp);
 
     return file_buf;                    // return address to file
+}
+
+
+int read_line(char * return_string, const char *filepath) 
+{     
+    FILE *fp = fopen(filepath, "r");
+
+    if(fp == NULL) {
+        perror("Error opening file\n");
+        return -1;
+    }
+    if (fscanf(fp, "%s", return_string) == EOF)
+    {
+        printf("Couldnt read data from \"%s\"\n", filepath);
+        return -1;
+    }
+
+    fclose(fp);
+
+    return 0;                 
 }
 
 
@@ -83,7 +121,10 @@ int * power_limits_w(void) {
         if (fp == NULL) {
             perror("Error opening file\n");
         }
-        fgets(results,BUFSIZE, fp);
+        if (fgets(results,BUFSIZE, fp) == NULL)
+        {
+            printf("Couldn't read power from %s", path);
+        }
         sscanf(results, "%ld", &power_uw[i]);
         fclose(fp);
     }
@@ -118,13 +159,30 @@ void power_config(void)
        
 }
 
+int get_power_battery_w(float *battery_power)
+{
+    char read_result[15];
+    
+    read_line(read_result,"/sys/class/power_supply/BAT1/voltage_now");
+    long voltage_uv = 0;
+    sscanf(read_result, "%ld", &voltage_uv);
 
-long * power_uw(void) 
+    read_line(read_result,"/sys/class/power_supply/BAT1/current_now");
+    long current_ua = 0;
+    sscanf(read_result, "%ld", &current_ua);
+
+    *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+
+    return 0;
+}
+
+
+float * power_w(void) 
 {
 	FILE *fp;
     static long long energy_uj_before[POWER_DOMAIN_COUNT];
     long long energy_uj_after[POWER_DOMAIN_COUNT];
-    static long power_uw[POWER_DOMAIN_COUNT+1];
+    static float power_w[POWER_DOMAIN_COUNT];
 
     char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
                             "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",     // cores domain
@@ -137,52 +195,22 @@ long * power_uw(void)
                     perror("");
 				}
 				else {
-					fscanf(fp,"%lld",&energy_uj_after[i]);
+					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
+                    {
+                        printf("couldnt read from energy counter form %s \n", power_domains[i]);
+                    }
 					fclose(fp);
                 }
-    }
-
-    char file_buf[BUFSIZE];
-
-    long voltage_uv;
-    
-    fp = fopen("/sys/class/power_supply/BAT1/voltage_now", "r");
-
-    if (fp == NULL) // file doesnt exist
-    {  
-        voltage_uv = 0;
-    } 
-    else 
-    {
-        fgets(file_buf, BUFSIZE, fp);
-        sscanf(file_buf, "%ld", &voltage_uv);  
-    }
-    fclose(fp);
-       
-    long current_ua;   
-    fp = fopen("/sys/class/power_supply/BAT1/current_now", "r");
-    
-    if (fp == NULL) // file doesnt exist
-    { 
-        current_ua = 0;
-    } 
-    else {
-        fgets(file_buf, BUFSIZE, fp);
-        sscanf(file_buf, "%ld", &current_ua);
-    }
-    fclose(fp);
-
-    long power_system_uw = voltage_uv * current_ua;
-    power_uw[POWER_DOMAIN_COUNT] = power_system_uw;
+    }       
         
     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-        power_uw[i] = (long)  (double)(energy_uj_after[i] - energy_uj_before[i]) / (double) POLL_INTERVAL_S ;
+        power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
     }  
     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
         energy_uj_before[i] = energy_uj_after[i];
     }	
 
-    return power_uw;
+    return power_w;
 }
 
 
@@ -190,7 +218,7 @@ void freq_ghz(float *freq_ghz, float *average, int core_count)
 {
 
     char file_buf[BUFSIZE];
-    char path[64];
+    char path[80];
     FILE *fp;
     float total = 0;
 
@@ -200,7 +228,10 @@ void freq_ghz(float *freq_ghz, float *average, int core_count)
         if (fp == NULL){
             perror("Error opening file\n");
         }
-        fgets(file_buf, BUFSIZE, fp);
+        if (fgets(file_buf, BUFSIZE, fp) == NULL)
+        {
+            printf("Couldnt read CPU frequency from %s\n", path);
+        }
         fclose(fp);
         
         freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
@@ -223,42 +254,40 @@ void cpucore_load(float *load, float * average, long long *work_jiffies_before, 
     long long user, nice, system, idle, iowait, irq, softirq;
     long long work_jiffies_after[core_count];
     long long total_jiffies_after[core_count];
-    char comparator[7];
+    char comparator[16];
     float total = 0;
 
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
             printf("Error %s\n", file_buf);
         }
-        // work jiffies for whole cpu      
-        if (!strncmp(line, "cpu", 3)) {
-            sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-            work_jiffies_after[core_count] = user + nice + system;
-            total_jiffies_after[core_count] = user + nice + system + idle + iowait + irq + softirq;
-        }
-        // work jiffies for individual cores
-        for (int i = 0; i < core_count; i++) {
+        
+        for (int core = 0; core < core_count; core++) {
             line = fgets(file_buf, BUFSIZ, fp);
             if (line == NULL) {
                 break;
             }
-            sprintf(comparator,"cpu%d ", i);
+            
+            sprintf(comparator,"cpu%d ", core);
+            
             if (!strncmp(line, comparator, 5)) {
+                
                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-                work_jiffies_after[i] = user + nice + system;
-                total_jiffies_after[i] = user + nice + system + idle + iowait + irq + softirq;
+                
+                work_jiffies_after[core] = user + nice + system;
+                total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
             } 
         }
     fclose(fp);
 
     // calculate the load
-    for (int i = 0; i < (core_count); i++){
-        if (total_jiffies_after[i] - total_jiffies_before[i] != 0) {        // only divide if we sure divisor is non zero
-        load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / (total_jiffies_after[i] - total_jiffies_before[i]);
+    for (int core = 0; core < (core_count); core++){
+        if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
+        load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
         } else {
-            load[i] = (100 * (work_jiffies_after[i] - work_jiffies_before[i])) / 1;     // pick the next closest difference to zero
+            load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
         }
-        total += load[i];
+        total += load[core];
     }
 
     *average = total / core_count;
@@ -356,7 +385,7 @@ void voltage_v(float *voltage, float *average, int core_count) {
     *average = total / core_count;
 }
 
-void temperature_c(float *temperature, float * average, int core_count) {
+void temperature_c(float *temperature, float *average, int core_count) {
 
     int fd;
     uint64_t register_content[core_count];
@@ -403,7 +432,7 @@ void temperature_c(float *temperature, float * average, int core_count) {
 
 void power_limit_msr(int core_count){
     int fd;
-    long long result;
+    uint64_t result = 0;
 
     int prochot = 0;               // Table 2-2 IA-32 Architectural MSRs
     int thermal = 0;
@@ -493,7 +522,10 @@ int gpu(void){
     if (fp == NULL){
         perror("Error reading GPU frequency from /sys/class/drm/card0/gt_cur_freq_mhz\n");
     }
-    fgets(file_buf, BUFSIZE, fp);
+    if (fgets(file_buf, BUFSIZE, fp) == NULL)
+    {
+        printf("Couldnt read GPU frequency from \"/sys/class/drm/card0/gt_cur_freq_mhz\"\n");
+    }
     sscanf(file_buf, "%d", &freq_mhz);
     fclose(fp);
 
@@ -526,7 +558,7 @@ void  moving_average(int i, float * freq, float *load, float *temp, float *volta
     }
 }
 
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float * sample_next){
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next){
     
     float avg = 0;
     *samples_cumulative += *sample_next;
@@ -538,7 +570,7 @@ float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float * sa
     return avg;
 }
 
-float min(float previous_min_value, float sample_next){
+float get_min_value(float previous_min_value, float sample_next){
     
     if (sample_next < previous_min_value) 
     {
