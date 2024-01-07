@@ -42,8 +42,8 @@ struct sensor {
     float cpu_avg;
     float runtime_avg;
     float cumulative;
-    int min;
-    int max;
+    float min;
+    float max;
     float per_core[];
 };
 typedef struct sensor sensor;
@@ -55,26 +55,28 @@ struct power {
     float pkg_cumulative;
     float pkg_runtime_avg; 
 };
+typedef struct power power;
 
 struct battery {
     float power_now;
     float power_cumulative;
     float power_runtime_avg;
-    int min;
-    int max;
-    char status[15];
+    float min;
+    float max;
+    char status[12];
 };
+typedef struct battery battery;
 
 
-//struct sensor_ *create_sensor(struct sensor_* new_sensor, int core_count);
-void init(int *core_count);
+void init_environment(void);
 char *read_string(const char *filepath);
 int read_line(char *return_string, const char *filepath);
 
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
 char *identifiy_cpu(void);
 int * power_limits_w(void);
 void power_config(void);
-float * power_w(void);
+void power_w(float * power_w);
 
 
 void freq_ghz(float *, float *, int core_count); 
@@ -85,6 +87,7 @@ int open_msr(int core);
 long long read_msr(int fd, int which);
 
 int get_power_battery_w(float *battery_power);
+void reset_if_status_change(float *cumulative, char *status, char *status_before);
 void temperature_c(float *temperature, float *average, int core_count);
 void voltage_v(float *voltage, float *average, int core_count);
 void power_limit_msr(int core_count);
@@ -93,7 +96,8 @@ int gpu(void);
 
 void  moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
 float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float sample_next);
+float get_min_value(float previous_min_value, float *sample_next, int sample_count);
+float get_max_value(float previous_min_value, float *sample_next, int sample_count);
 int print_fanspeed(void);
 
 

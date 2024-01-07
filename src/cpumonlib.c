@@ -14,20 +14,43 @@
 #include "cpumonlib.h"
 
 
-void init(int *core_count)
+extern long period_counter;
+extern long poll_cycle_counter;
+extern bool display_power_config_flag;
+extern bool display_moving_average_flag;
+
+int core_count = 0;
+char charging_status_before[12];
+bool running_with_privileges;
+
+extern float freq_his[AVG_WINDOW];
+extern float load_his[AVG_WINDOW];
+extern float temp_his[AVG_WINDOW];
+extern float voltage_his[AVG_WINDOW];
+extern float power_his[AVG_WINDOW];
+
+
+void init_environment(void)
 {
     FILE *fp;
-
-    if ((fp = popen("sudo modprobe msr", "r")) == NULL) {
+    if ((fp = popen("sudo modprobe msr", "r")) == NULL)
+    {
         printf("Error modprobe msr\n");
     }
     
     setlocale(LC_NUMERIC, "");
 
-    *core_count = sysconf(_SC_NPROCESSORS_ONLN);
-    if (*core_count == -1){
+    core_count = sysconf(_SC_NPROCESSORS_ONLN);
+    if (core_count == -1)
+    {
         fprintf(stderr, "Could not determine CPU core count from sysconf\n");
     }
+
+    running_with_privileges = FALSE;
+    if (geteuid() == 0)
+    {
+        running_with_privileges = TRUE; 
+    } 
 }
 
 
@@ -58,8 +81,51 @@ char *read_string(const char *filepath)     // function from data type pointer
     return file_buf;                    // return address to file
 }
 
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery)
+{   
+    
+    freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+    freq->min = get_min_value(freq->min, freq->per_core, core_count);
+    freq->max = get_max_value(freq->max, freq->per_core, core_count);
+    freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
 
-int read_line(char * return_string, const char *filepath) 
+    freq_his[period_counter] = freq->cpu_avg;
+
+    get_power_battery_w(&my_battery->power_now);
+    read_line(my_battery->status, "/sys/class/power_supply/BAT1/status");
+    reset_if_status_change(&my_battery->power_cumulative, my_battery->status, charging_status_before);
+    my_battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &my_battery->power_cumulative, &my_battery->power_now);
+    my_battery->min = get_min_value(my_battery->min, &my_battery->power_now, 1);
+    my_battery->max = get_max_value(my_battery->max, &my_battery->power_now, 1);
+
+    if (running_with_privileges == TRUE)
+    {
+        temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
+        temperature->min = get_min_value(temperature->min, temperature->per_core, core_count);
+        temperature->max = get_max_value(temperature->max, temperature->per_core, core_count);
+        temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
+        temp_his[period_counter] = temperature->cpu_avg;
+        
+        voltage_v(voltage->per_core, &voltage->cpu_avg, core_count);
+        voltage->min = get_min_value(voltage->min, voltage->per_core, core_count);
+        voltage->max = get_max_value(voltage->max, voltage->per_core, core_count);
+        voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
+        voltage_his[period_counter] = voltage->cpu_avg;
+        
+        power_w(power_per_domain);
+        power_his[period_counter] = *power_per_domain;
+        if (period_counter == 1)
+        {
+            power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+        }
+        
+        my_power->pkg_now = power_per_domain[0];
+        my_power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power->pkg_cumulative, &my_power->pkg_now);      
+
+    }
+}
+
+int read_line(char *return_string, const char *filepath) 
 {     
     FILE *fp = fopen(filepath, "r");
 
@@ -138,7 +204,7 @@ int * power_limits_w(void) {
 void power_config(void)
 {
     int *power_limits = power_limits_w();
-    printw("\nPower Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+    printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
 
     char *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
 
@@ -161,7 +227,7 @@ void power_config(void)
 
 int get_power_battery_w(float *battery_power)
 {
-    char read_result[15];
+    char read_result[12];
     
     read_line(read_result,"/sys/class/power_supply/BAT1/voltage_now");
     long voltage_uv = 0;
@@ -176,13 +242,20 @@ int get_power_battery_w(float *battery_power)
     return 0;
 }
 
+void reset_if_status_change(float *cumulative, char *status, char *status_before)
+{
+    if (strcmp(status, status_before) != 0)
+    {
+        *cumulative = 0;
+        strcpy(status_before, status);
+    }
+}
 
-float * power_w(void) 
+void power_w(float * power_w) 
 {
 	FILE *fp;
     static long long energy_uj_before[POWER_DOMAIN_COUNT];
     long long energy_uj_after[POWER_DOMAIN_COUNT];
-    static float power_w[POWER_DOMAIN_COUNT];
 
     char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
                             "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",     // cores domain
@@ -209,8 +282,6 @@ float * power_w(void)
     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
         energy_uj_before[i] = energy_uj_after[i];
     }	
-
-    return power_w;
 }
 
 
@@ -570,18 +641,30 @@ float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sam
     return avg;
 }
 
-float get_min_value(float previous_min_value, float sample_next){
-    
-    if (sample_next < previous_min_value) 
-    {
-        return sample_next;
-    } 
-    else 
-    {
-        return previous_min_value;
+
+float get_min_value(float previous_min_value, float *sample_next, int sample_count)
+{
+    for (int i = 0; i < sample_count; i++)
+        {
+        if (sample_next[i] < previous_min_value) 
+        {
+            previous_min_value = sample_next[i];
+        } 
     }
+    return previous_min_value;
 }
 
+float get_max_value(float previous_max_value, float *sample_next, int sample_count)
+{
+    for (int i = 0; i < sample_count; i++)
+        {
+        if (sample_next[i] > previous_max_value) 
+        {
+            previous_max_value = sample_next[i];
+        } 
+    }
+    return previous_max_value;
+}
 
 // requires ectool, a programm to communicate with the embedded controller build from this repository: https://github.com/DHowett/framework-ec
 int print_fanspeed(void){  // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output

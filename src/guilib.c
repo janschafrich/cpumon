@@ -35,7 +35,7 @@ void draw_power(float *value, float pkg_avg){
     
     float total = value[0];
 
-    printw("\t\tPkg Power = %.2f W / Avg = %.2f W\n", value[0], pkg_avg);
+    printw("\tPkg Power: %.2f W, avg: %.2f W\n", value[0], pkg_avg);
     value[0] = value[0] - value[1] - value[2];      // subtract cpu and uncore power from package power to get "rest of chip power"
     for (int i = 0; i < value_count; i++){
         switch (i) {
@@ -54,5 +54,6 @@ void draw_power(float *value, float pkg_avg){
     attron(COLOR_PAIR(GREEN));
     printw("  GPU: %.2f W", value[2]);
     attron(COLOR_PAIR(WHITE));
+    printw("\n");
 
 }
