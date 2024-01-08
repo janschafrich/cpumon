@@ -13,13 +13,19 @@ if [ "$1" = "remove" ]; then
     sudo rm /usr/local/bin/ectool
     sudo rm /usr/local/bin/cpumon
 
-    echo "Success"
+    echo "Done"
 
-else
-    echo "copying cpu monitor and ectool into /usr/local/bin/"
+elif [ "$1" = "f" ]; then
+    echo "copying cpumon and ectool into /usr/local/bin/"
     sudo cp ./bin/cpumon /usr/local/bin/cpumon
     sudo cp ./bin/ectool /usr/local/bin/ectool
+    
+    echo "Done"
 
-    echo "Success"
+else
+    echo "copying cpumon into /usr/local/bin/"
+    sudo cp ./bin/cpumon /usr/local/bin/cpumon
+
+    echo "Done"
 fi
-exit 0
+exit

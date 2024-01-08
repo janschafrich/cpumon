@@ -584,38 +584,21 @@ double * power_units(void){
 }
 
 
-FILE* get_gpu_card(void){
-    static char* gpu_0_file = "/sys/class/drm/card0/gt_cur_freq_mhz";
-    static char* gpu_1_file = "/sys/class/drm/card1/gt_cur_freq_mhz";
-    FILE *fp = NULL;
-
-    if (access(gpu_0_file, F_OK) == 0)
-    {
-        fp = fopen(gpu_0_file, "r");
-    }
-    printf("Couldn't read GPU frequency from: %s", gpu_0_file);
-    if (access(gpu_1_file, F_OK) == 0)
-    {
-        fp = fopen(gpu_1_file, "r");
-    }
-    printf("Couldn't read GPU frequency from: %s", gpu_1_file);
-    return fp;
-}
-
 int gpu(void){
     
     char file_buf[BUFSIZE];
-    static int freq_mhz = -1;
+    static int freq_mhz;
 
-    FILE *fp = get_gpu_card();
-
-    if (fp != NULL && fgets(file_buf, BUFSIZE, fp) != NULL)
-    {
-        sscanf(file_buf, "%d", &freq_mhz);
-        fclose(fp);
+    FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
+    if (fp == NULL){
+        perror("Error reading GPU frequency from /sys/class/drm/card0/gt_cur_freq_mhz\n");
     }
-
- 
+    if (fgets(file_buf, BUFSIZE, fp) == NULL)
+    {
+        printf("Couldnt read GPU frequency from \"/sys/class/drm/card0/gt_cur_freq_mhz\"\n");
+    }
+    sscanf(file_buf, "%d", &freq_mhz);
+    fclose(fp);
 
     return freq_mhz;
 

@@ -23,36 +23,46 @@ Fan speed is only available after install.
 
 ## Install
 
-The provided bash script copies the cpumon and ectool binaries into `/usr/local/bin/`.
-
+First you may need to make the install script executable:
 ```bash
-chmod +x install.sh
+chmod +x install
 ```
+
+To install copy the cpumon binary into `/usr/local/bin/`:
 ```
-sudo ./install.sh
+sudo ./install
 ```
 Now it should be possible to run the monitor from anywhere in the system by entering `sudo cpumon`.
 
-## Uninstall
+### Framework Laptop
+
+Users of the Framework Laptop that want to monitor fan speed also need to install the ectool. They run this command instead:
 
 ```bash
-sudo ./install.sh remove
+sudo ./install f
+```
+
+## Uninstall
+
+To uninstall, remove the binaries from `usr/local/bin` with this command:
+
+```bash
+sudo ./install remove
 ```
 
 # Build it yourself
 
-To build the binary from the source files this project uses cmake and make.
+To build the binary from source files this project uses cmake and make.
 
-First use cmake to generate the makefiles:
+Create a build directory inside the rootfolder, generate the makefiles and build the project:
 
 ```bash
-cmake CMakeLists.txt
-```
-
-Than build the binary which will be placed in the ./bin directory:
-```bash
+mkdir build
+cd build
+cmake ..
 make
 ```
+
 
 # Provide Feedback
 
