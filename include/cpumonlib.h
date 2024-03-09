@@ -4,6 +4,7 @@
 
 
 #define AVG_WINDOW 60
+#define BATTERY_STATUS_BUF_SIZE     20
 #define POWER_LIMIT_COUNT 2
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
@@ -37,6 +38,11 @@
 
 #define CPU_TIGERLAKE       140
 
+
+// AMD
+
+#define AMD_CPUID                       0x80000007
+
 struct sensor {
 
     float cpu_avg;
@@ -63,7 +69,7 @@ struct battery {
     float power_runtime_avg;
     float min;
     float max;
-    char status[12];
+    char status[BATTERY_STATUS_BUF_SIZE];
 };
 typedef struct battery battery;
 
@@ -87,6 +93,7 @@ int open_msr(int core);
 long long read_msr(int fd, int which);
 
 int get_power_battery_w(float *battery_power);
+int get_battery_status(char *status);
 void reset_if_status_change(float *cumulative, char *status, char *status_before);
 void temperature_c(float *temperature, float *average, int core_count);
 void voltage_v(float *voltage, float *average, int core_count);

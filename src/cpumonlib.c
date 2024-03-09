@@ -20,7 +20,7 @@ extern bool display_power_config_flag;
 extern bool display_moving_average_flag;
 
 int core_count = 0;
-char charging_status_before[12];
+char charging_status_before[BATTERY_STATUS_BUF_SIZE];
 bool running_with_privileges;
 
 extern float freq_his[AVG_WINDOW];
@@ -81,6 +81,31 @@ char *read_string(const char *filepath)     // function from data type pointer
     return file_buf;                    // return address to file
 }
 
+int read_line(char *return_string, const char *filepath) 
+{     
+    FILE *fp = fopen(filepath, "r");
+
+    if(fp == NULL) {
+        //perror("Error opening file\n");
+        return -1;
+    } 
+    if (fscanf(fp, "%s", return_string) == 1)
+    {
+        fclose(fp);
+        return 0;
+    }
+    if (fscanf(fp, "%s", return_string) == EOF)
+    {
+        //printf("Couldnt read data from \"%s\"\n", filepath);
+        fclose(fp);
+        return -1;
+    }
+
+    fclose(fp);
+    return -1;
+                
+}
+
 void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery)
 {   
     
@@ -92,7 +117,7 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
     freq_his[period_counter] = freq->cpu_avg;
 
     get_power_battery_w(&my_battery->power_now);
-    read_line(my_battery->status, "/sys/class/power_supply/BAT1/status");
+    get_battery_status(my_battery->status);
     reset_if_status_change(&my_battery->power_cumulative, my_battery->status, charging_status_before);
     my_battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &my_battery->power_cumulative, &my_battery->power_now);
     my_battery->min = get_min_value(my_battery->min, &my_battery->power_now, 1);
@@ -123,25 +148,6 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
         my_power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power->pkg_cumulative, &my_power->pkg_now);      
 
     }
-}
-
-int read_line(char *return_string, const char *filepath) 
-{     
-    FILE *fp = fopen(filepath, "r");
-
-    if(fp == NULL) {
-        perror("Error opening file\n");
-        return -1;
-    }
-    if (fscanf(fp, "%s", return_string) == EOF)
-    {
-        printf("Couldnt read data from \"%s\"\n", filepath);
-        return -1;
-    }
-
-    fclose(fp);
-
-    return 0;                 
 }
 
 
@@ -227,19 +233,41 @@ void power_config(void)
 
 int get_power_battery_w(float *battery_power)
 {
-    char read_result[12];
+    char read_value[12];
+    char read_value2[12];
     
-    read_line(read_result,"/sys/class/power_supply/BAT1/voltage_now");
-    long voltage_uv = 0;
-    sscanf(read_result, "%ld", &voltage_uv);
+    if (read_line(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
+    {
+        long power_uw = 0;
+        sscanf(read_value, "%ld", &power_uw);
+        *battery_power = (float)power_uw * 1e-6;
+    }
+    if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+    {
+        long voltage_uv = 0;
+        sscanf(read_value, "%ld", &voltage_uv);
+        long current_ua = 0;
+        sscanf(read_value2, "%ld", &current_ua);
+        *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+    }
+    
+    return -1;
+}
 
-    read_line(read_result,"/sys/class/power_supply/BAT1/current_now");
-    long current_ua = 0;
-    sscanf(read_result, "%ld", &current_ua);
+int get_battery_status(char *status)
+{
+    // check for battery under multiple paths
+    if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
+    {
+        return 0;
+    }
+    if (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
+    {
+        return 0;
+    }
 
-    *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-
-    return 0;
+    strcpy(status, "Status unknown");
+    return -1;
 }
 
 void reset_if_status_change(float *cumulative, char *status, char *status_before)
@@ -289,24 +317,20 @@ void freq_ghz(float *freq_ghz, float *average, int core_count)
 {
 
     char file_buf[BUFSIZE];
-    char path[80];
-    FILE *fp;
+    char path[70];
     float total = 0;
 
     for (int i = 0; i < core_count; i++){
         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
-        fp = fopen(path, "r");
-        if (fp == NULL){
-            perror("Error opening file\n");
-        }
-        if (fgets(file_buf, BUFSIZE, fp) == NULL)
+        if (read_line(file_buf, path) == 0)
         {
-            printf("Couldnt read CPU frequency from %s\n", path);
+            freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+            total += freq_ghz[i];
         }
-        fclose(fp);
-        
-        freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-        total += freq_ghz[i];
+        else
+        {
+            freq_ghz[i] = -1;
+        }
     }
 
     *average = total / core_count;
@@ -420,16 +444,16 @@ int open_msr(int core) {
 	return fd;
 }
 
-long long read_msr(int fd, int which) {
+long long read_msr(int fd, int offset) {
 
-	uint64_t data;
+	uint64_t register_val;
 
-	if ( pread(fd, &data, sizeof data, which) != sizeof data ) {
+	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val ) {
 		perror("rdmsr : pread");
 		exit(127);
 	}
 
-	return (long long)data;
+	return (long long)register_val;
 }
 
 // ----------------- End Model Specific Registers ----------------------
@@ -583,24 +607,43 @@ double * power_units(void){
     return 0;
 }
 
+/* void get_core_power_amd()
+{
+    int fd = open_msr(0);
+    unsigned long long result = read_msr(fd, AMD_CPUID);
+    close(fd);
+
+
+} */
+
 
 int gpu(void){
     
     char file_buf[BUFSIZE];
-    static int freq_mhz;
+    int freq_mhz = 0;
 
-    FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
+    int return_val = read_line(file_buf, "/sys/class/drm/card0/gt_cur_freq_mhz");
+
+    if (return_val == 0)
+    {
+        return freq_mhz = atoi(file_buf);
+    } 
+    else 
+    {
+        return return_val;
+    }
+    
+
+/*     FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
     if (fp == NULL){
-        perror("Error reading GPU frequency from /sys/class/drm/card0/gt_cur_freq_mhz\n");
+        perror("Error opening /sys/class/drm/card0/gt_cur_freq_mhz\n");
     }
     if (fgets(file_buf, BUFSIZE, fp) == NULL)
     {
         printf("Couldnt read GPU frequency from \"/sys/class/drm/card0/gt_cur_freq_mhz\"\n");
     }
     sscanf(file_buf, "%d", &freq_mhz);
-    fclose(fp);
-
-    return freq_mhz;
+    fclose(fp); */
 
 }
 
