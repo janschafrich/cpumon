@@ -1,16 +1,18 @@
-#include <stdint.h>
+
+/* cpumon
+ * a tool to read current processors values continously and print them to the terminal
+ *
+*/
+
 #include <stdio.h>
 #include <string.h>                 // strlen
 #include <stdlib.h>                 // malloc
 #include <unistd.h>                 // uid_t sleep()
-#include <sys/types.h>
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>                  // open()
-#include <sys/stat.h>               // open()
 #include <ncurses.h>
 #include "cpumonlib.h"
 #include "guilib.h"
+#include "machine_specific_registers.h"
+
 
 
 long period_counter = 0;
@@ -149,7 +151,7 @@ int main (int argc, char **argv)
                 power_config();
             } 
             attron(COLOR_PAIR(RED));
-            power_limit_msr(core_count);
+            get_msr_power_limits_w(core_count);
             attroff(COLOR_PAIR(RED));
         } 
 

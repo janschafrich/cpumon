@@ -2,6 +2,10 @@
 #ifndef MACHINE_SPECIFIC_REGISTERS
 #define MACHINE_SPECIFIC_REGISTERS
 
+#define POWER_DOMAIN_COUNT   3       // pkg, cores, gpu
+#define POLL_INTERVAL_S 1
+
+// intel
 
 #define MSR_PERF_STATUS         0x198
 #define MSR_RAPL_POWER_UNIT		0x606
@@ -36,16 +40,27 @@
 
 #define AMD_CPUID                       0x80000007
 
+
+#define AMD_MSR_PWR_UNIT 0xC0010299
+#define AMD_MSR_CORE_ENERGY 0xC001029A
+#define AMD_MSR_PACKAGE_ENERGY 0xC001029B
+
+#define AMD_TIME_UNIT_MASK 0xF0000
+#define AMD_ENERGY_UNIT_MASK 0x1F00
+#define AMD_POWER_UNIT_MASK 0xF
+
+// function prototypes
+
 int open_msr(int core);
 long long read_msr(int fd, int which);
 
-int get_power_battery_w(float *battery_power);
-int get_battery_status(char *status);
-void reset_if_status_change(float *cumulative, char *status, char *status_before);
-void temperature_c(float *temperature, float *average, int core_count);
+
+
+void msr_temperature_c(float *temperature, float *average, int core_count);
 void voltage_v(float *voltage, float *average, int core_count);
-void power_limit_msr(int core_count);
-double * power_units(void);
+void get_msr_power_limits_w(int core_count);
+double * core_power_units(void);
+void power_w(float * power_w);
 
 
 

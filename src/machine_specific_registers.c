@@ -17,6 +17,7 @@ int open_msr(int core) {
 
 	char msr_filename[BUFSIZ];
 	int fd;
+
 	sprintf(msr_filename, "/dev/cpu/%d/msr", core);
 	fd = open(msr_filename, O_RDONLY);
 	if ( fd < 0 ) {
@@ -49,7 +50,6 @@ long long read_msr(int fd, int offset) {
 	return (long long)register_val;
 }
 
-// ----------------- End Model Specific Registers ----------------------
 
 void voltage_v(float *voltage, float *average, int core_count) {
 
@@ -73,7 +73,7 @@ void voltage_v(float *voltage, float *average, int core_count) {
     *average = total / core_count;
 }
 
-void temperature_c(float *temperature, float *average, int core_count) {
+void msr_temperature_c(float *temperature, float *average, int core_count) {
 
     int fd;
     uint64_t register_content[core_count];
@@ -117,8 +117,77 @@ void temperature_c(float *temperature, float *average, int core_count) {
     *average = total / core_count;     
 }
 
+// determine which power units the core internally uses
+double * core_power_units(void){
 
-void power_limit_msr(int core_count){
+    int fd;
+    unsigned long long result, lock;
+    double power_unit, time_unit, time_y, time_z;  // energy_unit 
+    double pkg_pl1, pkg_tw1;               // pkg_pl2, pkg_tw2
+
+    fd=open_msr(0);
+    result = read_msr(fd, MSR_RAPL_POWER_UNIT);
+    close(fd);
+
+    power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
+    //energy_unit = 1 / pow(2,(result&0x1F00)>>8);       // default 15,3 µJ
+    time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
+
+    printf("Power unit %f\n", power_unit); 
+    printf("Time unit %f\n", time_unit);
+
+    fd=open_msr(0);
+    result = read_msr(fd, MSR_PKG_POWER_LIMIT);
+    close(fd);
+
+    pkg_pl1 = (double)(result&0x7FFF) * power_unit;
+    time_y = (double)((result&0x3E0000)>>17);
+    time_z = (double)((result&0xC00000)>>22);
+    pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+    lock = (result>>63)&0x1;
+
+    printf("PL1 = %f W\n", pkg_pl1);
+    printf("Time Window = %f s\n", pkg_tw1);
+    printf("Lock status = %lld\n", lock);
+    return 0;
+}
+
+// readout energy differences per power domain and calculate power
+void power_w(float * power_w) 
+{
+	FILE *fp;
+    static long long energy_uj_before[POWER_DOMAIN_COUNT];
+    long long energy_uj_after[POWER_DOMAIN_COUNT];
+
+    char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
+                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",     // cores domain
+                            "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:1/energy_uj"};    // GPU domain
+
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
+        fp = fopen(power_domains[i],"r");
+				if (fp==NULL) {
+					fprintf(stderr,"\tError opening %s", power_domains[i]);
+                    perror("");
+				}
+				else {
+					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
+                    {
+                        printf("couldnt read from energy counter form %s \n", power_domains[i]);
+                    }
+					fclose(fp);
+                }
+    }       
+        
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+        power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+    }  
+    for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+        energy_uj_before[i] = energy_uj_after[i];
+    }	
+}
+
+// report what currently limits power
+void get_msr_power_limits_w(int core_count){
     int fd;
     uint64_t result = 0;
 
@@ -166,36 +235,4 @@ void power_limit_msr(int core_count){
     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
 }
 
-double * power_units(void){
 
-    int fd;
-    unsigned long long result, lock;
-    double power_unit, time_unit, time_y, time_z;  // energy_unit 
-    double pkg_pl1, pkg_tw1;               // pkg_pl2, pkg_tw2
-
-    fd=open_msr(0);
-    result = read_msr(fd, MSR_RAPL_POWER_UNIT);
-    close(fd);
-
-    power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
-    //energy_unit = 1 / pow(2,(result&0x1F00)>>8);       // default 15,3 µJ
-    time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
-
-    printf("Power unit %f\n", power_unit); 
-    printf("Time unit %f\n", time_unit);
-
-    fd=open_msr(0);
-    result = read_msr(fd, MSR_PKG_POWER_LIMIT);
-    close(fd);
-
-    pkg_pl1 = (double)(result&0x7FFF) * power_unit;
-    time_y = (double)((result&0x3E0000)>>17);
-    time_z = (double)((result&0xC00000)>>22);
-    pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
-    lock = (result>>63)&0x1;
-
-    printf("PL1 = %f W\n", pkg_pl1);
-    printf("Time Window = %f s\n", pkg_tw1);
-    printf("Lock status = %lld\n", lock);
-    return 0;
-}

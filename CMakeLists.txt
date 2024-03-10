@@ -14,7 +14,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wa,-adhln -O2")
 include_directories(include)
 
 # Source files
-set(SOURCES src/main.c src/cpumonlib.c src/machine_specific_registers.c src/guilib.c)
+set(SOURCES src/main.c src/cpumonlib.c src/machine_specific_registers.c src/sysfs.c src/guilib.c)
 
 # Add executable
 add_executable(cpumon ${SOURCES})
