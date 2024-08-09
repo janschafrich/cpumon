@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/jscha/dvp/cpumon/build",
+  "command": "/usr/bin/gcc  -I/home/jscha/dvp/cpumon/include -g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall -o CMakeFiles/cpumon.dir/src/main.c.o -c /home/jscha/dvp/cpumon/src/main.c",
+  "file": "/home/jscha/dvp/cpumon/src/main.c",
+  "output": "CMakeFiles/cpumon.dir/src/main.c.o"
+},
+{
+  "directory": "/home/jscha/dvp/cpumon/build",
+  "command": "/usr/bin/gcc  -I/home/jscha/dvp/cpumon/include -g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall -o CMakeFiles/cpumon.dir/src/cpumonlib.c.o -c /home/jscha/dvp/cpumon/src/cpumonlib.c",
+  "file": "/home/jscha/dvp/cpumon/src/cpumonlib.c",
+  "output": "CMakeFiles/cpumon.dir/src/cpumonlib.c.o"
+},
+{
+  "directory": "/home/jscha/dvp/cpumon/build",
+  "command": "/usr/bin/gcc  -I/home/jscha/dvp/cpumon/include -g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall -o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o -c /home/jscha/dvp/cpumon/src/machine_specific_registers.c",
+  "file": "/home/jscha/dvp/cpumon/src/machine_specific_registers.c",
+  "output": "CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o"
+},
+{
+  "directory": "/home/jscha/dvp/cpumon/build",
+  "command": "/usr/bin/gcc  -I/home/jscha/dvp/cpumon/include -g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall -o CMakeFiles/cpumon.dir/src/sysfs.c.o -c /home/jscha/dvp/cpumon/src/sysfs.c",
+  "file": "/home/jscha/dvp/cpumon/src/sysfs.c",
+  "output": "CMakeFiles/cpumon.dir/src/sysfs.c.o"
+},
+{
+  "directory": "/home/jscha/dvp/cpumon/build",
+  "command": "/usr/bin/gcc  -I/home/jscha/dvp/cpumon/include -g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall -o CMakeFiles/cpumon.dir/src/guilib.c.o -c /home/jscha/dvp/cpumon/src/guilib.c",
+  "file": "/home/jscha/dvp/cpumon/src/guilib.c",
+  "output": "CMakeFiles/cpumon.dir/src/guilib.c.o"
+}
+]

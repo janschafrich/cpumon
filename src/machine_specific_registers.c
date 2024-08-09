@@ -1,20 +1,26 @@
 
 // monitored CPU values read from model specific registers (MSR) , specific to the respective CPU microarchitecture
 
-// ------------------------  Model Specific Register  -----------------------------------
-//function from https://web.eece.maine.edu/~vweaver/projects/rapl/index.html
 
 #include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <stdint.h>
+#include <unistd.h>
+#include <math.h>
+#include <ncurses.h>
 #include "machine_specific_registers.h"
 
+#include <sys/types.h>
+#include <sys/syscall.h>
+#include <linux/perf_event.h>
 
+// based on https://github.com/deater/uarch-configure/blob/master/rapl-read/rapl-read.c
 
-int open_msr(int core) {
-
+int open_msr(int core)
+{
 	char msr_filename[BUFSIZ];
 	int fd;
 
@@ -29,7 +35,7 @@ int open_msr(int core) {
 					core);
 			exit(3);
 		} else {
-			perror("rdmsr : open");
+			perror("rdmsr: open");
 			fprintf(stderr,"Trying to open %s\n",msr_filename);
 			exit(127);
 		}
@@ -38,12 +44,13 @@ int open_msr(int core) {
 	return fd;
 }
 
-long long read_msr(int fd, int offset) {
-
+long long read_msr(int fd, int offset)
+{
 	uint64_t register_val;
 
-	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val ) {
-		perror("rdmsr : pread");
+	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
+    {
+		perror("rdmsr: pread");
 		exit(127);
 	}
 
@@ -51,8 +58,8 @@ long long read_msr(int fd, int offset) {
 }
 
 
-void voltage_v(float *voltage, float *average, int core_count) {
-
+void voltage_v(float *voltage, float *average, int core_count)
+{
     int fd;
     uint64_t result[core_count];
     float total = 0;
@@ -73,8 +80,8 @@ void voltage_v(float *voltage, float *average, int core_count) {
     *average = total / core_count;
 }
 
-void msr_temperature_c(float *temperature, float *average, int core_count) {
-
+void msr_temperature_c(float *temperature, float *average, int core_count)
+{
     int fd;
     uint64_t register_content[core_count];
     float temperature_target[core_count];
@@ -118,8 +125,8 @@ void msr_temperature_c(float *temperature, float *average, int core_count) {
 }
 
 // determine which power units the core internally uses
-double * core_power_units(void){
-
+double * core_power_units(void)
+{
     int fd;
     unsigned long long result, lock;
     double power_unit, time_unit, time_y, time_z;  // energy_unit 
@@ -153,7 +160,7 @@ double * core_power_units(void){
 }
 
 // readout energy differences per power domain and calculate power
-void power_w(float * power_w) 
+void get_intel_msr_power_w(float * power_w) 
 {
 	FILE *fp;
     static long long energy_uj_before[POWER_DOMAIN_COUNT];
@@ -185,6 +192,83 @@ void power_w(float * power_w)
         energy_uj_before[i] = energy_uj_after[i];
     }	
 }
+
+int rapl_msr_amd_core(float *power_w) 
+{
+	int total_cores = 16;
+    unsigned int time_unit, energy_unit, power_unit;
+	double time_unit_d, energy_unit_d, power_unit_d;
+	
+	double *core_energy = (double*)malloc(sizeof(double)*total_cores/2);
+	double *core_energy_delta = (double*)malloc(sizeof(double)*total_cores/2);
+
+	double *package = (double*)malloc(sizeof(double)*total_cores/2);
+	double *package_delta = (double*)malloc(sizeof(double)*total_cores/2);
+	
+	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
+	
+	for (int i = 0; i < total_cores/2; i++) {
+		fd[i] = open_msr(i);
+	}
+	
+
+/*     int fp = open_msr(0);
+    printf("filepointer: 0x%x 0d%d\n", fp, fp);
+    printf("PWR UNIT MSR: 0x%x\n", AMD_MSR_PWR_UNIT); */
+	int core_energy_units = read_msr(fd[0], AMD_MSR_PWR_UNIT);
+	printf("Core energy units: %x\n",core_energy_units);
+	
+	time_unit = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
+	energy_unit = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
+	power_unit = (core_energy_units & AMD_POWER_UNIT_MASK);
+	printf("Time_unit:%d, Energy_unit: %d, Power_unit: %d\n", time_unit, energy_unit, power_unit);
+	
+	time_unit_d = pow(0.5,(double)(time_unit));
+	energy_unit_d = pow(0.5,(double)(energy_unit));
+	power_unit_d = pow(0.5,(double)(power_unit));
+	printf("Time_unit:%g, Energy_unit: %g, Power_unit: %g\n", time_unit_d, energy_unit_d, power_unit_d);
+	
+	int core_energy_raw;
+	int package_raw;
+	// Read per core energy values
+	for (int i = 0; i < total_cores/2; i++) {
+		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
+		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
+
+		core_energy[i] = core_energy_raw * energy_unit_d;
+		package[i] = package_raw * energy_unit_d;
+	}
+
+	usleep(100000);
+	for (int i = 0; i < total_cores/2; i++) {
+		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
+		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
+
+		core_energy_delta[i] = core_energy_raw * energy_unit_d;
+		package_delta[i] = package_raw * energy_unit_d;
+	}
+
+	double sum = 0;
+	for(int i = 0; i < total_cores/2; i++) {
+		double diff = (core_energy_delta[i] - core_energy[i])*10;
+		sum += diff;
+		printf("Core %d, energy used: %gW, Package: %gW\n", i, diff,(package_delta[i]-package[i])*10);
+	}
+	
+	printf("Core sum: %gW\n", sum);
+	
+    power_w[0] = (float) ((package_delta[0] - package[0])*10);
+    power_w[1] = (float) (sum);
+
+	free(core_energy);
+	free(core_energy_delta);
+	free(package);
+	free(package_delta);
+	free(fd);
+	
+	return 0;
+}
+
 
 // report what currently limits power
 void get_msr_power_limits_w(int core_count){

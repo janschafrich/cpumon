@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.5)
 project(cpumon C)
 
 # Compiler flags for debugging
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wa,-adhln -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall --save-temps")
 
 # Compiler flags for optimization
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wa,-adhln -O2")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 ")
 
-
+# -Wa,-adhln
 
 
 # Include directories

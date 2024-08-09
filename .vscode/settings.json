@@ -1,0 +1,10 @@
+{
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ],
+    "files.associations": {
+        "locale.h": "c",
+        "stat.h": "c",
+        "stdint.h": "c"
+    }
+}

@@ -60,7 +60,8 @@ void msr_temperature_c(float *temperature, float *average, int core_count);
 void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
-void power_w(float * power_w);
+void get_intel_msr_power_w(float * power_w);
+int rapl_msr_amd_core(float *power_w);
 
 
 

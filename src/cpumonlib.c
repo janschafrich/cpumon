@@ -6,7 +6,7 @@
 #include <stdlib.h>                 // malloc
 #include <string.h>                 // strlen
 #include <stdint.h>
-//#include <locale.h>
+#include <locale.h>
 #include <unistd.h>                 // cpus online
 #include <math.h>
 #include <ncurses.h>
@@ -126,7 +126,7 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
 
     if (running_with_privileges == TRUE)
     {
-        msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
+/*         msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
         temperature->min = get_min_value(temperature->min, temperature->per_core, core_count);
         temperature->max = get_max_value(temperature->max, temperature->per_core, core_count);
         temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
@@ -136,9 +136,16 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
         voltage->min = get_min_value(voltage->min, voltage->per_core, core_count);
         voltage->max = get_max_value(voltage->max, voltage->per_core, core_count);
         voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
-        voltage_his[period_counter] = voltage->cpu_avg;
+        voltage_his[period_counter] = voltage->cpu_avg; */
         
-        power_w(power_per_domain);
+/*         get_intel_msr_power_w(power_per_domain);
+        power_his[period_counter] = *power_per_domain;
+        if (period_counter == 1)
+        {
+            power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+        } */
+
+        rapl_msr_amd_core(power_per_domain);
         power_his[period_counter] = *power_per_domain;
         if (period_counter == 1)
         {

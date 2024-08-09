@@ -12,6 +12,7 @@
 #include "cpumonlib.h"
 #include "guilib.h"
 #include "machine_specific_registers.h"
+#include "sysfs.h"
 
 
 
@@ -141,6 +142,8 @@ int main (int argc, char **argv)
             {
                 printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
             }
+
+            
             printw("\n");
             printw("---------- Battery (%s) ----------\n", my_battery->status);
             printw("    now      avg      min      max\n");
