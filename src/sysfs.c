@@ -67,18 +67,22 @@ int * get_sysfs_power_limits_w(void)
     return power_limits;
 }
 
-void power_config(void)
+void power_config(bool running_with_privileges, cpu_designer_e designer)
 {
-    int *power_limits = get_sysfs_power_limits_w();
-    printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+    if (running_with_privileges == TRUE)
+    {
+        int *power_limits = get_sysfs_power_limits_w();
+        printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+    }
+
 
     char *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
 
-    if (strncmp(file, "0", 1) == 0) {
-        printw("Turbo: \t\t\t\tenabled\n");     
-    } else {
-        printw("Turbo: \t\t\t\tdisabled\n");
-    }
+    // if (strncmp(file, "0", 1) == 0) {
+    //     printw("Turbo: \t\t\t\tenabled\n");     
+    // } else {
+    //     printw("Turbo: \t\t\t\tdisabled\n");
+    // }
     
     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
     printw("Energy-Performance-Preference: \t%s \n", file);
@@ -88,6 +92,12 @@ void power_config(void)
     
     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     printw("CPU Frequency Scaling Governor: %s \n", file);   
+
+    if (designer = AMD)
+    {
+        file = read_string("/sys/devices/system/cpu/amd_pstate/prefcore");
+        printw("AMD Preferential Core: \t\t%s \n", file);
+    }
        
 }
 
@@ -120,8 +130,9 @@ int get_battery_status(char *status)
     if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
     {
         return 0;
-    }
-    if (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
+    } 
+    else
+    if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
     {
         return 0;
     }

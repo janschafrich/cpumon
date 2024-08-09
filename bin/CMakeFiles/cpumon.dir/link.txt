@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/cpumon.dir/src/main.c.o CMakeFiles/cpumon.dir/src/cpumonlib.c.o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o CMakeFiles/cpumon.dir/src/sysfs.c.o CMakeFiles/cpumon.dir/src/guilib.c.o -o cpumon  -lm -lncurses 

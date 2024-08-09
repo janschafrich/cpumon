@@ -42,6 +42,8 @@ struct battery {
 };
 typedef struct battery battery;
 
+typedef enum { INTEL, AMD } cpu_designer_e;
+
 
 void init_environment(void);
 char *read_string(const char *filepath);
