@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <ncurses.h>
-#include "machine_specific_registers.h"
+#include "../include/machine_specific_registers.h"
 
 #include <sys/types.h>
 #include <sys/syscall.h>

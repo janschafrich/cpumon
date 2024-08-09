@@ -10,9 +10,9 @@
 #include <unistd.h>                 // cpus online
 #include <math.h>
 #include <ncurses.h>
-#include "cpumonlib.h"
-#include "machine_specific_registers.h"
-#include "sysfs.h"
+#include "../include/cpumonlib.h"
+#include "../include/machine_specific_registers.h"
+#include "../include/sysfs.h"
 
 
 extern long period_counter;

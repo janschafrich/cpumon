@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include "guilib.h"
+#include "../include/guilib.h"
 
 void init_gui(void){
     initscr();

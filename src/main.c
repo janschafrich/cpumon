@@ -9,10 +9,10 @@
 #include <stdlib.h>                 // malloc
 #include <unistd.h>                 // uid_t sleep()
 #include <ncurses.h>
-#include "cpumonlib.h"
-#include "guilib.h"
-#include "machine_specific_registers.h"
-#include "sysfs.h"
+#include "../include/cpumonlib.h"
+#include "../include/guilib.h"
+#include "../include/machine_specific_registers.h"
+#include "../include/sysfs.h"
 
 
 

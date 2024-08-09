@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
-#include "cpumonlib.h"
-#include "sysfs.h"
+#include "../include/cpumonlib.h"
+#include "../include/sysfs.h"
 
 
 
@@ -93,7 +93,7 @@ void power_config(bool running_with_privileges, cpu_designer_e designer)
     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
     printw("CPU Frequency Scaling Governor: %s \n", file);   
 
-    if (designer = AMD)
+    if (designer == AMD)
     {
         file = read_string("/sys/devices/system/cpu/amd_pstate/prefcore");
         printw("AMD Preferential Core: \t\t%s \n", file);
