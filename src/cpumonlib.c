@@ -54,16 +54,24 @@ void init_environment(void)
     } 
 }
 
+int init_sensors(cpu_designer_e designer)
+{
+    return 0;
+}
+
 
 char *read_string(const char *filepath)     // function from data type pointer
 {     
+#if DEBUG_ENABLE
+        printf("read_string filepath = %s\n", filepath);
+#endif
     FILE *fp = fopen(filepath, "r");
     static char file_buf[BUFSIZE];          // allocate memory on the heap to store file content 
     int i = 0;
     int single_character;
 
     if(fp == NULL) {
-        perror("Error opening file");
+        perror("Error opening file\n");
         return NULL;
     }
 
@@ -84,10 +92,13 @@ char *read_string(const char *filepath)     // function from data type pointer
 
 int read_line(char *return_string, const char *filepath) 
 {     
+#if DEBUG_ENABLE
+        printf("read_line filepath = %s\n", filepath);
+#endif
     FILE *fp = fopen(filepath, "r");
 
     if(fp == NULL) {
-        //perror("Error opening file\n");
+        perror("Error opening file\n");
         return -1;
     } 
     if (fscanf(fp, "%s", return_string) == 1)
@@ -145,7 +156,8 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
         } */
 
-        rapl_msr_amd_core(power_per_domain);
+        get_amd_pck_power_w(power_per_domain);
+//        rapl_msr_amd_core(my_power, core_count);
         power_his[period_counter] = *power_per_domain;
         if (period_counter == 1)
         {
@@ -167,6 +179,7 @@ int acc_cmdln(char *cmd){
     FILE *fp;
 
     if ((fp = popen(cmd, "r")) == NULL) {
+        printf("cmd = %s\n", cmd);
         printf("Error opening pipe\n");
         return -1;
     }

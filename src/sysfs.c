@@ -51,6 +51,9 @@ int * get_sysfs_power_limits_w(void)
         sprintf(path,"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw",i);
         fp = fopen(path, "r");
         if (fp == NULL) {
+#if DEBUG_ENABLE
+            printf("get_sysfs_power_limits filepath %s\n", path);
+#endif
             perror("Error opening file\n");
         }
         if (fgets(results,BUFSIZE, fp) == NULL)
@@ -69,7 +72,7 @@ int * get_sysfs_power_limits_w(void)
 
 void power_config(bool running_with_privileges, cpu_designer_e designer)
 {
-    if (running_with_privileges == TRUE)
+    if (running_with_privileges == TRUE && designer == INTEL)
     {
         int *power_limits = get_sysfs_power_limits_w();
         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
@@ -111,6 +114,7 @@ int get_sysfs_power_battery_w(float *battery_power)
         long power_uw = 0;
         sscanf(read_value, "%ld", &power_uw);
         *battery_power = (float)power_uw * 1e-6;
+        return 0;
     }
     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
     {
@@ -119,6 +123,7 @@ int get_sysfs_power_battery_w(float *battery_power)
         long current_ua = 0;
         sscanf(read_value2, "%ld", &current_ua);
         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+        return 0;
     }
     
     return -1;
@@ -131,7 +136,6 @@ int get_battery_status(char *status)
     {
         return 0;
     } 
-    else
     if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
     {
         return 0;

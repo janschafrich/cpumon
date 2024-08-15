@@ -33,7 +33,7 @@
 						"gcc_s"
 					]
 				},
-				"path" : "/usr/bin/cc",
+				"path" : "/usr/bin/gcc",
 				"version" : "11.4.0"
 			},
 			"language" : "C",

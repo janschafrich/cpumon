@@ -41,7 +41,7 @@
 #define AMD_CPUID                       0x80000007
 
 
-#define AMD_MSR_PWR_UNIT 0xC0010299
+#define AMD_MSR_PWR_UNIT 0xC0010299     // power time and energy units
 #define AMD_MSR_CORE_ENERGY 0xC001029A
 #define AMD_MSR_PACKAGE_ENERGY 0xC001029B
 
@@ -49,10 +49,14 @@
 #define AMD_ENERGY_UNIT_MASK 0x1F00
 #define AMD_POWER_UNIT_MASK 0xF
 
+
+
+
+
 // function prototypes
 
 int open_msr(int core);
-long long read_msr(int fd, int which);
+long long read_msr(int fd, unsigned int offset);
 
 
 
@@ -61,7 +65,8 @@ void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
-int rapl_msr_amd_core(float *power_w);
+int get_amd_pck_power_w(float *power_w);
+//int get_msr_core_units(struct power *my_power, enum cpu_designer_e designer);
 
 
 

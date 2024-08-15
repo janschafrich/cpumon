@@ -9,6 +9,8 @@
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
 
+#define DEBUG_ENABLE 1
+
 
 
 
@@ -24,13 +26,16 @@ struct sensor {
 typedef struct sensor sensor;
 
 struct power {
-    float pkg_now;
     float cores;
     float gpu;
+    float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg; 
+    unsigned int time_unit, energy_unit, power_unit;
+    float per_core[];
 };
 typedef struct power power;
+
 
 struct battery {
     float power_now;

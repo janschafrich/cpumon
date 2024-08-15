@@ -54,5 +54,5 @@ CMakeFiles/cpumon.dir/src/sysfs.c.o: /home/jscha/dvp/cpumon/src/sysfs.c \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/unctrl.h \
- /usr/include/curses.h /home/jscha/dvp/cpumon/include/cpumonlib.h \
- /home/jscha/dvp/cpumon/include/sysfs.h
+ /usr/include/curses.h /home/jscha/dvp/cpumon/src/../include/cpumonlib.h \
+ /home/jscha/dvp/cpumon/src/../include/sysfs.h

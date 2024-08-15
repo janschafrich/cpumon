@@ -18,7 +18,7 @@
                 "-lncurses",
 
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${cwd}/bin/cpumon"
             ],
             "options": {
                 "cwd": "${fileDirname}"

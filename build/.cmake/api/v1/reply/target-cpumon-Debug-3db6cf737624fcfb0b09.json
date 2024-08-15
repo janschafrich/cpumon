@@ -46,6 +46,12 @@
 	"compileGroups" : 
 	[
 		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall --save-temps"
+				}
+			],
 			"includes" : 
 			[
 				{
@@ -69,6 +75,10 @@
 	{
 		"commandFragments" : 
 		[
+			{
+				"fragment" : "-g -O0 -g -ggdb3 -gdwarf-2 -masm=intel -fverbose-asm -fdiagnostics-color=always -Wall --save-temps",
+				"role" : "flags"
+			},
 			{
 				"fragment" : "",
 				"role" : "flags"

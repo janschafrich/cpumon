@@ -73,71 +73,71 @@ CMakeFiles/cpumon.dir/src/main.c.o: CMakeFiles/cpumon.dir/flags.make
 CMakeFiles/cpumon.dir/src/main.c.o: ../src/main.c
 CMakeFiles/cpumon.dir/src/main.c.o: CMakeFiles/cpumon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jscha/dvp/cpumon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/cpumon.dir/src/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/main.c.o -MF CMakeFiles/cpumon.dir/src/main.c.o.d -o CMakeFiles/cpumon.dir/src/main.c.o -c /home/jscha/dvp/cpumon/src/main.c
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/main.c.o -MF CMakeFiles/cpumon.dir/src/main.c.o.d -o CMakeFiles/cpumon.dir/src/main.c.o -c /home/jscha/dvp/cpumon/src/main.c
 
 CMakeFiles/cpumon.dir/src/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cpumon.dir/src/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/main.c > CMakeFiles/cpumon.dir/src/main.c.i
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/main.c > CMakeFiles/cpumon.dir/src/main.c.i
 
 CMakeFiles/cpumon.dir/src/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cpumon.dir/src/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/main.c -o CMakeFiles/cpumon.dir/src/main.c.s
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/main.c -o CMakeFiles/cpumon.dir/src/main.c.s
 
 CMakeFiles/cpumon.dir/src/cpumonlib.c.o: CMakeFiles/cpumon.dir/flags.make
 CMakeFiles/cpumon.dir/src/cpumonlib.c.o: ../src/cpumonlib.c
 CMakeFiles/cpumon.dir/src/cpumonlib.c.o: CMakeFiles/cpumon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jscha/dvp/cpumon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/cpumon.dir/src/cpumonlib.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/cpumonlib.c.o -MF CMakeFiles/cpumon.dir/src/cpumonlib.c.o.d -o CMakeFiles/cpumon.dir/src/cpumonlib.c.o -c /home/jscha/dvp/cpumon/src/cpumonlib.c
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/cpumonlib.c.o -MF CMakeFiles/cpumon.dir/src/cpumonlib.c.o.d -o CMakeFiles/cpumon.dir/src/cpumonlib.c.o -c /home/jscha/dvp/cpumon/src/cpumonlib.c
 
 CMakeFiles/cpumon.dir/src/cpumonlib.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cpumon.dir/src/cpumonlib.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/cpumonlib.c > CMakeFiles/cpumon.dir/src/cpumonlib.c.i
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/cpumonlib.c > CMakeFiles/cpumon.dir/src/cpumonlib.c.i
 
 CMakeFiles/cpumon.dir/src/cpumonlib.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cpumon.dir/src/cpumonlib.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/cpumonlib.c -o CMakeFiles/cpumon.dir/src/cpumonlib.c.s
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/cpumonlib.c -o CMakeFiles/cpumon.dir/src/cpumonlib.c.s
 
 CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o: CMakeFiles/cpumon.dir/flags.make
 CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o: ../src/machine_specific_registers.c
 CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o: CMakeFiles/cpumon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jscha/dvp/cpumon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o -MF CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o.d -o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o -c /home/jscha/dvp/cpumon/src/machine_specific_registers.c
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o -MF CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o.d -o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o -c /home/jscha/dvp/cpumon/src/machine_specific_registers.c
 
 CMakeFiles/cpumon.dir/src/machine_specific_registers.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cpumon.dir/src/machine_specific_registers.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/machine_specific_registers.c > CMakeFiles/cpumon.dir/src/machine_specific_registers.c.i
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/machine_specific_registers.c > CMakeFiles/cpumon.dir/src/machine_specific_registers.c.i
 
 CMakeFiles/cpumon.dir/src/machine_specific_registers.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cpumon.dir/src/machine_specific_registers.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/machine_specific_registers.c -o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.s
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/machine_specific_registers.c -o CMakeFiles/cpumon.dir/src/machine_specific_registers.c.s
 
 CMakeFiles/cpumon.dir/src/sysfs.c.o: CMakeFiles/cpumon.dir/flags.make
 CMakeFiles/cpumon.dir/src/sysfs.c.o: ../src/sysfs.c
 CMakeFiles/cpumon.dir/src/sysfs.c.o: CMakeFiles/cpumon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jscha/dvp/cpumon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/cpumon.dir/src/sysfs.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/sysfs.c.o -MF CMakeFiles/cpumon.dir/src/sysfs.c.o.d -o CMakeFiles/cpumon.dir/src/sysfs.c.o -c /home/jscha/dvp/cpumon/src/sysfs.c
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/sysfs.c.o -MF CMakeFiles/cpumon.dir/src/sysfs.c.o.d -o CMakeFiles/cpumon.dir/src/sysfs.c.o -c /home/jscha/dvp/cpumon/src/sysfs.c
 
 CMakeFiles/cpumon.dir/src/sysfs.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cpumon.dir/src/sysfs.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/sysfs.c > CMakeFiles/cpumon.dir/src/sysfs.c.i
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/sysfs.c > CMakeFiles/cpumon.dir/src/sysfs.c.i
 
 CMakeFiles/cpumon.dir/src/sysfs.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cpumon.dir/src/sysfs.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/sysfs.c -o CMakeFiles/cpumon.dir/src/sysfs.c.s
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/sysfs.c -o CMakeFiles/cpumon.dir/src/sysfs.c.s
 
 CMakeFiles/cpumon.dir/src/guilib.c.o: CMakeFiles/cpumon.dir/flags.make
 CMakeFiles/cpumon.dir/src/guilib.c.o: ../src/guilib.c
 CMakeFiles/cpumon.dir/src/guilib.c.o: CMakeFiles/cpumon.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jscha/dvp/cpumon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/cpumon.dir/src/guilib.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/guilib.c.o -MF CMakeFiles/cpumon.dir/src/guilib.c.o.d -o CMakeFiles/cpumon.dir/src/guilib.c.o -c /home/jscha/dvp/cpumon/src/guilib.c
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/cpumon.dir/src/guilib.c.o -MF CMakeFiles/cpumon.dir/src/guilib.c.o.d -o CMakeFiles/cpumon.dir/src/guilib.c.o -c /home/jscha/dvp/cpumon/src/guilib.c
 
 CMakeFiles/cpumon.dir/src/guilib.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cpumon.dir/src/guilib.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/guilib.c > CMakeFiles/cpumon.dir/src/guilib.c.i
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jscha/dvp/cpumon/src/guilib.c > CMakeFiles/cpumon.dir/src/guilib.c.i
 
 CMakeFiles/cpumon.dir/src/guilib.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cpumon.dir/src/guilib.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/guilib.c -o CMakeFiles/cpumon.dir/src/guilib.c.s
+	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jscha/dvp/cpumon/src/guilib.c -o CMakeFiles/cpumon.dir/src/guilib.c.s
 
 # Object files for target cpumon
 cpumon_OBJECTS = \

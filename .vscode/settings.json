@@ -5,6 +5,10 @@
     "files.associations": {
         "locale.h": "c",
         "stat.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "machine_specific_registers.h": "c",
+        "sysfs.h": "c",
+        "cpumonlib.h": "c",
+        "syscall.h": "c"
     }
 }

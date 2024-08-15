@@ -1,7 +1,22 @@
 
 /* cpumon
  * a tool to read current processors values continously and print them to the terminal
- *
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *  
 */
 
 #include <stdio.h>
@@ -37,7 +52,7 @@ int main (int argc, char **argv)
 {   
     init_environment();
     
-    int gpu_freq;
+    //int gpu_freq;
 
     float power_per_domain[POWER_DOMAIN_COUNT];
 
@@ -51,12 +66,26 @@ int main (int argc, char **argv)
     *voltage = (sensor) {.min = 1000, .max = 0}; 
     battery *my_battery = malloc(sizeof(battery));
     *my_battery = (battery) {.min = 1000, .max = 0};
-    power *my_power = malloc(sizeof(power));
+    
+    power *my_power;
+    switch (cpu_designer)
+    {
+        case INTEL: 
+            my_power = malloc(sizeof(power)); 
+            break;
+        case AMD : 
+            my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
+            break;
+        default: 
+            my_power = malloc(sizeof(power)); 
+            break;
+    }
     
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
     char *cpu_model = identifiy_cpu();
+    //get_msr_core_units(my_power, cpu_designer);
     
     int command;
 
@@ -95,7 +124,7 @@ int main (int argc, char **argv)
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
         load_his[period_counter] = load->cpu_avg;
         
-        gpu_freq = gpu();      
+        //gpu_freq = gpu();      
 
         if (period_counter < AVG_WINDOW/POLL_INTERVAL_S)    // for last minute history
         {   
@@ -135,12 +164,12 @@ int main (int argc, char **argv)
             printw("\n");
             draw_power(power_per_domain, my_power->pkg_runtime_avg);
             printw("\n");
-            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
+            //printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
             printw("\n");
-            if (print_fanspeed() != 0)
-            {
-                printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
-            }
+            // if (print_fanspeed() != 0)
+            // {
+            //     printw("Error accessing the embedded controller. Check if ectool is accessible via commandline.\n");
+            // }
         } 
         else
         {
@@ -158,7 +187,7 @@ int main (int argc, char **argv)
         }
 
         printw("\n");
-        printw("GPU\t%d\n", gpu_freq);
+        //printw("GPU\t%d\n", gpu_freq);
         printw("\n");
         printw("\n");
         printw("---------- Battery (%s) ----------\n", my_battery->status);
@@ -170,12 +199,12 @@ int main (int argc, char **argv)
             power_config(running_with_privileges, cpu_designer);
         } 
 
-        if (running_with_privileges == TRUE)
-        {
-            attron(COLOR_PAIR(RED));
-            get_msr_power_limits_w(core_count);
-            attroff(COLOR_PAIR(RED));
-        } 
+        // if (running_with_privileges == TRUE)
+        // {
+        //     attron(COLOR_PAIR(RED));
+        //     get_msr_power_limits_w(core_count);
+        //     attroff(COLOR_PAIR(RED));
+        // } 
     }
     return (EXIT_SUCCESS);
 

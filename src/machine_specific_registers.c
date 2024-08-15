@@ -12,6 +12,7 @@
 #include <math.h>
 #include <ncurses.h>
 #include "../include/machine_specific_registers.h"
+#include "../include/cpumonlib.h"
 
 #include <sys/types.h>
 #include <sys/syscall.h>
@@ -40,17 +41,22 @@ int open_msr(int core)
 			exit(127);
 		}
 	}
-
+#if DEBUG_ENABLE 
+    printf("Opened MSR and got fd = %x\n", fd);
+#endif
 	return fd;
 }
 
-long long read_msr(int fd, int offset)
+long long read_msr(int fd, unsigned int offset)
 {
 	uint64_t register_val;
 
 	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
     {
-		perror("rdmsr: pread");
+#if DEBUG_ENABLE
+        printf("fd = %x\n has register_val = %ld", fd, register_val);
+#endif
+        perror("rdmsr: pread");
 		exit(127);
 	}
 
@@ -193,81 +199,123 @@ void get_intel_msr_power_w(float * power_w)
     }	
 }
 
-int rapl_msr_amd_core(float *power_w) 
+int get_amd_pck_power_w(float *my_power) 
 {
-	int total_cores = 16;
-    unsigned int time_unit, energy_unit, power_unit;
-	double time_unit_d, energy_unit_d, power_unit_d;
-	
-	double *core_energy = (double*)malloc(sizeof(double)*total_cores/2);
-	double *core_energy_delta = (double*)malloc(sizeof(double)*total_cores/2);
+#if DEBUG_ENABLE
+    printf("Entered rapl_msr_amd_core\n");
+#endif
+    static float package_before = 0;
+    float package_after = 0;
+    float energy_unit = 1.52588e-05;
 
-	double *package = (double*)malloc(sizeof(double)*total_cores/2);
-	double *package_delta = (double*)malloc(sizeof(double)*total_cores/2);
-	
-	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
-	
-	for (int i = 0; i < total_cores/2; i++) {
-		fd[i] = open_msr(i);
-	}
-	
+    int fp = open_msr(1);
 
-/*     int fp = open_msr(0);
-    printf("filepointer: 0x%x 0d%d\n", fp, fp);
-    printf("PWR UNIT MSR: 0x%x\n", AMD_MSR_PWR_UNIT); */
-	int core_energy_units = read_msr(fd[0], AMD_MSR_PWR_UNIT);
-	printf("Core energy units: %x\n",core_energy_units);
+    printf("Reading from AMD_MSR_PWR_UNIT\n");
+    long long package_raw = read_msr(fp, AMD_MSR_PACKAGE_ENERGY);
+    printf("Received raw energy Reading = %lld\n", package_raw);
 	
-	time_unit = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
-	energy_unit = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
-	power_unit = (core_energy_units & AMD_POWER_UNIT_MASK);
-	printf("Time_unit:%d, Energy_unit: %d, Power_unit: %d\n", time_unit, energy_unit, power_unit);
-	
-	time_unit_d = pow(0.5,(double)(time_unit));
-	energy_unit_d = pow(0.5,(double)(energy_unit));
-	power_unit_d = pow(0.5,(double)(power_unit));
-	printf("Time_unit:%g, Energy_unit: %g, Power_unit: %g\n", time_unit_d, energy_unit_d, power_unit_d);
-	
-	int core_energy_raw;
-	int package_raw;
-	// Read per core energy values
-	for (int i = 0; i < total_cores/2; i++) {
-		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
-		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
+    package_after = package_raw * energy_unit;
+    *my_power = (float) (package_after - package_before);
+    //power_w[1] = (float) (sum);
+    package_before = package_after;
 
-		core_energy[i] = core_energy_raw * energy_unit_d;
-		package[i] = package_raw * energy_unit_d;
-	}
-
-	usleep(100000);
-	for (int i = 0; i < total_cores/2; i++) {
-		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
-		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
-
-		core_energy_delta[i] = core_energy_raw * energy_unit_d;
-		package_delta[i] = package_raw * energy_unit_d;
-	}
-
-	double sum = 0;
-	for(int i = 0; i < total_cores/2; i++) {
-		double diff = (core_energy_delta[i] - core_energy[i])*10;
-		sum += diff;
-		printf("Core %d, energy used: %gW, Package: %gW\n", i, diff,(package_delta[i]-package[i])*10);
-	}
-	
-	printf("Core sum: %gW\n", sum);
-	
-    power_w[0] = (float) ((package_delta[0] - package[0])*10);
-    power_w[1] = (float) (sum);
-
-	free(core_energy);
-	free(core_energy_delta);
-	free(package);
-	free(package_delta);
-	free(fd);
-	
 	return 0;
 }
+
+int get_msr_core_units(power *my_power, cpu_designer_e designer)
+{
+    switch (designer)
+    {
+        case AMD:
+            int fp = open_msr(0);   // using units of Core 0 for all others cores
+            int core_energy_units = read_msr(fp, AMD_MSR_PWR_UNIT);
+            unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
+	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
+	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
+            my_power->time_unit = pow(0.5,(double)(time_unit_raw));
+	        my_power->energy_unit = pow(0.5,(double)(energy_unit_raw));
+	        my_power->power_unit = pow(0.5,(double)(power_unit_raw));
+            break;
+        default:
+            break;
+            	
+    }
+    return 0;
+}
+
+
+
+
+// static int rapl_msr_amd_core(power *my_power, int total_cores)
+// {
+// 	unsigned int time_unit, energy_unit, power_unit;
+// 	double time_unit_d, energy_unit_d, power_unit_d;
+	
+// 	double *core_energy = (double*)malloc(sizeof(double)*total_cores/2);
+// 	double *core_energy_delta = (double*)malloc(sizeof(double)*total_cores/2);
+
+// 	double *package = (double*)malloc(sizeof(double)*total_cores/2);
+// 	double *package_delta = (double*)malloc(sizeof(double)*total_cores/2);
+	
+// 	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
+	
+// 	for (int i = 0; i < total_cores/2; i++) {
+// 		fd[i] = open_msr(i);
+// 	}
+	
+// 	int core_energy_units = read_msr(fd[0], AMD_MSR_PWR_UNIT);
+// 	//printf("Core energy units: %x\n",core_energy_units);
+	
+//  	time_unit = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
+// 	energy_unit = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
+// 	power_unit = (core_energy_units & AMD_POWER_UNIT_MASK);
+// 	//printf("Time_unit:%d, Energy_unit: %d, Power_unit: %d\n", time_unit, energy_unit, power_unit);
+	
+// 	time_unit_d = pow(0.5,(double)(time_unit));
+// 	energy_unit_d = pow(0.5,(double)(energy_unit));
+// 	power_unit_d = pow(0.5,(double)(power_unit));
+// 	//printf("Time_unit:%g, Energy_unit: %g, Power_unit: %g\n", time_unit_d, energy_unit_d, power_unit_d);
+	
+// 	int core_energy_raw;
+// 	int package_raw;
+// 	// Read per core energy values
+// 	for (int i = 0; i < total_cores/2; i++) {
+// 		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
+// 		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
+
+// 		core_energy[i] = core_energy_raw * energy_unit_d;
+// 		package[i] = package_raw * energy_unit_d;
+// 	}
+
+// 	usleep(100000);
+// 	for (int i = 0; i < total_cores/2; i++) {
+// 		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
+// 		package_raw = read_msr(fd[i], AMD_MSR_PACKAGE_ENERGY);
+
+// 		core_energy_delta[i] = core_energy_raw * energy_unit_d;
+// 		package_delta[i] = package_raw * energy_unit_d;
+// 	}
+
+// 	double sum = 0;
+// 	for(int i = 0; i < total_cores/2; i++) {
+// 		double diff = (core_energy_delta[i] - core_energy[i])*10;
+// 		sum += diff;
+// 		printf("Core %d, energy used: %gW, Package: %gW\n", i, diff,(package_delta[i]-package[i])*10);
+// 	}
+	
+// 	printf("Core sum: %gW\n", sum);
+	
+// 	free(core_energy);
+// 	free(core_energy_delta);
+// 	free(package);
+// 	free(package_delta);
+// 	free(fd);
+	
+// 	return 0;
+// }
+
+
+
 
 
 // report what currently limits power

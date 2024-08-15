@@ -28,4 +28,4 @@ CMakeFiles/cpumon.dir/src/guilib.c.o: /home/jscha/dvp/cpumon/src/guilib.c \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/unctrl.h \
- /usr/include/curses.h /home/jscha/dvp/cpumon/include/guilib.h
+ /usr/include/curses.h /home/jscha/dvp/cpumon/src/../include/guilib.h
