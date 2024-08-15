@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" "CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o" "gcc" "CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o.d"
   "/home/jscha/dvp/cpumon/src/main.c" "CMakeFiles/cpumon.dir/src/main.c.o" "gcc" "CMakeFiles/cpumon.dir/src/main.c.o.d"
   "/home/jscha/dvp/cpumon/src/sysfs.c" "CMakeFiles/cpumon.dir/src/sysfs.c.o" "gcc" "CMakeFiles/cpumon.dir/src/sysfs.c.o.d"
+  "/home/jscha/dvp/cpumon/src/utils.c" "CMakeFiles/cpumon.dir/src/utils.c.o" "gcc" "CMakeFiles/cpumon.dir/src/utils.c.o.d"
   )
 
 # Targets to which this target links.

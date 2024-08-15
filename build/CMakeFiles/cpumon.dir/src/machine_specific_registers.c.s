@@ -19,15 +19,13 @@
 	.string	"rdmsr: open"
 .LC4:
 	.string	"Trying to open %s\n"
-.LC5:
-	.string	"Opened MSR and got fd = %x\n"
 	.text
 	.globl	open_msr
 	.type	open_msr, @function
 open_msr:
 .LFB36:
 	.file 1 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
-	.loc 1 24 1
+	.loc 1 25 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -43,13 +41,13 @@ open_msr:
 	or	QWORD PTR [rsp], 0	#,
 	sub	rsp, 48	#,
 	mov	DWORD PTR -8228[rbp], edi	# core, core
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:24: {
-	.loc 1 24 1
-	mov	rax, QWORD PTR fs:40	# tmp106, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.6948, tmp106
-	xor	eax, eax	# tmp106
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:28: 	sprintf(msr_filename, "/dev/cpu/%d/msr", core);
-	.loc 1 28 2
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:25: {
+	.loc 1 25 1
+	mov	rax, QWORD PTR fs:40	# tmp104, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.6956, tmp104
+	xor	eax, eax	# tmp104
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:29: 	sprintf(msr_filename, "/dev/cpu/%d/msr", core);
+	.loc 1 29 2
 	mov	edx, DWORD PTR -8228[rbp]	# tmp91, core
 	lea	rax, -8208[rbp]	# tmp92,
 	lea	rcx, .LC0[rip]	# tmp93,
@@ -57,30 +55,30 @@ open_msr:
 	mov	rdi, rax	#, tmp92
 	mov	eax, 0	#,
 	call	sprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:29: 	fd = open(msr_filename, O_RDONLY);
-	.loc 1 29 7
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:30: 	fd = open(msr_filename, O_RDONLY);
+	.loc 1 30 7
 	lea	rax, -8208[rbp]	# tmp94,
 	mov	esi, 0	#,
 	mov	rdi, rax	#, tmp94
 	mov	eax, 0	#,
 	call	open@PLT	#
 	mov	DWORD PTR -8212[rbp], eax	# fd, tmp95
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:30: 	if ( fd < 0 ) {
-	.loc 1 30 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:31: 	if ( fd < 0 ) {
+	.loc 1 31 5
 	cmp	DWORD PTR -8212[rbp], 0	# fd,
 	jns	.L2	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:31: 		if ( errno == ENXIO ) {
-	.loc 1 31 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:32: 		if ( errno == ENXIO ) {
+	.loc 1 32 9
 	call	__errno_location@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:31: 		if ( errno == ENXIO ) {
-	.loc 1 31 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:32: 		if ( errno == ENXIO ) {
+	.loc 1 32 8
 	mov	eax, DWORD PTR [rax]	# _2, *_1
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:31: 		if ( errno == ENXIO ) {
-	.loc 1 31 6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:32: 		if ( errno == ENXIO ) {
+	.loc 1 32 6
 	cmp	eax, 6	# _2,
 	jne	.L3	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:32: 			fprintf(stderr, "rdmsr: No CPU %d\n", core);
-	.loc 1 32 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:33: 			fprintf(stderr, "rdmsr: No CPU %d\n", core);
+	.loc 1 33 4
 	mov	rax, QWORD PTR stderr[rip]	# stderr.0_3, stderr
 	mov	edx, DWORD PTR -8228[rbp]	# tmp96, core
 	lea	rcx, .LC1[rip]	# tmp97,
@@ -88,23 +86,23 @@ open_msr:
 	mov	rdi, rax	#, stderr.0_3
 	mov	eax, 0	#,
 	call	fprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:33: 			exit(2);
-	.loc 1 33 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:34: 			exit(2);
+	.loc 1 34 4
 	mov	edi, 2	#,
 	call	exit@PLT	#
 .L3:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:34: 		} else if ( errno == EIO ) {
-	.loc 1 34 16
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:35: 		} else if ( errno == EIO ) {
+	.loc 1 35 16
 	call	__errno_location@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:34: 		} else if ( errno == EIO ) {
-	.loc 1 34 15
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:35: 		} else if ( errno == EIO ) {
+	.loc 1 35 15
 	mov	eax, DWORD PTR [rax]	# _5, *_4
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:34: 		} else if ( errno == EIO ) {
-	.loc 1 34 13
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:35: 		} else if ( errno == EIO ) {
+	.loc 1 35 13
 	cmp	eax, 5	# _5,
 	jne	.L4	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:35: 			fprintf(stderr, "rdmsr: CPU %d doesn't support MSRs\n",
-	.loc 1 35 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:36: 			fprintf(stderr, "rdmsr: CPU %d doesn't support MSRs\n",
+	.loc 1 36 4
 	mov	rax, QWORD PTR stderr[rip]	# stderr.1_6, stderr
 	mov	edx, DWORD PTR -8228[rbp]	# tmp98, core
 	lea	rcx, .LC2[rip]	# tmp99,
@@ -112,18 +110,18 @@ open_msr:
 	mov	rdi, rax	#, stderr.1_6
 	mov	eax, 0	#,
 	call	fprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:37: 			exit(3);
-	.loc 1 37 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:38: 			exit(3);
+	.loc 1 38 4
 	mov	edi, 3	#,
 	call	exit@PLT	#
 .L4:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:39: 			perror("rdmsr: open");
-	.loc 1 39 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:40: 			perror("rdmsr: open");
+	.loc 1 40 4
 	lea	rax, .LC3[rip]	# tmp100,
 	mov	rdi, rax	#, tmp100
 	call	perror@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:40: 			fprintf(stderr,"Trying to open %s\n",msr_filename);
-	.loc 1 40 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:41: 			fprintf(stderr,"Trying to open %s\n",msr_filename);
+	.loc 1 41 4
 	mov	rax, QWORD PTR stderr[rip]	# stderr.2_7, stderr
 	lea	rdx, -8208[rbp]	# tmp101,
 	lea	rcx, .LC4[rip]	# tmp102,
@@ -131,26 +129,18 @@ open_msr:
 	mov	rdi, rax	#, stderr.2_7
 	mov	eax, 0	#,
 	call	fprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:41: 			exit(127);
-	.loc 1 41 4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:42: 			exit(127);
+	.loc 1 42 4
 	mov	edi, 127	#,
 	call	exit@PLT	#
 .L2:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:45:     printf("Opened MSR and got fd = %x\n", fd);
-	.loc 1 45 5
-	mov	eax, DWORD PTR -8212[rbp]	# tmp103, fd
-	mov	esi, eax	#, tmp103
-	lea	rax, .LC5[rip]	# tmp104,
-	mov	rdi, rax	#, tmp104
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:47: 	return fd;
-	.loc 1 47 9
-	mov	eax, DWORD PTR -8212[rbp]	# _14, fd
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:48: }
-	.loc 1 48 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp107, D.6948
-	sub	rdx, QWORD PTR fs:40	# tmp107, MEM[(<address-space-1> long unsigned int *)40B]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:48: 	return fd;
+	.loc 1 48 9
+	mov	eax, DWORD PTR -8212[rbp]	# _13, fd
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:49: }
+	.loc 1 49 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp105, D.6956
+	sub	rdx, QWORD PTR fs:40	# tmp105, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L6	#,
 	call	__stack_chk_fail@PLT	#
 .L6:
@@ -162,17 +152,14 @@ open_msr:
 .LFE36:
 	.size	open_msr, .-open_msr
 	.section	.rodata
-	.align 8
-.LC6:
-	.string	"fd = %x\n has register_val = %ld"
-.LC7:
+.LC5:
 	.string	"rdmsr: pread"
 	.text
 	.globl	read_msr
 	.type	read_msr, @function
 read_msr:
 .LFB37:
-	.loc 1 51 1
+	.loc 1 52 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -185,50 +172,41 @@ read_msr:
 	sub	rsp, 32	#,
 	mov	DWORD PTR -20[rbp], edi	# fd, fd
 	mov	DWORD PTR -24[rbp], esi	# offset, offset
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:51: {
-	.loc 1 51 1
-	mov	rax, QWORD PTR fs:40	# tmp94, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.6956, tmp94
-	xor	eax, eax	# tmp94
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:54: 	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
-	.loc 1 54 7
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:52: {
+	.loc 1 52 1
+	mov	rax, QWORD PTR fs:40	# tmp91, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.6963, tmp91
+	xor	eax, eax	# tmp91
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:55: 	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
+	.loc 1 55 7
 	mov	edx, DWORD PTR -24[rbp]	# _1, offset
-	lea	rsi, -16[rbp]	# tmp88,
-	mov	eax, DWORD PTR -20[rbp]	# tmp89, fd
+	lea	rsi, -16[rbp]	# tmp87,
+	mov	eax, DWORD PTR -20[rbp]	# tmp88, fd
 	mov	rcx, rdx	#, _1
 	mov	edx, 8	#,
-	mov	edi, eax	#, tmp89
+	mov	edi, eax	#, tmp88
 	call	pread@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:54: 	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
-	.loc 1 54 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:55: 	if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
+	.loc 1 55 5
 	cmp	rax, 8	# _2,
 	je	.L8	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:57:         printf("fd = %x\n has register_val = %ld", fd, register_val);
-	.loc 1 57 9
-	mov	rdx, QWORD PTR -16[rbp]	# register_val.3_3, register_val
-	mov	eax, DWORD PTR -20[rbp]	# tmp90, fd
-	mov	esi, eax	#, tmp90
-	lea	rax, .LC6[rip]	# tmp91,
-	mov	rdi, rax	#, tmp91
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:59:         perror("rdmsr: pread");
-	.loc 1 59 9
-	lea	rax, .LC7[rip]	# tmp92,
-	mov	rdi, rax	#, tmp92
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:60:         perror("rdmsr: pread");
+	.loc 1 60 9
+	lea	rax, .LC5[rip]	# tmp89,
+	mov	rdi, rax	#, tmp89
 	call	perror@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:60: 		exit(127);
-	.loc 1 60 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:61: 		exit(127);
+	.loc 1 61 3
 	mov	edi, 127	#,
 	call	exit@PLT	#
 .L8:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:63: 	return (long long)register_val;
-	.loc 1 63 9
-	mov	rax, QWORD PTR -16[rbp]	# register_val.4_4, register_val
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:64: }
-	.loc 1 64 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp95, D.6956
-	sub	rdx, QWORD PTR fs:40	# tmp95, MEM[(<address-space-1> long unsigned int *)40B]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:64: 	return (long long)register_val;
+	.loc 1 64 9
+	mov	rax, QWORD PTR -16[rbp]	# register_val.3_3, register_val
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:65: }
+	.loc 1 65 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp92, D.6963
+	sub	rdx, QWORD PTR fs:40	# tmp92, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L10	#,
 	call	__stack_chk_fail@PLT	#
 .L10:
@@ -243,7 +221,7 @@ read_msr:
 	.type	voltage_v, @function
 voltage_v:
 .LFB38:
-	.loc 1 68 1
+	.loc 1 69 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -259,25 +237,25 @@ voltage_v:
 	mov	QWORD PTR -72[rbp], rdi	# voltage, voltage
 	mov	QWORD PTR -80[rbp], rsi	# average, average
 	mov	DWORD PTR -84[rbp], edx	# core_count, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:68: {
-	.loc 1 68 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:69: {
+	.loc 1 69 1
 	mov	rax, QWORD PTR fs:40	# tmp173, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -24[rbp], rax	# D.6959, tmp173
+	mov	QWORD PTR -24[rbp], rax	# D.6965, tmp173
 	xor	eax, eax	# tmp173
 	mov	rax, rsp	# tmp116,
-	mov	rbx, rax	# saved_stack.7_40, tmp116
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:70:     uint64_t result[core_count];
-	.loc 1 70 5
-	mov	eax, DWORD PTR -84[rbp]	# core_count.5_42, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:70:     uint64_t result[core_count];
-	.loc 1 70 14
-	movsx	rdx, eax	# _1, core_count.5_42
+	mov	rbx, rax	# saved_stack.6_40, tmp116
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:71:     uint64_t result[core_count];
+	.loc 1 71 5
+	mov	eax, DWORD PTR -84[rbp]	# core_count.4_42, core_count
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:71:     uint64_t result[core_count];
+	.loc 1 71 14
+	movsx	rdx, eax	# _1, core_count.4_42
 	sub	rdx, 1	# _2,
-	mov	QWORD PTR -40[rbp], rdx	# D.6874, _3
-	movsx	rdx, eax	# _4, core_count.5_42
+	mov	QWORD PTR -40[rbp], rdx	# D.6882, _3
+	movsx	rdx, eax	# _4, core_count.4_42
 	mov	r10, rdx	# _5, _4
 	mov	r11d, 0	# _5,
-	movsx	rdx, eax	# _9, core_count.5_42
+	movsx	rdx, eax	# _9, core_count.4_42
 	mov	r8, rdx	# _10, _9
 	mov	r9d, 0	# _10,
 	cdqe
@@ -316,102 +294,102 @@ voltage_v:
 	add	rax, 7	# tmp130,
 	shr	rax, 3	# tmp131,
 	sal	rax, 3	# tmp132,
-	mov	QWORD PTR -32[rbp], rax	# result.6, tmp132
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:71:     float total = 0;
-	.loc 1 71 11
+	mov	QWORD PTR -32[rbp], rax	# result.5, tmp132
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:72:     float total = 0;
+	.loc 1 72 11
 	pxor	xmm0, xmm0	# tmp133
 	movss	DWORD PTR -56[rbp], xmm0	# total, tmp133
 .LBB2:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:73:     for (int core = 0; core < core_count; core++) {
-	.loc 1 73 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:74:     for (int core = 0; core < core_count; core++) {
+	.loc 1 74 14
 	mov	DWORD PTR -52[rbp], 0	# core,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:73:     for (int core = 0; core < core_count; core++) {
-	.loc 1 73 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:74:     for (int core = 0; core < core_count; core++) {
+	.loc 1 74 5
 	jmp	.L15	#
 .L16:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:74:         fd=open_msr(core);
-	.loc 1 74 12 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:75:         fd=open_msr(core);
+	.loc 1 75 12 discriminator 3
 	mov	eax, DWORD PTR -52[rbp]	# tmp134, core
 	mov	edi, eax	#, tmp134
 	call	open_msr	#
 	mov	DWORD PTR -44[rbp], eax	# fd, tmp135
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:75:         result[core] = read_msr(fd,MSR_PERF_STATUS); 
-	.loc 1 75 24 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:76:         result[core] = read_msr(fd,MSR_PERF_STATUS); 
+	.loc 1 76 24 discriminator 3
 	mov	eax, DWORD PTR -44[rbp]	# tmp136, fd
 	mov	esi, 408	#,
 	mov	edi, eax	#, tmp136
 	call	read_msr	#
 	mov	rcx, rax	# _15, _14
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:75:         result[core] = read_msr(fd,MSR_PERF_STATUS); 
-	.loc 1 75 22 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp137, result.6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:76:         result[core] = read_msr(fd,MSR_PERF_STATUS); 
+	.loc 1 76 22 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp137, result.5
 	mov	edx, DWORD PTR -52[rbp]	# tmp139, core
 	movsx	rdx, edx	# tmp138, tmp139
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.6_49)[core_34], _15
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:76:         close(fd);
-	.loc 1 76 9 discriminator 3
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.5_49)[core_34], _15
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:77:         close(fd);
+	.loc 1 77 9 discriminator 3
 	mov	eax, DWORD PTR -44[rbp]	# tmp140, fd
 	mov	edi, eax	#, tmp140
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:73:     for (int core = 0; core < core_count; core++) {
-	.loc 1 73 47 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:74:     for (int core = 0; core < core_count; core++) {
+	.loc 1 74 47 discriminator 3
 	add	DWORD PTR -52[rbp], 1	# core,
 .L15:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:73:     for (int core = 0; core < core_count; core++) {
-	.loc 1 73 29 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:74:     for (int core = 0; core < core_count; core++) {
+	.loc 1 74 29 discriminator 1
 	mov	eax, DWORD PTR -52[rbp]	# tmp141, core
 	cmp	eax, DWORD PTR -84[rbp]	# tmp141, core_count
 	jl	.L16	#,
 .LBE2:
 .LBB3:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:79:     for (int i= 0; i < core_count; i++) {
-	.loc 1 79 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:     for (int i= 0; i < core_count; i++) {
+	.loc 1 80 14
 	mov	DWORD PTR -48[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:79:     for (int i= 0; i < core_count; i++) {
-	.loc 1 79 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:     for (int i= 0; i < core_count; i++) {
+	.loc 1 80 5
 	jmp	.L17	#
 .L20:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-	.loc 1 80 27 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp142, result.6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
+	.loc 1 81 27 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp142, result.5
 	mov	edx, DWORD PTR -48[rbp]	# tmp144, i
 	movsx	rdx, edx	# tmp143, tmp144
-	mov	rax, QWORD PTR [rax+rdx*8]	# _16, (*result.6_49)[i_35]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-	.loc 1 80 30 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _16, (*result.5_49)[i_35]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
+	.loc 1 81 30 discriminator 3
 	movabs	rdx, 281470681743360	# tmp145,
 	and	rax, rdx	# _16, tmp145
 	mov	rcx, rax	# _17, _16
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-	.loc 1 80 19 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp146, result.6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
+	.loc 1 81 19 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp146, result.5
 	mov	edx, DWORD PTR -48[rbp]	# tmp148, i
 	movsx	rdx, edx	# tmp147, tmp148
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.6_49)[i_35], _17
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 81 27 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp149, result.6
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.5_49)[i_35], _17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 82 27 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp149, result.5
 	mov	edx, DWORD PTR -48[rbp]	# tmp151, i
 	movsx	rdx, edx	# tmp150, tmp151
-	mov	rax, QWORD PTR [rax+rdx*8]	# _18, (*result.6_49)[i_35]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 81 30 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _18, (*result.5_49)[i_35]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 82 30 discriminator 3
 	shr	rax, 32	# _18,
 	mov	rcx, rax	# _19, _18
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:81:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 81 19 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp152, result.6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 82 19 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp152, result.5
 	mov	edx, DWORD PTR -48[rbp]	# tmp154, i
 	movsx	rdx, edx	# tmp153, tmp154
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.6_49)[i_35], _19
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
-	.loc 1 82 43 discriminator 3
-	mov	rax, QWORD PTR -32[rbp]	# tmp155, result.6
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*result.5_49)[i_35], _19
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+	.loc 1 83 43 discriminator 3
+	mov	rax, QWORD PTR -32[rbp]	# tmp155, result.5
 	mov	edx, DWORD PTR -48[rbp]	# tmp157, i
 	movsx	rdx, edx	# tmp156, tmp157
-	mov	rax, QWORD PTR [rax+rdx*8]	# _20, (*result.6_49)[i_35]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
-	.loc 1 82 35 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _20, (*result.5_49)[i_35]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+	.loc 1 83 35 discriminator 3
 	test	rax, rax	# _20
 	js	.L18	#,
 	pxor	xmm0, xmm0	# _21
@@ -426,59 +404,59 @@ voltage_v:
 	cvtsi2sd	xmm0, rdx	# tmp158, tmp159
 	addsd	xmm0, xmm0	# _21, tmp158
 .L19:
-	movsd	xmm1, QWORD PTR .LC9[rip]	# tmp161,
+	movsd	xmm1, QWORD PTR .LC7[rip]	# tmp161,
 	mulsd	xmm0, xmm1	# _22, tmp161
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
-	.loc 1 82 16 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+	.loc 1 83 16 discriminator 3
 	mov	eax, DWORD PTR -48[rbp]	# tmp162, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _24,
 	mov	rax, QWORD PTR -72[rbp]	# tmp163, voltage
 	add	rax, rdx	# _25, _24
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
-	.loc 1 82 35 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+	.loc 1 83 35 discriminator 3
 	cvtsd2ss	xmm0, xmm0	# _26, _22
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:82:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
-	.loc 1 82 20 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+	.loc 1 83 20 discriminator 3
 	movss	DWORD PTR [rax], xmm0	# *_25, _26
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         total += voltage[i];
-	.loc 1 83 25 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:84:         total += voltage[i];
+	.loc 1 84 25 discriminator 3
 	mov	eax, DWORD PTR -48[rbp]	# tmp164, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _28,
 	mov	rax, QWORD PTR -72[rbp]	# tmp165, voltage
 	add	rax, rdx	# _29, _28
 	movss	xmm0, DWORD PTR [rax]	# _30, *_29
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:83:         total += voltage[i];
-	.loc 1 83 15 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:84:         total += voltage[i];
+	.loc 1 84 15 discriminator 3
 	movss	xmm1, DWORD PTR -56[rbp]	# tmp167, total
 	addss	xmm0, xmm1	# tmp166, tmp167
 	movss	DWORD PTR -56[rbp], xmm0	# total, tmp166
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:79:     for (int i= 0; i < core_count; i++) {
-	.loc 1 79 37 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:     for (int i= 0; i < core_count; i++) {
+	.loc 1 80 37 discriminator 3
 	add	DWORD PTR -48[rbp], 1	# i,
 .L17:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:79:     for (int i= 0; i < core_count; i++) {
-	.loc 1 79 22 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:80:     for (int i= 0; i < core_count; i++) {
+	.loc 1 80 22 discriminator 1
 	mov	eax, DWORD PTR -48[rbp]	# tmp168, i
 	cmp	eax, DWORD PTR -84[rbp]	# tmp168, core_count
 	jl	.L20	#,
 .LBE3:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:86:     *average = total / core_count;
-	.loc 1 86 22
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:87:     *average = total / core_count;
+	.loc 1 87 22
 	pxor	xmm1, xmm1	# _31
 	cvtsi2ss	xmm1, DWORD PTR -84[rbp]	# _31, core_count
 	movss	xmm0, DWORD PTR -56[rbp]	# tmp169, total
 	divss	xmm0, xmm1	# _32, _31
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:86:     *average = total / core_count;
-	.loc 1 86 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:87:     *average = total / core_count;
+	.loc 1 87 14
 	mov	rax, QWORD PTR -80[rbp]	# tmp170, average
 	movss	DWORD PTR [rax], xmm0	# *average_53(D), _32
-	mov	rsp, rbx	#, saved_stack.7_40
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:87: }
-	.loc 1 87 1
+	mov	rsp, rbx	#, saved_stack.6_40
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:88: }
+	.loc 1 88 1
 	nop	
-	mov	rax, QWORD PTR -24[rbp]	# tmp174, D.6959
+	mov	rax, QWORD PTR -24[rbp]	# tmp174, D.6965
 	sub	rax, QWORD PTR fs:40	# tmp174, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L21	#,
 	call	__stack_chk_fail@PLT	#
@@ -493,14 +471,14 @@ voltage_v:
 	.size	voltage_v, .-voltage_v
 	.section	.rodata
 	.align 8
-.LC10:
+.LC8:
 	.string	"Digital temperature reading from IA_THERM_STATUS not valid"
 	.text
 	.globl	msr_temperature_c
 	.type	msr_temperature_c, @function
 msr_temperature_c:
 .LFB39:
-	.loc 1 90 1
+	.loc 1 91 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -524,28 +502,28 @@ msr_temperature_c:
 	mov	QWORD PTR -136[rbp], rdi	# temperature, temperature
 	mov	QWORD PTR -144[rbp], rsi	# average, average
 	mov	DWORD PTR -148[rbp], edx	# core_count, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:90: {
-	.loc 1 90 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:91: {
+	.loc 1 91 1
 	mov	rax, QWORD PTR fs:40	# tmp289, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -56[rbp], rax	# D.6961, tmp289
+	mov	QWORD PTR -56[rbp], rax	# D.6967, tmp289
 	xor	eax, eax	# tmp289
 	mov	rax, rsp	# tmp155,
-	mov	rbx, rax	# saved_stack.14_83, tmp155
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:92:     uint64_t register_content[core_count];
-	.loc 1 92 5
-	mov	edx, DWORD PTR -148[rbp]	# core_count.8_85, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:92:     uint64_t register_content[core_count];
-	.loc 1 92 14
-	movsx	rax, edx	# _1, core_count.8_85
+	mov	rbx, rax	# saved_stack.13_83, tmp155
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:93:     uint64_t register_content[core_count];
+	.loc 1 93 5
+	mov	edx, DWORD PTR -148[rbp]	# core_count.7_85, core_count
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:93:     uint64_t register_content[core_count];
+	.loc 1 93 14
+	movsx	rax, edx	# _1, core_count.7_85
 	sub	rax, 1	# _2,
-	mov	QWORD PTR -104[rbp], rax	# D.6882, _3
-	movsx	rax, edx	# _4, core_count.8_85
+	mov	QWORD PTR -104[rbp], rax	# D.6890, _3
+	movsx	rax, edx	# _4, core_count.7_85
 	mov	QWORD PTR -176[rbp], rax	# %sfp, _4
 	mov	QWORD PTR -168[rbp], 0	# %sfp,
-	movsx	rax, edx	# _9, core_count.8_85
+	movsx	rax, edx	# _9, core_count.7_85
 	mov	QWORD PTR -192[rbp], rax	# %sfp, _9
 	mov	QWORD PTR -184[rbp], 0	# %sfp,
-	movsx	rax, edx	# _12, core_count.8_85
+	movsx	rax, edx	# _12, core_count.7_85
 	lea	rdx, 0[0+rax*8]	# _13,
 	mov	eax, 16	# tmp283,
 	sub	rax, 1	# tmp156,
@@ -581,19 +559,19 @@ msr_temperature_c:
 	add	rax, 7	# tmp169,
 	shr	rax, 3	# tmp170,
 	sal	rax, 3	# tmp171,
-	mov	QWORD PTR -96[rbp], rax	# register_content.9, tmp171
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:93:     float temperature_target[core_count];
-	.loc 1 93 5
-	mov	eax, DWORD PTR -148[rbp]	# core_count.10_93, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:93:     float temperature_target[core_count];
-	.loc 1 93 11
-	movsx	rdx, eax	# _14, core_count.10_93
+	mov	QWORD PTR -96[rbp], rax	# register_content.8, tmp171
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:94:     float temperature_target[core_count];
+	.loc 1 94 5
+	mov	eax, DWORD PTR -148[rbp]	# core_count.9_93, core_count
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:94:     float temperature_target[core_count];
+	.loc 1 94 11
+	movsx	rdx, eax	# _14, core_count.9_93
 	sub	rdx, 1	# _15,
-	mov	QWORD PTR -88[rbp], rdx	# D.6889, _16
-	movsx	rdx, eax	# _17, core_count.10_93
+	mov	QWORD PTR -88[rbp], rdx	# D.6897, _16
+	movsx	rdx, eax	# _17, core_count.9_93
 	mov	r10, rdx	# _18, _17
 	mov	r11d, 0	# _18,
-	movsx	rdx, eax	# _22, core_count.10_93
+	movsx	rdx, eax	# _22, core_count.9_93
 	mov	r8, rdx	# _23, _22
 	mov	r9d, 0	# _23,
 	cdqe
@@ -632,101 +610,101 @@ msr_temperature_c:
 	add	rax, 3	# tmp185,
 	shr	rax, 2	# tmp186,
 	sal	rax, 2	# tmp187,
-	mov	QWORD PTR -80[rbp], rax	# temperature_target.11, tmp187
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:94:     float total = 0;
-	.loc 1 94 11
+	mov	QWORD PTR -80[rbp], rax	# temperature_target.10, tmp187
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:95:     float total = 0;
+	.loc 1 95 11
 	pxor	xmm0, xmm0	# tmp188
 	movss	DWORD PTR -128[rbp], xmm0	# total, tmp188
 .LBB4:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:96:     for (int core = 0; core < core_count; core++) {
-	.loc 1 96 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:97:     for (int core = 0; core < core_count; core++) {
+	.loc 1 97 14
 	mov	DWORD PTR -124[rbp], 0	# core,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:96:     for (int core = 0; core < core_count; core++) {
-	.loc 1 96 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:97:     for (int core = 0; core < core_count; core++) {
+	.loc 1 97 5
 	jmp	.L29	#
 .L30:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:97:         fd=open_msr(core);
-	.loc 1 97 12 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:98:         fd=open_msr(core);
+	.loc 1 98 12 discriminator 3
 	mov	eax, DWORD PTR -124[rbp]	# tmp189, core
 	mov	edi, eax	#, tmp189
 	call	open_msr	#
 	mov	DWORD PTR -108[rbp], eax	# fd, tmp190
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:98:         register_content[core] = read_msr(fd, MSR_TEMPERATURE_TARGET); 
-	.loc 1 98 34 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:99:         register_content[core] = read_msr(fd, MSR_TEMPERATURE_TARGET); 
+	.loc 1 99 34 discriminator 3
 	mov	eax, DWORD PTR -108[rbp]	# tmp191, fd
 	mov	esi, 418	#,
 	mov	edi, eax	#, tmp191
 	call	read_msr	#
 	mov	rcx, rax	# _28, _27
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:98:         register_content[core] = read_msr(fd, MSR_TEMPERATURE_TARGET); 
-	.loc 1 98 32 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp192, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:99:         register_content[core] = read_msr(fd, MSR_TEMPERATURE_TARGET); 
+	.loc 1 99 32 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp192, register_content.8
 	mov	edx, DWORD PTR -124[rbp]	# tmp194, core
 	movsx	rdx, edx	# tmp193, tmp194
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[core_72], _28
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:99:         close(fd);
-	.loc 1 99 9 discriminator 3
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[core_72], _28
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:100:         close(fd);
+	.loc 1 100 9 discriminator 3
 	mov	eax, DWORD PTR -108[rbp]	# tmp195, fd
 	mov	edi, eax	#, tmp195
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:96:     for (int core = 0; core < core_count; core++) {
-	.loc 1 96 47 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:97:     for (int core = 0; core < core_count; core++) {
+	.loc 1 97 47 discriminator 3
 	add	DWORD PTR -124[rbp], 1	# core,
 .L29:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:96:     for (int core = 0; core < core_count; core++) {
-	.loc 1 96 29 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:97:     for (int core = 0; core < core_count; core++) {
+	.loc 1 97 29 discriminator 1
 	mov	eax, DWORD PTR -124[rbp]	# tmp196, core
 	cmp	eax, DWORD PTR -148[rbp]	# tmp196, core_count
 	jl	.L30	#,
 .LBE4:
 .LBB5:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:102:     for (int i= 0; i < core_count; i++) {
-	.loc 1 102 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:     for (int i= 0; i < core_count; i++) {
+	.loc 1 103 14
 	mov	DWORD PTR -120[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:102:     for (int i= 0; i < core_count; i++) {
-	.loc 1 102 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:     for (int i= 0; i < core_count; i++) {
+	.loc 1 103 5
 	jmp	.L31	#
 .L34:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
-	.loc 1 103 47 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp197, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
+	.loc 1 104 47 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp197, register_content.8
 	mov	edx, DWORD PTR -120[rbp]	# tmp199, i
 	movsx	rdx, edx	# tmp198, tmp199
-	mov	rax, QWORD PTR [rax+rdx*8]	# _29, (*register_content.9_92)[i_73]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
-	.loc 1 103 50 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _29, (*register_content.8_92)[i_73]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
+	.loc 1 104 50 discriminator 3
 	and	eax, 16711680	# _29,
 	mov	rcx, rax	# _30, _29
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
-	.loc 1 103 29 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp200, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]&0xff0000;     // remove all bits except 23:16 via bitmask, IA32 SW Developer Manual p. 2-186
+	.loc 1 104 29 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp200, register_content.8
 	mov	edx, DWORD PTR -120[rbp]	# tmp202, i
 	movsx	rdx, edx	# tmp201, tmp202
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[i_73], _30
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 104 47 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp203, register_content.9
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[i_73], _30
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:105:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 105 47 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp203, register_content.8
 	mov	edx, DWORD PTR -120[rbp]	# tmp205, i
 	movsx	rdx, edx	# tmp204, tmp205
-	mov	rax, QWORD PTR [rax+rdx*8]	# _31, (*register_content.9_92)[i_73]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 104 50 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _31, (*register_content.8_92)[i_73]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:105:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 105 50 discriminator 3
 	shr	rax, 16	# _31,
 	mov	rcx, rax	# _32, _31
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:104:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 104 29 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp206, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:105:         register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 105 29 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp206, register_content.8
 	mov	edx, DWORD PTR -120[rbp]	# tmp208, i
 	movsx	rdx, edx	# tmp207, tmp208
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[i_73], _32
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:105:         temperature_target[i] = register_content[i];                   
-	.loc 1 105 49 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp209, register_content.9
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[i_73], _32
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:106:         temperature_target[i] = register_content[i];                   
+	.loc 1 106 49 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp209, register_content.8
 	mov	edx, DWORD PTR -120[rbp]	# tmp211, i
 	movsx	rdx, edx	# tmp210, tmp211
-	mov	rax, QWORD PTR [rax+rdx*8]	# _33, (*register_content.9_92)[i_73]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:105:         temperature_target[i] = register_content[i];                   
-	.loc 1 105 31 discriminator 3
+	mov	rax, QWORD PTR [rax+rdx*8]	# _33, (*register_content.8_92)[i_73]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:106:         temperature_target[i] = register_content[i];                   
+	.loc 1 106 31 discriminator 3
 	test	rax, rax	# _33
 	js	.L32	#,
 	pxor	xmm0, xmm0	# _34
@@ -741,32 +719,32 @@ msr_temperature_c:
 	cvtsi2ss	xmm0, rdx	# tmp212, tmp213
 	addss	xmm0, xmm0	# _34, tmp212
 .L33:
-	mov	rax, QWORD PTR -80[rbp]	# tmp215, temperature_target.11
+	mov	rax, QWORD PTR -80[rbp]	# tmp215, temperature_target.10
 	mov	edx, DWORD PTR -120[rbp]	# tmp217, i
 	movsx	rdx, edx	# tmp216, tmp217
-	movss	DWORD PTR [rax+rdx*4], xmm0	# (*temperature_target.11_100)[i_73], _34
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:102:     for (int i= 0; i < core_count; i++) {
-	.loc 1 102 37 discriminator 3
+	movss	DWORD PTR [rax+rdx*4], xmm0	# (*temperature_target.10_100)[i_73], _34
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:     for (int i= 0; i < core_count; i++) {
+	.loc 1 103 37 discriminator 3
 	add	DWORD PTR -120[rbp], 1	# i,
 .L31:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:102:     for (int i= 0; i < core_count; i++) {
-	.loc 1 102 22 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:103:     for (int i= 0; i < core_count; i++) {
+	.loc 1 103 22 discriminator 1
 	mov	eax, DWORD PTR -120[rbp]	# tmp218, i
 	cmp	eax, DWORD PTR -148[rbp]	# tmp218, core_count
 	jl	.L34	#,
 .LBE5:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:109:     float temperature_digital_readout[core_count];
-	.loc 1 109 5
-	mov	eax, DWORD PTR -148[rbp]	# core_count.12_104, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:109:     float temperature_digital_readout[core_count];
-	.loc 1 109 11
-	movsx	rdx, eax	# _35, core_count.12_104
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:110:     float temperature_digital_readout[core_count];
+	.loc 1 110 5
+	mov	eax, DWORD PTR -148[rbp]	# core_count.11_104, core_count
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:110:     float temperature_digital_readout[core_count];
+	.loc 1 110 11
+	movsx	rdx, eax	# _35, core_count.11_104
 	sub	rdx, 1	# _36,
-	mov	QWORD PTR -72[rbp], rdx	# D.6896, _37
-	movsx	rdx, eax	# _38, core_count.12_104
+	mov	QWORD PTR -72[rbp], rdx	# D.6904, _37
+	movsx	rdx, eax	# _38, core_count.11_104
 	mov	r14, rdx	# _39, _38
 	mov	r15d, 0	# _39,
-	movsx	rdx, eax	# _43, core_count.12_104
+	movsx	rdx, eax	# _43, core_count.11_104
 	mov	r12, rdx	# _44, _43
 	mov	r13d, 0	# _44,
 	cdqe
@@ -805,110 +783,110 @@ msr_temperature_c:
 	add	rax, 3	# tmp232,
 	shr	rax, 2	# tmp233,
 	sal	rax, 2	# tmp234,
-	mov	QWORD PTR -64[rbp], rax	# temperature_digital_readout.13, tmp234
+	mov	QWORD PTR -64[rbp], rax	# temperature_digital_readout.12, tmp234
 .LBB6:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:111:     for (int core = 0; core < core_count; core++) {
-	.loc 1 111 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:112:     for (int core = 0; core < core_count; core++) {
+	.loc 1 112 14
 	mov	DWORD PTR -116[rbp], 0	# core,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:111:     for (int core = 0; core < core_count; core++) {
-	.loc 1 111 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:112:     for (int core = 0; core < core_count; core++) {
+	.loc 1 112 5
 	jmp	.L38	#
 .L39:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:112:         fd=open_msr(core);
-	.loc 1 112 12 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:113:         fd=open_msr(core);
+	.loc 1 113 12 discriminator 3
 	mov	eax, DWORD PTR -116[rbp]	# tmp235, core
 	mov	edi, eax	#, tmp235
 	call	open_msr	#
 	mov	DWORD PTR -108[rbp], eax	# fd, tmp236
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:113:         register_content[core] = read_msr(fd, IA32_THERM_STATUS); 
-	.loc 1 113 34 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:114:         register_content[core] = read_msr(fd, IA32_THERM_STATUS); 
+	.loc 1 114 34 discriminator 3
 	mov	eax, DWORD PTR -108[rbp]	# tmp237, fd
 	mov	esi, 412	#,
 	mov	edi, eax	#, tmp237
 	call	read_msr	#
 	mov	rcx, rax	# _49, _48
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:113:         register_content[core] = read_msr(fd, IA32_THERM_STATUS); 
-	.loc 1 113 32 discriminator 3
-	mov	rax, QWORD PTR -96[rbp]	# tmp238, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:114:         register_content[core] = read_msr(fd, IA32_THERM_STATUS); 
+	.loc 1 114 32 discriminator 3
+	mov	rax, QWORD PTR -96[rbp]	# tmp238, register_content.8
 	mov	edx, DWORD PTR -116[rbp]	# tmp240, core
 	movsx	rdx, edx	# tmp239, tmp240
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[core_74], _49
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:114:         close(fd);
-	.loc 1 114 9 discriminator 3
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[core_74], _49
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:115:         close(fd);
+	.loc 1 115 9 discriminator 3
 	mov	eax, DWORD PTR -108[rbp]	# tmp241, fd
 	mov	edi, eax	#, tmp241
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:111:     for (int core = 0; core < core_count; core++) {
-	.loc 1 111 47 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:112:     for (int core = 0; core < core_count; core++) {
+	.loc 1 112 47 discriminator 3
 	add	DWORD PTR -116[rbp], 1	# core,
 .L38:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:111:     for (int core = 0; core < core_count; core++) {
-	.loc 1 111 29 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:112:     for (int core = 0; core < core_count; core++) {
+	.loc 1 112 29 discriminator 1
 	mov	eax, DWORD PTR -116[rbp]	# tmp242, core
 	cmp	eax, DWORD PTR -148[rbp]	# tmp242, core_count
 	jl	.L39	#,
 .LBE6:
 .LBB7:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:117:     for (int i= 0; i < core_count; i++) {
-	.loc 1 117 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:     for (int i= 0; i < core_count; i++) {
+	.loc 1 118 14
 	mov	DWORD PTR -112[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:117:     for (int i= 0; i < core_count; i++) {
-	.loc 1 117 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:     for (int i= 0; i < core_count; i++) {
+	.loc 1 118 5
 	jmp	.L40	#
 .L45:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:         if (register_content[i] & (1 << 31)) {
-	.loc 1 118 29
-	mov	rax, QWORD PTR -96[rbp]	# tmp243, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:         if (register_content[i] & (1 << 31)) {
+	.loc 1 119 29
+	mov	rax, QWORD PTR -96[rbp]	# tmp243, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp245, i
 	movsx	rdx, edx	# tmp244, tmp245
-	mov	rax, QWORD PTR [rax+rdx*8]	# _50, (*register_content.9_92)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:         if (register_content[i] & (1 << 31)) {
-	.loc 1 118 33
+	mov	rax, QWORD PTR [rax+rdx*8]	# _50, (*register_content.8_92)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:         if (register_content[i] & (1 << 31)) {
+	.loc 1 119 33
 	and	rax, -2147483648	# _51,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:         if (register_content[i] & (1 << 31)) {
-	.loc 1 118 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:         if (register_content[i] & (1 << 31)) {
+	.loc 1 119 12
 	test	rax, rax	# _51
 	je	.L41	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
-	.loc 1 119 51
-	mov	rax, QWORD PTR -96[rbp]	# tmp246, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
+	.loc 1 120 51
+	mov	rax, QWORD PTR -96[rbp]	# tmp246, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp248, i
 	movsx	rdx, edx	# tmp247, tmp248
-	mov	rax, QWORD PTR [rax+rdx*8]	# _52, (*register_content.9_92)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
-	.loc 1 119 55
+	mov	rax, QWORD PTR [rax+rdx*8]	# _52, (*register_content.8_92)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
+	.loc 1 120 55
 	and	eax, 8323072	# _52,
 	mov	rcx, rax	# _53, _52
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:119:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
-	.loc 1 119 33
-	mov	rax, QWORD PTR -96[rbp]	# tmp249, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i] & 0x7f0000;     // remove all bits except 22:16 via bitmask, IA32 SW Developer Manual p. 2-185
+	.loc 1 120 33
+	mov	rax, QWORD PTR -96[rbp]	# tmp249, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp251, i
 	movsx	rdx, edx	# tmp250, tmp251
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[i_75], _53
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 120 51
-	mov	rax, QWORD PTR -96[rbp]	# tmp252, register_content.9
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[i_75], _53
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:121:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 121 51
+	mov	rax, QWORD PTR -96[rbp]	# tmp252, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp254, i
 	movsx	rdx, edx	# tmp253, tmp254
-	mov	rax, QWORD PTR [rax+rdx*8]	# _54, (*register_content.9_92)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 120 54
+	mov	rax, QWORD PTR [rax+rdx*8]	# _54, (*register_content.8_92)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:121:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 121 54
 	shr	rax, 16	# _54,
 	mov	rcx, rax	# _55, _54
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:120:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-	.loc 1 120 33
-	mov	rax, QWORD PTR -96[rbp]	# tmp255, register_content.9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:121:             register_content[i] = register_content[i]>>16;          // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+	.loc 1 121 33
+	mov	rax, QWORD PTR -96[rbp]	# tmp255, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp257, i
 	movsx	rdx, edx	# tmp256, tmp257
-	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.9_92)[i_75], _55
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:121:             temperature_digital_readout[i] = register_content[i];                     
-	.loc 1 121 62
-	mov	rax, QWORD PTR -96[rbp]	# tmp258, register_content.9
+	mov	QWORD PTR [rax+rdx*8], rcx	# (*register_content.8_92)[i_75], _55
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature_digital_readout[i] = register_content[i];                     
+	.loc 1 122 62
+	mov	rax, QWORD PTR -96[rbp]	# tmp258, register_content.8
 	mov	edx, DWORD PTR -112[rbp]	# tmp260, i
 	movsx	rdx, edx	# tmp259, tmp260
-	mov	rax, QWORD PTR [rax+rdx*8]	# _56, (*register_content.9_92)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:121:             temperature_digital_readout[i] = register_content[i];                     
-	.loc 1 121 44
+	mov	rax, QWORD PTR [rax+rdx*8]	# _56, (*register_content.8_92)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature_digital_readout[i] = register_content[i];                     
+	.loc 1 122 44
 	test	rax, rax	# _56
 	js	.L42	#,
 	pxor	xmm0, xmm0	# _57
@@ -923,81 +901,81 @@ msr_temperature_c:
 	cvtsi2ss	xmm0, rdx	# tmp261, tmp262
 	addss	xmm0, xmm0	# _57, tmp261
 .L43:
-	mov	rax, QWORD PTR -64[rbp]	# tmp264, temperature_digital_readout.13
+	mov	rax, QWORD PTR -64[rbp]	# tmp264, temperature_digital_readout.12
 	mov	edx, DWORD PTR -112[rbp]	# tmp266, i
 	movsx	rdx, edx	# tmp265, tmp266
-	movss	DWORD PTR [rax+rdx*4], xmm0	# (*temperature_digital_readout.13_111)[i_75], _57
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
-	.loc 1 122 48
-	mov	rax, QWORD PTR -80[rbp]	# tmp267, temperature_target.11
+	movss	DWORD PTR [rax+rdx*4], xmm0	# (*temperature_digital_readout.12_111)[i_75], _57
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
+	.loc 1 123 48
+	mov	rax, QWORD PTR -80[rbp]	# tmp267, temperature_target.10
 	mov	edx, DWORD PTR -112[rbp]	# tmp269, i
 	movsx	rdx, edx	# tmp268, tmp269
-	movss	xmm0, DWORD PTR [rax+rdx*4]	# _58, (*temperature_target.11_100)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
-	.loc 1 122 81
-	mov	rax, QWORD PTR -64[rbp]	# tmp270, temperature_digital_readout.13
+	movss	xmm0, DWORD PTR [rax+rdx*4]	# _58, (*temperature_target.10_100)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
+	.loc 1 123 81
+	mov	rax, QWORD PTR -64[rbp]	# tmp270, temperature_digital_readout.12
 	mov	edx, DWORD PTR -112[rbp]	# tmp272, i
 	movsx	rdx, edx	# tmp271, tmp272
-	movss	xmm1, DWORD PTR [rax+rdx*4]	# _59, (*temperature_digital_readout.13_111)[i_75]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
-	.loc 1 122 24
+	movss	xmm1, DWORD PTR [rax+rdx*4]	# _59, (*temperature_digital_readout.12_111)[i_75]
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
+	.loc 1 123 24
 	mov	eax, DWORD PTR -112[rbp]	# tmp273, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _61,
 	mov	rax, QWORD PTR -136[rbp]	# tmp274, temperature
 	add	rax, rdx	# _62, _61
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
-	.loc 1 122 52
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
+	.loc 1 123 52
 	subss	xmm0, xmm1	# _63, _59
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:122:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
-	.loc 1 122 28
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             temperature[i] = temperature_target[i] - temperature_digital_readout[i];
+	.loc 1 123 28
 	movss	DWORD PTR [rax], xmm0	# *_62, _63
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             total += temperature[i];
-	.loc 1 123 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:124:             total += temperature[i];
+	.loc 1 124 33
 	mov	eax, DWORD PTR -112[rbp]	# tmp275, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _65,
 	mov	rax, QWORD PTR -136[rbp]	# tmp276, temperature
 	add	rax, rdx	# _66, _65
 	movss	xmm0, DWORD PTR [rax]	# _67, *_66
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:123:             total += temperature[i];
-	.loc 1 123 19
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:124:             total += temperature[i];
+	.loc 1 124 19
 	movss	xmm1, DWORD PTR -128[rbp]	# tmp278, total
 	addss	xmm0, xmm1	# tmp277, tmp278
 	movss	DWORD PTR -128[rbp], xmm0	# total, tmp277
 	jmp	.L44	#
 .L41:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:126:             printf("Digital temperature reading from IA_THERM_STATUS not valid\n");
-	.loc 1 126 13
-	lea	rax, .LC10[rip]	# tmp279,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:127:             printf("Digital temperature reading from IA_THERM_STATUS not valid\n");
+	.loc 1 127 13
+	lea	rax, .LC8[rip]	# tmp279,
 	mov	rdi, rax	#, tmp279
 	call	puts@PLT	#
 .L44:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:117:     for (int i= 0; i < core_count; i++) {
-	.loc 1 117 37 discriminator 2
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:     for (int i= 0; i < core_count; i++) {
+	.loc 1 118 37 discriminator 2
 	add	DWORD PTR -112[rbp], 1	# i,
 .L40:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:117:     for (int i= 0; i < core_count; i++) {
-	.loc 1 117 22 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:118:     for (int i= 0; i < core_count; i++) {
+	.loc 1 118 22 discriminator 1
 	mov	eax, DWORD PTR -112[rbp]	# tmp280, i
 	cmp	eax, DWORD PTR -148[rbp]	# tmp280, core_count
 	jl	.L45	#,
 .LBE7:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:130:     *average = total / core_count;     
-	.loc 1 130 22
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:131:     *average = total / core_count;     
+	.loc 1 131 22
 	pxor	xmm1, xmm1	# _68
 	cvtsi2ss	xmm1, DWORD PTR -148[rbp]	# _68, core_count
 	movss	xmm0, DWORD PTR -128[rbp]	# tmp281, total
 	divss	xmm0, xmm1	# _69, _68
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:130:     *average = total / core_count;     
-	.loc 1 130 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:131:     *average = total / core_count;     
+	.loc 1 131 14
 	mov	rax, QWORD PTR -144[rbp]	# tmp282, average
 	movss	DWORD PTR [rax], xmm0	# *average_114(D), _69
-	mov	rsp, rbx	#, saved_stack.14_83
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:131: }
-	.loc 1 131 1
+	mov	rsp, rbx	#, saved_stack.13_83
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:132: }
+	.loc 1 132 1
 	nop	
-	mov	rax, QWORD PTR -56[rbp]	# tmp290, D.6961
+	mov	rax, QWORD PTR -56[rbp]	# tmp290, D.6967
 	sub	rax, QWORD PTR fs:40	# tmp290, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L46	#,
 	call	__stack_chk_fail@PLT	#
@@ -1016,22 +994,22 @@ msr_temperature_c:
 .LFE39:
 	.size	msr_temperature_c, .-msr_temperature_c
 	.section	.rodata
-.LC13:
+.LC11:
 	.string	"Power unit %f\n"
-.LC14:
+.LC12:
 	.string	"Time unit %f\n"
-.LC16:
+.LC14:
 	.string	"PL1 = %f W\n"
-.LC17:
+.LC15:
 	.string	"Time Window = %f s\n"
-.LC18:
+.LC16:
 	.string	"Lock status = %lld\n"
 	.text
 	.globl	core_power_units
 	.type	core_power_units, @function
 core_power_units:
 .LFB40:
-	.loc 1 135 1
+	.loc 1 136 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1042,31 +1020,31 @@ core_power_units:
 .LCFI13:
 	.cfi_def_cfa_register 6
 	sub	rsp, 80	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:141:     fd=open_msr(0);
-	.loc 1 141 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:142:     fd=open_msr(0);
+	.loc 1 142 8
 	mov	edi, 0	#,
 	call	open_msr	#
 	mov	DWORD PTR -68[rbp], eax	# fd, tmp103
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:142:     result = read_msr(fd, MSR_RAPL_POWER_UNIT);
-	.loc 1 142 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:143:     result = read_msr(fd, MSR_RAPL_POWER_UNIT);
+	.loc 1 143 14
 	mov	eax, DWORD PTR -68[rbp]	# tmp104, fd
 	mov	esi, 1542	#,
 	mov	edi, eax	#, tmp104
 	call	read_msr	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:142:     result = read_msr(fd, MSR_RAPL_POWER_UNIT);
-	.loc 1 142 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:143:     result = read_msr(fd, MSR_RAPL_POWER_UNIT);
+	.loc 1 143 12
 	mov	QWORD PTR -64[rbp], rax	# result, _1
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:143:     close(fd);
-	.loc 1 143 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:144:     close(fd);
+	.loc 1 144 5
 	mov	eax, DWORD PTR -68[rbp]	# tmp105, fd
 	mov	edi, eax	#, tmp105
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:145:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
-	.loc 1 145 34
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:146:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
+	.loc 1 146 34
 	mov	rax, QWORD PTR -64[rbp]	# tmp106, result
 	and	eax, 15	# _2,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:145:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
-	.loc 1 145 22
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:146:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
+	.loc 1 146 22
 	test	rax, rax	# _2
 	js	.L48	#,
 	pxor	xmm0, xmm0	# _3
@@ -1081,23 +1059,23 @@ core_power_units:
 	cvtsi2sd	xmm0, rdx	# tmp107, tmp108
 	addsd	xmm0, xmm0	# _3, tmp107
 .L49:
-	mov	rax, QWORD PTR .LC11[rip]	# tmp110,
+	mov	rax, QWORD PTR .LC9[rip]	# tmp110,
 	movapd	xmm1, xmm0	#, _3
 	movq	xmm0, rax	#, tmp110
 	call	pow@PLT	#
 	movapd	xmm1, xmm0	# _4,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:145:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
-	.loc 1 145 16
-	movsd	xmm0, QWORD PTR .LC12[rip]	# tmp112,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:146:     power_unit = 1 / pow(2,result&0xF);          // default 0,125 W increments
+	.loc 1 146 16
+	movsd	xmm0, QWORD PTR .LC10[rip]	# tmp112,
 	divsd	xmm0, xmm1	# tmp111, _4
 	movsd	QWORD PTR -56[rbp], xmm0	# power_unit, tmp111
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:147:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
-	.loc 1 147 43
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:148:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
+	.loc 1 148 43
 	mov	rax, QWORD PTR -64[rbp]	# tmp113, result
 	shr	rax, 16	# _5,
 	and	eax, 15	# _6,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:147:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
-	.loc 1 147 21
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:148:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
+	.loc 1 148 21
 	test	rax, rax	# _6
 	js	.L50	#,
 	pxor	xmm0, xmm0	# _7
@@ -1112,57 +1090,57 @@ core_power_units:
 	cvtsi2sd	xmm0, rdx	# tmp114, tmp115
 	addsd	xmm0, xmm0	# _7, tmp114
 .L51:
-	mov	rax, QWORD PTR .LC11[rip]	# tmp117,
+	mov	rax, QWORD PTR .LC9[rip]	# tmp117,
 	movapd	xmm1, xmm0	#, _7
 	movq	xmm0, rax	#, tmp117
 	call	pow@PLT	#
 	movapd	xmm1, xmm0	# _8,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:147:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
-	.loc 1 147 15
-	movsd	xmm0, QWORD PTR .LC12[rip]	# tmp119,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:148:     time_unit = 1 / pow(2,(result&0xF0000)>> 16);      // default 976 µs
+	.loc 1 148 15
+	movsd	xmm0, QWORD PTR .LC10[rip]	# tmp119,
 	divsd	xmm0, xmm1	# tmp118, _8
 	movsd	QWORD PTR -48[rbp], xmm0	# time_unit, tmp118
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:149:     printf("Power unit %f\n", power_unit); 
-	.loc 1 149 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:150:     printf("Power unit %f\n", power_unit); 
+	.loc 1 150 5
 	mov	rax, QWORD PTR -56[rbp]	# tmp120, power_unit
 	movq	xmm0, rax	#, tmp120
-	lea	rax, .LC13[rip]	# tmp121,
+	lea	rax, .LC11[rip]	# tmp121,
 	mov	rdi, rax	#, tmp121
 	mov	eax, 1	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:150:     printf("Time unit %f\n", time_unit);
-	.loc 1 150 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:151:     printf("Time unit %f\n", time_unit);
+	.loc 1 151 5
 	mov	rax, QWORD PTR -48[rbp]	# tmp122, time_unit
 	movq	xmm0, rax	#, tmp122
-	lea	rax, .LC14[rip]	# tmp123,
+	lea	rax, .LC12[rip]	# tmp123,
 	mov	rdi, rax	#, tmp123
 	mov	eax, 1	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:152:     fd=open_msr(0);
-	.loc 1 152 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:153:     fd=open_msr(0);
+	.loc 1 153 8
 	mov	edi, 0	#,
 	call	open_msr	#
 	mov	DWORD PTR -68[rbp], eax	# fd, tmp124
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:153:     result = read_msr(fd, MSR_PKG_POWER_LIMIT);
-	.loc 1 153 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:154:     result = read_msr(fd, MSR_PKG_POWER_LIMIT);
+	.loc 1 154 14
 	mov	eax, DWORD PTR -68[rbp]	# tmp125, fd
 	mov	esi, 1552	#,
 	mov	edi, eax	#, tmp125
 	call	read_msr	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:153:     result = read_msr(fd, MSR_PKG_POWER_LIMIT);
-	.loc 1 153 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:154:     result = read_msr(fd, MSR_PKG_POWER_LIMIT);
+	.loc 1 154 12
 	mov	QWORD PTR -64[rbp], rax	# result, _9
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:154:     close(fd);
-	.loc 1 154 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:155:     close(fd);
+	.loc 1 155 5
 	mov	eax, DWORD PTR -68[rbp]	# tmp126, fd
 	mov	edi, eax	#, tmp126
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:156:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
-	.loc 1 156 30
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:157:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
+	.loc 1 157 30
 	mov	rax, QWORD PTR -64[rbp]	# tmp127, result
 	and	eax, 32767	# _10,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:156:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
-	.loc 1 156 15
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:157:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
+	.loc 1 157 15
 	test	rax, rax	# _10
 	js	.L52	#,
 	pxor	xmm0, xmm0	# _11
@@ -1177,18 +1155,18 @@ core_power_units:
 	cvtsi2sd	xmm0, rdx	# tmp128, tmp129
 	addsd	xmm0, xmm0	# _11, tmp128
 .L53:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:156:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
-	.loc 1 156 13
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:157:     pkg_pl1 = (double)(result&0x7FFF) * power_unit;
+	.loc 1 157 13
 	movsd	xmm1, QWORD PTR -56[rbp]	# tmp132, power_unit
 	mulsd	xmm0, xmm1	# tmp131, tmp132
 	movsd	QWORD PTR -40[rbp], xmm0	# pkg_pl1, tmp131
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:157:     time_y = (double)((result&0x3E0000)>>17);
-	.loc 1 157 40
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:158:     time_y = (double)((result&0x3E0000)>>17);
+	.loc 1 158 40
 	mov	rax, QWORD PTR -64[rbp]	# tmp133, result
 	shr	rax, 17	# _12,
 	and	eax, 31	# _13,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:157:     time_y = (double)((result&0x3E0000)>>17);
-	.loc 1 157 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:158:     time_y = (double)((result&0x3E0000)>>17);
+	.loc 1 158 12
 	test	rax, rax	# _13
 	js	.L54	#,
 	pxor	xmm0, xmm0	# tmp134
@@ -1204,13 +1182,13 @@ core_power_units:
 	addsd	xmm0, xmm0	# tmp134, tmp135
 .L55:
 	movsd	QWORD PTR -32[rbp], xmm0	# time_y, tmp134
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:158:     time_z = (double)((result&0xC00000)>>22);
-	.loc 1 158 40
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     time_z = (double)((result&0xC00000)>>22);
+	.loc 1 159 40
 	mov	rax, QWORD PTR -64[rbp]	# tmp138, result
 	shr	rax, 22	# _14,
 	and	eax, 3	# _15,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:158:     time_z = (double)((result&0xC00000)>>22);
-	.loc 1 158 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     time_z = (double)((result&0xC00000)>>22);
+	.loc 1 159 12
 	test	rax, rax	# _15
 	js	.L56	#,
 	pxor	xmm0, xmm0	# tmp139
@@ -1226,62 +1204,62 @@ core_power_units:
 	addsd	xmm0, xmm0	# tmp139, tmp140
 .L57:
 	movsd	QWORD PTR -24[rbp], xmm0	# time_z, tmp139
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
-	.loc 1 159 44
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:160:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+	.loc 1 160 44
 	movsd	xmm0, QWORD PTR -24[rbp]	# tmp143, time_z
-	movsd	xmm2, QWORD PTR .LC15[rip]	# tmp144,
+	movsd	xmm2, QWORD PTR .LC13[rip]	# tmp144,
 	movapd	xmm1, xmm0	# tmp143, tmp143
 	divsd	xmm1, xmm2	# tmp143, tmp144
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
-	.loc 1 159 35
-	movsd	xmm0, QWORD PTR .LC12[rip]	# tmp145,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:160:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+	.loc 1 160 35
+	movsd	xmm0, QWORD PTR .LC10[rip]	# tmp145,
 	addsd	xmm0, xmm1	# _17, _16
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
-	.loc 1 159 15
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:160:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+	.loc 1 160 15
 	mulsd	xmm0, QWORD PTR -32[rbp]	# _18, time_y
-	mov	rax, QWORD PTR .LC11[rip]	# tmp146,
+	mov	rax, QWORD PTR .LC9[rip]	# tmp146,
 	movapd	xmm1, xmm0	#, _18
 	movq	xmm0, rax	#, tmp146
 	call	pow@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:159:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
-	.loc 1 159 13
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:160:     pkg_tw1 = pow(2,time_y * (1.0 + time_z / 4.0)) * time_unit;
+	.loc 1 160 13
 	movsd	xmm1, QWORD PTR -48[rbp]	# tmp148, time_unit
 	mulsd	xmm0, xmm1	# tmp147, tmp148
 	movsd	QWORD PTR -16[rbp], xmm0	# pkg_tw1, tmp147
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:160:     lock = (result>>63)&0x1;
-	.loc 1 160 10
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:161:     lock = (result>>63)&0x1;
+	.loc 1 161 10
 	mov	rax, QWORD PTR -64[rbp]	# tmp152, result
 	shr	rax, 63	# tmp151,
 	mov	QWORD PTR -8[rbp], rax	# lock, tmp151
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:162:     printf("PL1 = %f W\n", pkg_pl1);
-	.loc 1 162 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:163:     printf("PL1 = %f W\n", pkg_pl1);
+	.loc 1 163 5
 	mov	rax, QWORD PTR -40[rbp]	# tmp153, pkg_pl1
 	movq	xmm0, rax	#, tmp153
-	lea	rax, .LC16[rip]	# tmp154,
+	lea	rax, .LC14[rip]	# tmp154,
 	mov	rdi, rax	#, tmp154
 	mov	eax, 1	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:163:     printf("Time Window = %f s\n", pkg_tw1);
-	.loc 1 163 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:164:     printf("Time Window = %f s\n", pkg_tw1);
+	.loc 1 164 5
 	mov	rax, QWORD PTR -16[rbp]	# tmp155, pkg_tw1
 	movq	xmm0, rax	#, tmp155
-	lea	rax, .LC17[rip]	# tmp156,
+	lea	rax, .LC15[rip]	# tmp156,
 	mov	rdi, rax	#, tmp156
 	mov	eax, 1	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:164:     printf("Lock status = %lld\n", lock);
-	.loc 1 164 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:165:     printf("Lock status = %lld\n", lock);
+	.loc 1 165 5
 	mov	rax, QWORD PTR -8[rbp]	# tmp157, lock
 	mov	rsi, rax	#, tmp157
-	lea	rax, .LC18[rip]	# tmp158,
+	lea	rax, .LC16[rip]	# tmp158,
 	mov	rdi, rax	#, tmp158
 	mov	eax, 0	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:165:     return 0;
-	.loc 1 165 12
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:166:     return 0;
+	.loc 1 166 12
 	mov	eax, 0	# _46,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:166: }
-	.loc 1 166 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:167: }
+	.loc 1 167 1
 	leave	
 .LCFI14:
 	.cfi_def_cfa 7, 8
@@ -1291,31 +1269,31 @@ core_power_units:
 	.size	core_power_units, .-core_power_units
 	.section	.rodata
 	.align 8
-.LC19:
+.LC17:
 	.string	"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj"
 	.align 8
-.LC20:
+.LC18:
 	.string	"/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj"
 	.align 8
-.LC21:
+.LC19:
 	.string	"/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:1/energy_uj"
-.LC22:
+.LC20:
 	.string	"r"
-.LC23:
+.LC21:
 	.string	"\tError opening %s"
-.LC24:
+.LC22:
 	.string	""
-.LC25:
+.LC23:
 	.string	"%lld"
 	.align 8
-.LC26:
+.LC24:
 	.string	"couldnt read from energy counter form %s \n"
 	.text
 	.globl	get_intel_msr_power_w
 	.type	get_intel_msr_power_w, @function
 get_intel_msr_power_w:
 .LFB41:
-	.loc 1 170 1
+	.loc 1 171 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1327,188 +1305,188 @@ get_intel_msr_power_w:
 	.cfi_def_cfa_register 6
 	sub	rsp, 112	#,
 	mov	QWORD PTR -104[rbp], rdi	# power_w, power_w
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:170: {
-	.loc 1 170 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:171: {
+	.loc 1 171 1
 	mov	rax, QWORD PTR fs:40	# tmp134, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.6969, tmp134
+	mov	QWORD PTR -8[rbp], rax	# D.6975, tmp134
 	xor	eax, eax	# tmp134
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:175:     char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
-	.loc 1 175 11
-	lea	rax, .LC19[rip]	# tmp98,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:176:     char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
+	.loc 1 176 11
+	lea	rax, .LC17[rip]	# tmp98,
 	mov	QWORD PTR -32[rbp], rax	# power_domains[0], tmp98
-	lea	rax, .LC20[rip]	# tmp99,
+	lea	rax, .LC18[rip]	# tmp99,
 	mov	QWORD PTR -24[rbp], rax	# power_domains[1], tmp99
-	lea	rax, .LC21[rip]	# tmp100,
+	lea	rax, .LC19[rip]	# tmp100,
 	mov	QWORD PTR -16[rbp], rax	# power_domains[2], tmp100
 .LBB8:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:179:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
-	.loc 1 179 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
+	.loc 1 180 14
 	mov	DWORD PTR -84[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:179:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
-	.loc 1 179 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
+	.loc 1 180 5
 	jmp	.L60	#
 .L64:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:         fp = fopen(power_domains[i],"r");
-	.loc 1 180 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:181:         fp = fopen(power_domains[i],"r");
+	.loc 1 181 33
 	mov	eax, DWORD PTR -84[rbp]	# tmp102, i
 	cdqe
 	mov	rax, QWORD PTR -32[rbp+rax*8]	# _1, power_domains[i_17]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:         fp = fopen(power_domains[i],"r");
-	.loc 1 180 14
-	lea	rdx, .LC22[rip]	# tmp103,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:181:         fp = fopen(power_domains[i],"r");
+	.loc 1 181 14
+	lea	rdx, .LC20[rip]	# tmp103,
 	mov	rsi, rdx	#, tmp103
 	mov	rdi, rax	#, _1
 	call	fopen@PLT	#
 	mov	QWORD PTR -72[rbp], rax	# fp, tmp104
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:181: 				if (fp==NULL) {
-	.loc 1 181 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:182: 				if (fp==NULL) {
+	.loc 1 182 8
 	cmp	QWORD PTR -72[rbp], 0	# fp,
 	jne	.L61	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:182: 					fprintf(stderr,"\tError opening %s", power_domains[i]);
-	.loc 1 182 6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:183: 					fprintf(stderr,"\tError opening %s", power_domains[i]);
+	.loc 1 183 6
 	mov	eax, DWORD PTR -84[rbp]	# tmp106, i
 	cdqe
 	mov	rdx, QWORD PTR -32[rbp+rax*8]	# _2, power_domains[i_17]
-	mov	rax, QWORD PTR stderr[rip]	# stderr.15_3, stderr
-	lea	rcx, .LC23[rip]	# tmp107,
+	mov	rax, QWORD PTR stderr[rip]	# stderr.14_3, stderr
+	lea	rcx, .LC21[rip]	# tmp107,
 	mov	rsi, rcx	#, tmp107
-	mov	rdi, rax	#, stderr.15_3
+	mov	rdi, rax	#, stderr.14_3
 	mov	eax, 0	#,
 	call	fprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:183:                     perror("");
-	.loc 1 183 21
-	lea	rax, .LC24[rip]	# tmp108,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:184:                     perror("");
+	.loc 1 184 21
+	lea	rax, .LC22[rip]	# tmp108,
 	mov	rdi, rax	#, tmp108
 	call	perror@PLT	#
 	jmp	.L62	#
 .L61:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:186: 					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
-	.loc 1 186 10
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:187: 					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
+	.loc 1 187 10
 	lea	rdx, -64[rbp]	# tmp109,
 	mov	eax, DWORD PTR -84[rbp]	# tmp111, i
 	cdqe
 	sal	rax, 3	# tmp112,
 	add	rdx, rax	# _4, tmp112
 	mov	rax, QWORD PTR -72[rbp]	# tmp113, fp
-	lea	rcx, .LC25[rip]	# tmp114,
+	lea	rcx, .LC23[rip]	# tmp114,
 	mov	rsi, rcx	#, tmp114
 	mov	rdi, rax	#, tmp113
 	mov	eax, 0	#,
 	call	__isoc99_fscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:186: 					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
-	.loc 1 186 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:187: 					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
+	.loc 1 187 9
 	cmp	eax, -1	# _5,
 	jne	.L63	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:188:                         printf("couldnt read from energy counter form %s \n", power_domains[i]);
-	.loc 1 188 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:189:                         printf("couldnt read from energy counter form %s \n", power_domains[i]);
+	.loc 1 189 25
 	mov	eax, DWORD PTR -84[rbp]	# tmp116, i
 	cdqe
 	mov	rax, QWORD PTR -32[rbp+rax*8]	# _6, power_domains[i_17]
 	mov	rsi, rax	#, _6
-	lea	rax, .LC26[rip]	# tmp117,
+	lea	rax, .LC24[rip]	# tmp117,
 	mov	rdi, rax	#, tmp117
 	mov	eax, 0	#,
 	call	printf@PLT	#
 .L63:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:190: 					fclose(fp);
-	.loc 1 190 6
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:191: 					fclose(fp);
+	.loc 1 191 6
 	mov	rax, QWORD PTR -72[rbp]	# tmp118, fp
 	mov	rdi, rax	#, tmp118
 	call	fclose@PLT	#
 .L62:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:179:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
-	.loc 1 179 29 discriminator 2
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
+	.loc 1 180 29 discriminator 2
 	add	DWORD PTR -84[rbp], 1	# i,
 .L60:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:179:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
-	.loc 1 179 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:180:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
+	.loc 1 180 23 discriminator 1
 	cmp	DWORD PTR -84[rbp], 2	# i,
 	jle	.L64	#,
 .LBE8:
 .LBB9:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:194:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 194 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 195 14
 	mov	DWORD PTR -80[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:194:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 194 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 195 5
 	jmp	.L65	#
 .L66:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 47 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 47 discriminator 3
 	mov	eax, DWORD PTR -80[rbp]	# tmp120, i
 	cdqe
 	mov	rax, QWORD PTR -64[rbp+rax*8]	# _7, energy_uj_after[i_18]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 69 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 69 discriminator 3
 	mov	edx, DWORD PTR -80[rbp]	# tmp122, i
 	movsx	rdx, edx	# tmp121, tmp122
 	lea	rcx, 0[0+rdx*8]	# tmp123,
 	lea	rdx, energy_uj_before.1[rip]	# tmp124,
 	mov	rdx, QWORD PTR [rcx+rdx]	# _8, energy_uj_before[i_18]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 51 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 51 discriminator 3
 	sub	rax, rdx	# _9, _8
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 74 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 74 discriminator 3
 	pxor	xmm1, xmm1	# _10
 	cvtsi2sd	xmm1, rax	# _10, _9
-	movsd	xmm0, QWORD PTR .LC27[rip]	# tmp125,
+	movsd	xmm0, QWORD PTR .LC25[rip]	# tmp125,
 	mulsd	xmm0, xmm1	# _11, _10
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 16 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 16 discriminator 3
 	mov	eax, DWORD PTR -80[rbp]	# tmp126, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _13,
 	mov	rax, QWORD PTR -104[rbp]	# tmp127, power_w
 	add	rax, rdx	# _14, _13
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 82 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 82 discriminator 3
 	cvtsd2ss	xmm0, xmm0	# _15, _11
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
-	.loc 1 195 20 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:196:         power_w[i] = (float)( (energy_uj_after[i] - energy_uj_before[i]) * 1e-6) / (float) POLL_INTERVAL_S ;
+	.loc 1 196 20 discriminator 3
 	movss	DWORD PTR [rax], xmm0	# *_14, _15
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:194:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 194 29 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 195 29 discriminator 3
 	add	DWORD PTR -80[rbp], 1	# i,
 .L65:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:194:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 194 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:195:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 195 23 discriminator 1
 	cmp	DWORD PTR -80[rbp], 2	# i,
 	jle	.L66	#,
 .LBE9:
 .LBB10:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:197:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 197 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 198 14
 	mov	DWORD PTR -76[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:197:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 197 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 198 5
 	jmp	.L67	#
 .L68:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:         energy_uj_before[i] = energy_uj_after[i];
-	.loc 1 198 46 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:199:         energy_uj_before[i] = energy_uj_after[i];
+	.loc 1 199 46 discriminator 3
 	mov	eax, DWORD PTR -76[rbp]	# tmp129, i
 	cdqe
 	mov	rax, QWORD PTR -64[rbp+rax*8]	# _16, energy_uj_after[i_19]
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:         energy_uj_before[i] = energy_uj_after[i];
-	.loc 1 198 29 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:199:         energy_uj_before[i] = energy_uj_after[i];
+	.loc 1 199 29 discriminator 3
 	mov	edx, DWORD PTR -76[rbp]	# tmp131, i
 	movsx	rdx, edx	# tmp130, tmp131
 	lea	rcx, 0[0+rdx*8]	# tmp132,
 	lea	rdx, energy_uj_before.1[rip]	# tmp133,
 	mov	QWORD PTR [rcx+rdx], rax	# energy_uj_before[i_19], _16
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:197:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 197 29 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 198 29 discriminator 3
 	add	DWORD PTR -76[rbp], 1	# i,
 .L67:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:197:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
-	.loc 1 197 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:198:     for (int i = 0; i < POWER_DOMAIN_COUNT; i++){
+	.loc 1 198 23 discriminator 1
 	cmp	DWORD PTR -76[rbp], 2	# i,
 	jle	.L68	#,
 .LBE10:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:200: }
-	.loc 1 200 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:201: }
+	.loc 1 201 1
 	nop	
-	mov	rax, QWORD PTR -8[rbp]	# tmp135, D.6969
+	mov	rax, QWORD PTR -8[rbp]	# tmp135, D.6975
 	sub	rax, QWORD PTR fs:40	# tmp135, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L69	#,
 	call	__stack_chk_fail@PLT	#
@@ -1521,19 +1499,18 @@ get_intel_msr_power_w:
 .LFE41:
 	.size	get_intel_msr_power_w, .-get_intel_msr_power_w
 	.section	.rodata
-.LC28:
-	.string	"Entered rapl_msr_amd_core"
-.LC30:
-	.string	"Reading from AMD_MSR_PWR_UNIT"
 	.align 8
-.LC31:
+.LC26:
+	.string	"Reading from AMD_MSR_PACKAGE_ENERGY"
+	.align 8
+.LC27:
 	.string	"Received raw energy Reading = %lld\n"
 	.text
-	.globl	get_amd_pck_power_w
-	.type	get_amd_pck_power_w, @function
-get_amd_pck_power_w:
+	.globl	get_amd_pkg_power_w
+	.type	get_amd_pkg_power_w, @function
+get_amd_pkg_power_w:
 .LFB42:
-	.loc 1 203 1
+	.loc 1 204 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1543,85 +1520,79 @@ get_amd_pck_power_w:
 	mov	rbp, rsp	#,
 .LCFI19:
 	.cfi_def_cfa_register 6
-	sub	rsp, 48	#,
-	mov	QWORD PTR -40[rbp], rdi	# my_power, my_power
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:205:     printf("Entered rapl_msr_amd_core\n");
-	.loc 1 205 5
-	lea	rax, .LC28[rip]	# tmp87,
-	mov	rdi, rax	#, tmp87
-	call	puts@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:208:     float package_after = 0;
-	.loc 1 208 11
-	pxor	xmm0, xmm0	# tmp88
-	movss	DWORD PTR -20[rbp], xmm0	# package_after, tmp88
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:209:     float energy_unit = 1.52588e-05;
+	sub	rsp, 32	#,
+	mov	QWORD PTR -24[rbp], rdi	# my_power, my_power
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:209:     float package_after = 0;
 	.loc 1 209 11
-	movss	xmm0, DWORD PTR .LC29[rip]	# tmp89,
-	movss	DWORD PTR -16[rbp], xmm0	# energy_unit, tmp89
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:211:     int fp = open_msr(1);
+	pxor	xmm0, xmm0	# tmp88
+	movss	DWORD PTR -16[rbp], xmm0	# package_after, tmp88
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:211:     int fp = open_msr(0);
 	.loc 1 211 14
-	mov	edi, 1	#,
+	mov	edi, 0	#,
 	call	open_msr	#
-	mov	DWORD PTR -12[rbp], eax	# fp, tmp90
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:213:     printf("Reading from AMD_MSR_PWR_UNIT\n");
+	mov	DWORD PTR -12[rbp], eax	# fp, tmp89
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:213:     printf("Reading from AMD_MSR_PACKAGE_ENERGY\n");
 	.loc 1 213 5
-	lea	rax, .LC30[rip]	# tmp91,
-	mov	rdi, rax	#, tmp91
+	lea	rax, .LC26[rip]	# tmp90,
+	mov	rdi, rax	#, tmp90
 	call	puts@PLT	#
 # /home/jscha/dvp/cpumon/src/machine_specific_registers.c:214:     long long package_raw = read_msr(fp, AMD_MSR_PACKAGE_ENERGY);
 	.loc 1 214 29
-	mov	eax, DWORD PTR -12[rbp]	# tmp92, fp
+	mov	eax, DWORD PTR -12[rbp]	# tmp91, fp
 	mov	esi, -1073675621	#,
-	mov	edi, eax	#, tmp92
+	mov	edi, eax	#, tmp91
 	call	read_msr	#
-	mov	QWORD PTR -8[rbp], rax	# package_raw, tmp93
+	mov	QWORD PTR -8[rbp], rax	# package_raw, tmp92
 # /home/jscha/dvp/cpumon/src/machine_specific_registers.c:215:     printf("Received raw energy Reading = %lld\n", package_raw);
 	.loc 1 215 5
-	mov	rax, QWORD PTR -8[rbp]	# tmp94, package_raw
-	mov	rsi, rax	#, tmp94
-	lea	rax, .LC31[rip]	# tmp95,
-	mov	rdi, rax	#, tmp95
+	mov	rax, QWORD PTR -8[rbp]	# tmp93, package_raw
+	mov	rsi, rax	#, tmp93
+	lea	rax, .LC27[rip]	# tmp94,
+	mov	rdi, rax	#, tmp94
 	mov	eax, 0	#,
 	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:217:     package_after = package_raw * energy_unit;
-	.loc 1 217 33
-	pxor	xmm0, xmm0	# _1
-	cvtsi2ss	xmm0, QWORD PTR -8[rbp]	# _1, package_raw
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:217:     package_after = package_raw * energy_unit;
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:217:     package_after = (float)package_raw * my_power->energy_unit;
+	.loc 1 217 21
+	pxor	xmm1, xmm1	# _1
+	cvtsi2ss	xmm1, QWORD PTR -8[rbp]	# _1, package_raw
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:217:     package_after = (float)package_raw * my_power->energy_unit;
+	.loc 1 217 50
+	mov	rax, QWORD PTR -24[rbp]	# tmp95, my_power
+	movss	xmm0, DWORD PTR 24[rax]	# _2, my_power_13(D)->energy_unit
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:217:     package_after = (float)package_raw * my_power->energy_unit;
 	.loc 1 217 19
-	movss	xmm1, DWORD PTR -16[rbp]	# tmp97, energy_unit
-	mulss	xmm0, xmm1	# tmp96, tmp97
-	movss	DWORD PTR -20[rbp], xmm0	# package_after, tmp96
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:218:     *my_power = (float) (package_after - package_before);
-	.loc 1 218 17
-	movss	xmm1, DWORD PTR package_before.0[rip]	# package_before.16_2, package_before
-	movss	xmm0, DWORD PTR -20[rbp]	# tmp98, package_after
-	subss	xmm0, xmm1	# _3, package_before.16_2
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:218:     *my_power = (float) (package_after - package_before);
-	.loc 1 218 15
-	mov	rax, QWORD PTR -40[rbp]	# tmp99, my_power
-	movss	DWORD PTR [rax], xmm0	# *my_power_15(D), _3
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:220:     package_before = package_after;
-	.loc 1 220 20
-	movss	xmm0, DWORD PTR -20[rbp]	# tmp100, package_after
-	movss	DWORD PTR package_before.0[rip], xmm0	# package_before, tmp100
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:222: 	return 0;
-	.loc 1 222 9
-	mov	eax, 0	# _18,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:223: }
-	.loc 1 223 1
+	mulss	xmm0, xmm1	# tmp96, _1
+	movss	DWORD PTR -16[rbp], xmm0	# package_after, tmp96
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:218:     my_power->pkg_now = package_after - package_before;
+	.loc 1 218 39
+	movss	xmm1, DWORD PTR package_before.0[rip]	# package_before.15_3, package_before
+	movss	xmm0, DWORD PTR -16[rbp]	# tmp97, package_after
+	subss	xmm0, xmm1	# _4, package_before.15_3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:218:     my_power->pkg_now = package_after - package_before;
+	.loc 1 218 23
+	mov	rax, QWORD PTR -24[rbp]	# tmp98, my_power
+	movss	DWORD PTR 8[rax], xmm0	# my_power_13(D)->pkg_now, _4
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:219:     package_before = package_after;
+	.loc 1 219 20
+	movss	xmm0, DWORD PTR -16[rbp]	# tmp99, package_after
+	movss	DWORD PTR package_before.0[rip], xmm0	# package_before, tmp99
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:221: 	return 0;
+	.loc 1 221 9
+	mov	eax, 0	# _17,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:222: }
+	.loc 1 222 1
 	leave	
 .LCFI20:
 	.cfi_def_cfa 7, 8
 	ret	
 	.cfi_endproc
 .LFE42:
-	.size	get_amd_pck_power_w, .-get_amd_pck_power_w
+	.size	get_amd_pkg_power_w, .-get_amd_pkg_power_w
 	.globl	get_msr_core_units
 	.type	get_msr_core_units, @function
 get_msr_core_units:
 .LFB43:
-	.loc 1 226 1
+	.loc 1 225 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1634,143 +1605,149 @@ get_msr_core_units:
 	sub	rsp, 48	#,
 	mov	QWORD PTR -40[rbp], rdi	# my_power, my_power
 	mov	DWORD PTR -44[rbp], esi	# designer, designer
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:227:     switch (designer)
-	.loc 1 227 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:226:     switch (designer)
+	.loc 1 226 5
 	cmp	DWORD PTR -44[rbp], 1	# designer,
 	jne	.L82	#,
 .LBB11:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:230:             int fp = open_msr(0);   // using units of Core 0 for all others cores
-	.loc 1 230 22
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:229:             int fp = open_msr(0);   // using units of Core 0 for all others cores
+	.loc 1 229 22
 	mov	edi, 0	#,
 	call	open_msr	#
-	mov	DWORD PTR -20[rbp], eax	# fp, tmp99
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:231:             int core_energy_units = read_msr(fp, AMD_MSR_PWR_UNIT);
-	.loc 1 231 37
-	mov	eax, DWORD PTR -20[rbp]	# tmp100, fp
+	mov	DWORD PTR -20[rbp], eax	# fp, tmp102
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:230:             int core_energy_units = read_msr(fp, AMD_MSR_PWR_UNIT);
+	.loc 1 230 37
+	mov	eax, DWORD PTR -20[rbp]	# tmp103, fp
 	mov	esi, -1073675623	#,
-	mov	edi, eax	#, tmp100
+	mov	edi, eax	#, tmp103
 	call	read_msr	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:231:             int core_energy_units = read_msr(fp, AMD_MSR_PWR_UNIT);
-	.loc 1 231 17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:230:             int core_energy_units = read_msr(fp, AMD_MSR_PWR_UNIT);
+	.loc 1 230 17
 	mov	DWORD PTR -16[rbp], eax	# core_energy_units, _1
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:232:             unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
-	.loc 1 232 72
-	mov	eax, DWORD PTR -16[rbp]	# tmp101, core_energy_units
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:231:             unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
+	.loc 1 231 72
+	mov	eax, DWORD PTR -16[rbp]	# tmp104, core_energy_units
 	sar	eax, 16	# _2,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:232:             unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
-	.loc 1 232 26
-	and	eax, 15	# tmp102,
-	mov	DWORD PTR -12[rbp], eax	# time_unit_raw, tmp102
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:233: 	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
-	.loc 1 233 70
-	mov	eax, DWORD PTR -16[rbp]	# tmp103, core_energy_units
-	sar	eax, 8	# _4,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:233: 	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
-	.loc 1 233 23
-	and	eax, 31	# tmp104,
-	mov	DWORD PTR -8[rbp], eax	# energy_unit_raw, tmp104
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:234: 	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
-	.loc 1 234 59
-	mov	eax, DWORD PTR -16[rbp]	# core_energy_units.17_6, core_energy_units
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:234: 	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
-	.loc 1 234 23
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:231:             unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
+	.loc 1 231 26
 	and	eax, 15	# tmp105,
-	mov	DWORD PTR -4[rbp], eax	# power_unit_raw, tmp105
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:235:             my_power->time_unit = pow(0.5,(double)(time_unit_raw));
-	.loc 1 235 35
-	mov	eax, DWORD PTR -12[rbp]	# tmp106, time_unit_raw
-	test	rax, rax	# tmp106
+	mov	DWORD PTR -12[rbp], eax	# time_unit_raw, tmp105
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:232: 	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
+	.loc 1 232 70
+	mov	eax, DWORD PTR -16[rbp]	# tmp106, core_energy_units
+	sar	eax, 8	# _4,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:232: 	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
+	.loc 1 232 23
+	and	eax, 31	# tmp107,
+	mov	DWORD PTR -8[rbp], eax	# energy_unit_raw, tmp107
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:233: 	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
+	.loc 1 233 59
+	mov	eax, DWORD PTR -16[rbp]	# core_energy_units.16_6, core_energy_units
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:233: 	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
+	.loc 1 233 23
+	and	eax, 15	# tmp108,
+	mov	DWORD PTR -4[rbp], eax	# power_unit_raw, tmp108
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:234:             my_power->time_unit = pow(0.5,(float)(time_unit_raw));
+	.loc 1 234 43
+	mov	eax, DWORD PTR -12[rbp]	# tmp109, time_unit_raw
+	test	rax, rax	# tmp109
 	js	.L74	#,
 	pxor	xmm0, xmm0	# _7
-	cvtsi2sd	xmm0, rax	# _7, tmp106
+	cvtsi2ss	xmm0, rax	# _7, tmp109
 	jmp	.L75	#
 .L74:
-	mov	rdx, rax	# tmp108, tmp106
-	shr	rdx	# tmp108
-	and	eax, 1	# tmp109,
-	or	rdx, rax	# tmp108, tmp109
-	pxor	xmm0, xmm0	# tmp107
-	cvtsi2sd	xmm0, rdx	# tmp107, tmp108
-	addsd	xmm0, xmm0	# _7, tmp107
+	mov	rdx, rax	# tmp111, tmp109
+	shr	rdx	# tmp111
+	and	eax, 1	# tmp112,
+	or	rdx, rax	# tmp111, tmp112
+	pxor	xmm0, xmm0	# tmp110
+	cvtsi2ss	xmm0, rdx	# tmp110, tmp111
+	addss	xmm0, xmm0	# _7, tmp110
 .L75:
-	mov	rax, QWORD PTR .LC32[rip]	# tmp110,
-	movapd	xmm1, xmm0	#, _7
-	movq	xmm0, rax	#, tmp110
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:234:             my_power->time_unit = pow(0.5,(float)(time_unit_raw));
+	.loc 1 234 35
+	cvtss2sd	xmm0, xmm0	# _8, _7
+	mov	rax, QWORD PTR .LC28[rip]	# tmp113,
+	movapd	xmm1, xmm0	#, _8
+	movq	xmm0, rax	#, tmp113
 	call	pow@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:235:             my_power->time_unit = pow(0.5,(double)(time_unit_raw));
-	.loc 1 235 33
-	cvttsd2si	rax, xmm0	# tmp111, _8
-	mov	edx, eax	# _9, tmp111
-	mov	rax, QWORD PTR -40[rbp]	# tmp112, my_power
-	mov	DWORD PTR 20[rax], edx	# my_power_27(D)->time_unit, _9
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:236: 	        my_power->energy_unit = pow(0.5,(double)(energy_unit_raw));
-	.loc 1 236 34
-	mov	eax, DWORD PTR -8[rbp]	# tmp113, energy_unit_raw
-	test	rax, rax	# tmp113
+	cvtsd2ss	xmm0, xmm0	# _10, _9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:234:             my_power->time_unit = pow(0.5,(float)(time_unit_raw));
+	.loc 1 234 33
+	mov	rax, QWORD PTR -40[rbp]	# tmp114, my_power
+	movss	DWORD PTR 20[rax], xmm0	# my_power_30(D)->time_unit, _10
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:235: 	        my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
+	.loc 1 235 42
+	mov	eax, DWORD PTR -8[rbp]	# tmp115, energy_unit_raw
+	test	rax, rax	# tmp115
 	js	.L76	#,
-	pxor	xmm0, xmm0	# _10
-	cvtsi2sd	xmm0, rax	# _10, tmp113
+	pxor	xmm0, xmm0	# _11
+	cvtsi2ss	xmm0, rax	# _11, tmp115
 	jmp	.L77	#
 .L76:
-	mov	rdx, rax	# tmp115, tmp113
-	shr	rdx	# tmp115
-	and	eax, 1	# tmp116,
-	or	rdx, rax	# tmp115, tmp116
-	pxor	xmm0, xmm0	# tmp114
-	cvtsi2sd	xmm0, rdx	# tmp114, tmp115
-	addsd	xmm0, xmm0	# _10, tmp114
+	mov	rdx, rax	# tmp117, tmp115
+	shr	rdx	# tmp117
+	and	eax, 1	# tmp118,
+	or	rdx, rax	# tmp117, tmp118
+	pxor	xmm0, xmm0	# tmp116
+	cvtsi2ss	xmm0, rdx	# tmp116, tmp117
+	addss	xmm0, xmm0	# _11, tmp116
 .L77:
-	mov	rax, QWORD PTR .LC32[rip]	# tmp117,
-	movapd	xmm1, xmm0	#, _10
-	movq	xmm0, rax	#, tmp117
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:235: 	        my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
+	.loc 1 235 34
+	cvtss2sd	xmm0, xmm0	# _12, _11
+	mov	rax, QWORD PTR .LC28[rip]	# tmp119,
+	movapd	xmm1, xmm0	#, _12
+	movq	xmm0, rax	#, tmp119
 	call	pow@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:236: 	        my_power->energy_unit = pow(0.5,(double)(energy_unit_raw));
-	.loc 1 236 32
-	cvttsd2si	rax, xmm0	# tmp118, _11
-	mov	edx, eax	# _12, tmp118
-	mov	rax, QWORD PTR -40[rbp]	# tmp119, my_power
-	mov	DWORD PTR 24[rax], edx	# my_power_27(D)->energy_unit, _12
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:237: 	        my_power->power_unit = pow(0.5,(double)(power_unit_raw));
-	.loc 1 237 33
-	mov	eax, DWORD PTR -4[rbp]	# tmp120, power_unit_raw
-	test	rax, rax	# tmp120
+	cvtsd2ss	xmm0, xmm0	# _14, _13
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:235: 	        my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
+	.loc 1 235 32
+	mov	rax, QWORD PTR -40[rbp]	# tmp120, my_power
+	movss	DWORD PTR 24[rax], xmm0	# my_power_30(D)->energy_unit, _14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:236: 	        my_power->power_unit = pow(0.5,(float)(power_unit_raw));
+	.loc 1 236 41
+	mov	eax, DWORD PTR -4[rbp]	# tmp121, power_unit_raw
+	test	rax, rax	# tmp121
 	js	.L78	#,
-	pxor	xmm0, xmm0	# _13
-	cvtsi2sd	xmm0, rax	# _13, tmp120
+	pxor	xmm0, xmm0	# _15
+	cvtsi2ss	xmm0, rax	# _15, tmp121
 	jmp	.L79	#
 .L78:
-	mov	rdx, rax	# tmp122, tmp120
-	shr	rdx	# tmp122
-	and	eax, 1	# tmp123,
-	or	rdx, rax	# tmp122, tmp123
-	pxor	xmm0, xmm0	# tmp121
-	cvtsi2sd	xmm0, rdx	# tmp121, tmp122
-	addsd	xmm0, xmm0	# _13, tmp121
+	mov	rdx, rax	# tmp123, tmp121
+	shr	rdx	# tmp123
+	and	eax, 1	# tmp124,
+	or	rdx, rax	# tmp123, tmp124
+	pxor	xmm0, xmm0	# tmp122
+	cvtsi2ss	xmm0, rdx	# tmp122, tmp123
+	addss	xmm0, xmm0	# _15, tmp122
 .L79:
-	mov	rax, QWORD PTR .LC32[rip]	# tmp124,
-	movapd	xmm1, xmm0	#, _13
-	movq	xmm0, rax	#, tmp124
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:236: 	        my_power->power_unit = pow(0.5,(float)(power_unit_raw));
+	.loc 1 236 33
+	cvtss2sd	xmm0, xmm0	# _16, _15
+	mov	rax, QWORD PTR .LC28[rip]	# tmp125,
+	movapd	xmm1, xmm0	#, _16
+	movq	xmm0, rax	#, tmp125
 	call	pow@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:237: 	        my_power->power_unit = pow(0.5,(double)(power_unit_raw));
-	.loc 1 237 31
-	cvttsd2si	rax, xmm0	# tmp125, _14
-	mov	edx, eax	# _15, tmp125
+	cvtsd2ss	xmm0, xmm0	# _18, _17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:236: 	        my_power->power_unit = pow(0.5,(float)(power_unit_raw));
+	.loc 1 236 31
 	mov	rax, QWORD PTR -40[rbp]	# tmp126, my_power
-	mov	DWORD PTR 28[rax], edx	# my_power_27(D)->power_unit, _15
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:238:             break;
-	.loc 1 238 13
+	movss	DWORD PTR 28[rax], xmm0	# my_power_30(D)->power_unit, _18
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:237:             break;
+	.loc 1 237 13
 	jmp	.L80	#
 .L82:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:240:             break;
-	.loc 1 240 13
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:239:             break;
+	.loc 1 239 13
 	nop	
 .L80:
 .LBE11:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:243:     return 0;
-	.loc 1 243 12
-	mov	eax, 0	# _33,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:244: }
-	.loc 1 244 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:242:     return 0;
+	.loc 1 242 12
+	mov	eax, 0	# _36,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:243: }
+	.loc 1 243 1
 	leave	
 .LCFI23:
 	.cfi_def_cfa 7, 8
@@ -1779,34 +1756,34 @@ get_msr_core_units:
 .LFE43:
 	.size	get_msr_core_units, .-get_msr_core_units
 	.section	.rodata
-.LC33:
+.LC29:
 	.string	"TEMPERATURE\n"
-.LC34:
+.LC30:
 	.string	"POWER\n"
-.LC35:
+.LC31:
 	.string	"RESIDENCY\n"
-.LC36:
+.LC32:
 	.string	"THERMAL\n"
-.LC37:
+.LC33:
 	.string	"VOLTAGE REGULATOR\n"
-.LC38:
+.LC34:
 	.string	"CURRENT\n"
-.LC39:
+.LC35:
 	.string	"OTHER\n"
-.LC40:
+.LC36:
 	.string	"PL1\n"
-.LC41:
+.LC37:
 	.string	"PL2\n"
-.LC42:
+.LC38:
 	.string	"MC_TURBO\n"
-.LC43:
+.LC39:
 	.string	"TRANSITION ATTENUATION\n"
 	.text
 	.globl	get_msr_power_limits_w
 	.type	get_msr_power_limits_w, @function
 get_msr_power_limits_w:
 .LFB44:
-	.loc 1 322 44
+	.loc 1 321 44
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1818,280 +1795,280 @@ get_msr_power_limits_w:
 	.cfi_def_cfa_register 6
 	sub	rsp, 80	#,
 	mov	DWORD PTR -68[rbp], edi	# core_count, core_count
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:324:     uint64_t result = 0;
-	.loc 1 324 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:323:     uint64_t result = 0;
+	.loc 1 323 14
 	mov	QWORD PTR -8[rbp], 0	# result,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:326:     int prochot = 0;               // Table 2-2 IA-32 Architectural MSRs
-	.loc 1 326 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:325:     int prochot = 0;               // Table 2-2 IA-32 Architectural MSRs
+	.loc 1 325 9
 	mov	DWORD PTR -56[rbp], 0	# prochot,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:327:     int thermal = 0;
-	.loc 1 327 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:326:     int thermal = 0;
+	.loc 1 326 9
 	mov	DWORD PTR -52[rbp], 0	# thermal,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:328:     int residency_state = 0;
-	.loc 1 328 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:327:     int residency_state = 0;
+	.loc 1 327 9
 	mov	DWORD PTR -48[rbp], 0	# residency_state,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:329:     int running_average_thermal = 0;
-	.loc 1 329 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:328:     int running_average_thermal = 0;
+	.loc 1 328 9
 	mov	DWORD PTR -44[rbp], 0	# running_average_thermal,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:330:     int vr_therm = 0;               // thermal alert of processor voltage regulator
-	.loc 1 330 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:329:     int vr_therm = 0;               // thermal alert of processor voltage regulator
+	.loc 1 329 9
 	mov	DWORD PTR -40[rbp], 0	# vr_therm,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:331:     int vr_therm_design_current = 0;
-	.loc 1 331 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:330:     int vr_therm_design_current = 0;
+	.loc 1 330 9
 	mov	DWORD PTR -36[rbp], 0	# vr_therm_design_current,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:332:     int other = 0;
-	.loc 1 332 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:331:     int other = 0;
+	.loc 1 331 9
 	mov	DWORD PTR -32[rbp], 0	# other,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:333:     int pkg_pl1 = 0;
-	.loc 1 333 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:332:     int pkg_pl1 = 0;
+	.loc 1 332 9
 	mov	DWORD PTR -28[rbp], 0	# pkg_pl1,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:334:     int pkg_pl2 = 0;
-	.loc 1 334 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:333:     int pkg_pl2 = 0;
+	.loc 1 333 9
 	mov	DWORD PTR -24[rbp], 0	# pkg_pl2,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:335:     int max_turbo_limit = 0;        // multicore turbo limit
-	.loc 1 335 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:334:     int max_turbo_limit = 0;        // multicore turbo limit
+	.loc 1 334 9
 	mov	DWORD PTR -20[rbp], 0	# max_turbo_limit,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:336:     int turbo_transition_attenuation = 0;   
-	.loc 1 336 9
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:335:     int turbo_transition_attenuation = 0;   
+	.loc 1 335 9
 	mov	DWORD PTR -16[rbp], 0	# turbo_transition_attenuation,
 .LBB12:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:339:     for (int i = 0; i < core_count; i++){
-	.loc 1 339 14
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:338:     for (int i = 0; i < core_count; i++){
+	.loc 1 338 14
 	mov	DWORD PTR -60[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:339:     for (int i = 0; i < core_count; i++){
-	.loc 1 339 5
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:338:     for (int i = 0; i < core_count; i++){
+	.loc 1 338 5
 	jmp	.L84	#
 .L85:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:340:         fd = open_msr(i);
-	.loc 1 340 14 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:339:         fd = open_msr(i);
+	.loc 1 339 14 discriminator 3
 	mov	eax, DWORD PTR -60[rbp]	# tmp94, i
 	mov	edi, eax	#, tmp94
 	call	open_msr	#
 	mov	DWORD PTR -12[rbp], eax	# fd, tmp95
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:341:         result = read_msr(fd,IA32_PACKAGE_THERM_STATUS);
-	.loc 1 341 18 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:340:         result = read_msr(fd,IA32_PACKAGE_THERM_STATUS);
+	.loc 1 340 18 discriminator 3
 	mov	eax, DWORD PTR -12[rbp]	# tmp96, fd
 	mov	esi, 433	#,
 	mov	edi, eax	#, tmp96
 	call	read_msr	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:341:         result = read_msr(fd,IA32_PACKAGE_THERM_STATUS);
-	.loc 1 341 16 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:340:         result = read_msr(fd,IA32_PACKAGE_THERM_STATUS);
+	.loc 1 340 16 discriminator 3
 	mov	QWORD PTR -8[rbp], rax	# result, _1
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:342:         close(fd);
-	.loc 1 342 9 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:341:         close(fd);
+	.loc 1 341 9 discriminator 3
 	mov	eax, DWORD PTR -12[rbp]	# tmp97, fd
 	mov	edi, eax	#, tmp97
 	call	close@PLT	#
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:339:     for (int i = 0; i < core_count; i++){
-	.loc 1 339 38 discriminator 3
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:338:     for (int i = 0; i < core_count; i++){
+	.loc 1 338 38 discriminator 3
 	add	DWORD PTR -60[rbp], 1	# i,
 .L84:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:339:     for (int i = 0; i < core_count; i++){
-	.loc 1 339 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:338:     for (int i = 0; i < core_count; i++){
+	.loc 1 338 23 discriminator 1
 	mov	eax, DWORD PTR -60[rbp]	# tmp98, i
 	cmp	eax, DWORD PTR -68[rbp]	# tmp98, core_count
 	jl	.L85	#,
 .LBE12:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:345:         prochot = result&PROCHOT;
-	.loc 1 345 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:344:         prochot = result&PROCHOT;
+	.loc 1 344 25
 	mov	rax, QWORD PTR -8[rbp]	# tmp99, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:345:         prochot = result&PROCHOT;
-	.loc 1 345 17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:344:         prochot = result&PROCHOT;
+	.loc 1 344 17
 	and	eax, 1	# tmp100,
 	mov	DWORD PTR -56[rbp], eax	# prochot, tmp100
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:346:         thermal = result&THERMAL_STATUS;
-	.loc 1 346 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:345:         thermal = result&THERMAL_STATUS;
+	.loc 1 345 25
 	mov	rax, QWORD PTR -8[rbp]	# tmp101, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:346:         thermal = result&THERMAL_STATUS;
-	.loc 1 346 17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:345:         thermal = result&THERMAL_STATUS;
+	.loc 1 345 17
 	and	eax, 2	# tmp102,
 	mov	DWORD PTR -52[rbp], eax	# thermal, tmp102
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:347:         residency_state = result&RESIDENCY_STATE_REGULATION_STATUS;
-	.loc 1 347 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:346:         residency_state = result&RESIDENCY_STATE_REGULATION_STATUS;
+	.loc 1 346 33
 	mov	rax, QWORD PTR -8[rbp]	# tmp103, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:347:         residency_state = result&RESIDENCY_STATE_REGULATION_STATUS;
-	.loc 1 347 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:346:         residency_state = result&RESIDENCY_STATE_REGULATION_STATUS;
+	.loc 1 346 25
 	and	eax, 16	# tmp104,
 	mov	DWORD PTR -48[rbp], eax	# residency_state, tmp104
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:348:         running_average_thermal = result&RUNNING_AVERAGE_THERMAL_LIMIT_STATUS;
-	.loc 1 348 41
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:347:         running_average_thermal = result&RUNNING_AVERAGE_THERMAL_LIMIT_STATUS;
+	.loc 1 347 41
 	mov	rax, QWORD PTR -8[rbp]	# tmp105, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:348:         running_average_thermal = result&RUNNING_AVERAGE_THERMAL_LIMIT_STATUS;
-	.loc 1 348 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:347:         running_average_thermal = result&RUNNING_AVERAGE_THERMAL_LIMIT_STATUS;
+	.loc 1 347 33
 	and	eax, 32	# tmp106,
 	mov	DWORD PTR -44[rbp], eax	# running_average_thermal, tmp106
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:349:         vr_therm = result&VR_THERM_ALERT_STATUS;
-	.loc 1 349 26
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:348:         vr_therm = result&VR_THERM_ALERT_STATUS;
+	.loc 1 348 26
 	mov	rax, QWORD PTR -8[rbp]	# tmp107, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:349:         vr_therm = result&VR_THERM_ALERT_STATUS;
-	.loc 1 349 18
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:348:         vr_therm = result&VR_THERM_ALERT_STATUS;
+	.loc 1 348 18
 	and	eax, 64	# tmp108,
 	mov	DWORD PTR -40[rbp], eax	# vr_therm, tmp108
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:350:         vr_therm_design_current = result&VR_THERM_DESIGN_CURRENT_STATUS;
-	.loc 1 350 41
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:349:         vr_therm_design_current = result&VR_THERM_DESIGN_CURRENT_STATUS;
+	.loc 1 349 41
 	mov	rax, QWORD PTR -8[rbp]	# tmp109, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:350:         vr_therm_design_current = result&VR_THERM_DESIGN_CURRENT_STATUS;
-	.loc 1 350 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:349:         vr_therm_design_current = result&VR_THERM_DESIGN_CURRENT_STATUS;
+	.loc 1 349 33
 	and	eax, 128	# tmp110,
 	mov	DWORD PTR -36[rbp], eax	# vr_therm_design_current, tmp110
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:351:         other = result&OTHER_STATUS;
-	.loc 1 351 23
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:350:         other = result&OTHER_STATUS;
+	.loc 1 350 23
 	mov	rax, QWORD PTR -8[rbp]	# tmp111, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:351:         other = result&OTHER_STATUS;
-	.loc 1 351 15
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:350:         other = result&OTHER_STATUS;
+	.loc 1 350 15
 	and	eax, 256	# tmp112,
 	mov	DWORD PTR -32[rbp], eax	# other, tmp112
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:352:         pkg_pl1 = result&PKG_PL1_STATUS;
-	.loc 1 352 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:351:         pkg_pl1 = result&PKG_PL1_STATUS;
+	.loc 1 351 25
 	mov	rax, QWORD PTR -8[rbp]	# tmp113, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:352:         pkg_pl1 = result&PKG_PL1_STATUS;
-	.loc 1 352 17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:351:         pkg_pl1 = result&PKG_PL1_STATUS;
+	.loc 1 351 17
 	and	eax, 1024	# tmp114,
 	mov	DWORD PTR -28[rbp], eax	# pkg_pl1, tmp114
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:353:         pkg_pl2 = result&PKG_PL2_STATUS;
-	.loc 1 353 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:352:         pkg_pl2 = result&PKG_PL2_STATUS;
+	.loc 1 352 25
 	mov	rax, QWORD PTR -8[rbp]	# tmp115, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:353:         pkg_pl2 = result&PKG_PL2_STATUS;
-	.loc 1 353 17
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:352:         pkg_pl2 = result&PKG_PL2_STATUS;
+	.loc 1 352 17
 	and	eax, 2048	# tmp116,
 	mov	DWORD PTR -24[rbp], eax	# pkg_pl2, tmp116
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:354:         max_turbo_limit = result&MAX_TURBO_LIMIT_STATUS;
-	.loc 1 354 33
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:353:         max_turbo_limit = result&MAX_TURBO_LIMIT_STATUS;
+	.loc 1 353 33
 	mov	rax, QWORD PTR -8[rbp]	# tmp117, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:354:         max_turbo_limit = result&MAX_TURBO_LIMIT_STATUS;
-	.loc 1 354 25
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:353:         max_turbo_limit = result&MAX_TURBO_LIMIT_STATUS;
+	.loc 1 353 25
 	and	eax, 4096	# tmp118,
 	mov	DWORD PTR -20[rbp], eax	# max_turbo_limit, tmp118
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:355:         turbo_transition_attenuation = result&TURBO_TRANSITION_ATTENUATION_STATUS;
-	.loc 1 355 46
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:354:         turbo_transition_attenuation = result&TURBO_TRANSITION_ATTENUATION_STATUS;
+	.loc 1 354 46
 	mov	rax, QWORD PTR -8[rbp]	# tmp119, result
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:355:         turbo_transition_attenuation = result&TURBO_TRANSITION_ATTENUATION_STATUS;
-	.loc 1 355 38
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:354:         turbo_transition_attenuation = result&TURBO_TRANSITION_ATTENUATION_STATUS;
+	.loc 1 354 38
 	and	eax, 8192	# tmp120,
 	mov	DWORD PTR -16[rbp], eax	# turbo_transition_attenuation, tmp120
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:357:     if (prochot == 1) printw("TEMPERATURE\n");
-	.loc 1 357 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:356:     if (prochot == 1) printw("TEMPERATURE\n");
+	.loc 1 356 8
 	cmp	DWORD PTR -56[rbp], 1	# prochot,
 	jne	.L86	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:357:     if (prochot == 1) printw("TEMPERATURE\n");
-	.loc 1 357 23 discriminator 1
-	lea	rax, .LC33[rip]	# tmp121,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:356:     if (prochot == 1) printw("TEMPERATURE\n");
+	.loc 1 356 23 discriminator 1
+	lea	rax, .LC29[rip]	# tmp121,
 	mov	rdi, rax	#, tmp121
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L86:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:358:     if (thermal == 1) printw("POWER\n");
-	.loc 1 358 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:357:     if (thermal == 1) printw("POWER\n");
+	.loc 1 357 8
 	cmp	DWORD PTR -52[rbp], 1	# thermal,
 	jne	.L87	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:358:     if (thermal == 1) printw("POWER\n");
-	.loc 1 358 23 discriminator 1
-	lea	rax, .LC34[rip]	# tmp122,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:357:     if (thermal == 1) printw("POWER\n");
+	.loc 1 357 23 discriminator 1
+	lea	rax, .LC30[rip]	# tmp122,
 	mov	rdi, rax	#, tmp122
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L87:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:359:     if (residency_state == 1) printw("RESIDENCY\n"); 
-	.loc 1 359 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:358:     if (residency_state == 1) printw("RESIDENCY\n"); 
+	.loc 1 358 8
 	cmp	DWORD PTR -48[rbp], 1	# residency_state,
 	jne	.L88	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:359:     if (residency_state == 1) printw("RESIDENCY\n"); 
-	.loc 1 359 31 discriminator 1
-	lea	rax, .LC35[rip]	# tmp123,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:358:     if (residency_state == 1) printw("RESIDENCY\n"); 
+	.loc 1 358 31 discriminator 1
+	lea	rax, .LC31[rip]	# tmp123,
 	mov	rdi, rax	#, tmp123
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L88:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:360:     if (running_average_thermal == 1) printw("THERMAL\n"); 
-	.loc 1 360 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:359:     if (running_average_thermal == 1) printw("THERMAL\n"); 
+	.loc 1 359 8
 	cmp	DWORD PTR -44[rbp], 1	# running_average_thermal,
 	jne	.L89	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:360:     if (running_average_thermal == 1) printw("THERMAL\n"); 
-	.loc 1 360 39 discriminator 1
-	lea	rax, .LC36[rip]	# tmp124,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:359:     if (running_average_thermal == 1) printw("THERMAL\n"); 
+	.loc 1 359 39 discriminator 1
+	lea	rax, .LC32[rip]	# tmp124,
 	mov	rdi, rax	#, tmp124
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L89:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:361:     if (vr_therm == 1) printw("VOLTAGE REGULATOR\n");  
-	.loc 1 361 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:360:     if (vr_therm == 1) printw("VOLTAGE REGULATOR\n");  
+	.loc 1 360 8
 	cmp	DWORD PTR -40[rbp], 1	# vr_therm,
 	jne	.L90	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:361:     if (vr_therm == 1) printw("VOLTAGE REGULATOR\n");  
-	.loc 1 361 24 discriminator 1
-	lea	rax, .LC37[rip]	# tmp125,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:360:     if (vr_therm == 1) printw("VOLTAGE REGULATOR\n");  
+	.loc 1 360 24 discriminator 1
+	lea	rax, .LC33[rip]	# tmp125,
 	mov	rdi, rax	#, tmp125
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L90:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:362:     if (vr_therm_design_current == 1) printw("CURRENT\n");   
-	.loc 1 362 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:361:     if (vr_therm_design_current == 1) printw("CURRENT\n");   
+	.loc 1 361 8
 	cmp	DWORD PTR -36[rbp], 1	# vr_therm_design_current,
 	jne	.L91	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:362:     if (vr_therm_design_current == 1) printw("CURRENT\n");   
-	.loc 1 362 39 discriminator 1
-	lea	rax, .LC38[rip]	# tmp126,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:361:     if (vr_therm_design_current == 1) printw("CURRENT\n");   
+	.loc 1 361 39 discriminator 1
+	lea	rax, .LC34[rip]	# tmp126,
 	mov	rdi, rax	#, tmp126
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L91:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:363:     if (other == 1) printw("OTHER\n"); 
-	.loc 1 363 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:362:     if (other == 1) printw("OTHER\n"); 
+	.loc 1 362 8
 	cmp	DWORD PTR -32[rbp], 1	# other,
 	jne	.L92	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:363:     if (other == 1) printw("OTHER\n"); 
-	.loc 1 363 21 discriminator 1
-	lea	rax, .LC39[rip]	# tmp127,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:362:     if (other == 1) printw("OTHER\n"); 
+	.loc 1 362 21 discriminator 1
+	lea	rax, .LC35[rip]	# tmp127,
 	mov	rdi, rax	#, tmp127
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L92:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:364:     if (pkg_pl1 == 1) printw("PL1\n"); 
-	.loc 1 364 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:363:     if (pkg_pl1 == 1) printw("PL1\n"); 
+	.loc 1 363 8
 	cmp	DWORD PTR -28[rbp], 1	# pkg_pl1,
 	jne	.L93	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:364:     if (pkg_pl1 == 1) printw("PL1\n"); 
-	.loc 1 364 23 discriminator 1
-	lea	rax, .LC40[rip]	# tmp128,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:363:     if (pkg_pl1 == 1) printw("PL1\n"); 
+	.loc 1 363 23 discriminator 1
+	lea	rax, .LC36[rip]	# tmp128,
 	mov	rdi, rax	#, tmp128
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L93:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:365:     if (pkg_pl2 == 1) printw("PL2\n"); 
-	.loc 1 365 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:364:     if (pkg_pl2 == 1) printw("PL2\n"); 
+	.loc 1 364 8
 	cmp	DWORD PTR -24[rbp], 1	# pkg_pl2,
 	jne	.L94	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:365:     if (pkg_pl2 == 1) printw("PL2\n"); 
-	.loc 1 365 23 discriminator 1
-	lea	rax, .LC41[rip]	# tmp129,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:364:     if (pkg_pl2 == 1) printw("PL2\n"); 
+	.loc 1 364 23 discriminator 1
+	lea	rax, .LC37[rip]	# tmp129,
 	mov	rdi, rax	#, tmp129
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L94:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:366:     if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
-	.loc 1 366 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:365:     if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
+	.loc 1 365 8
 	cmp	DWORD PTR -20[rbp], 1	# max_turbo_limit,
 	jne	.L95	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:366:     if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
-	.loc 1 366 31 discriminator 1
-	lea	rax, .LC42[rip]	# tmp130,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:365:     if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
+	.loc 1 365 31 discriminator 1
+	lea	rax, .LC38[rip]	# tmp130,
 	mov	rdi, rax	#, tmp130
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L95:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:367:     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
-	.loc 1 367 8
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:366:     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
+	.loc 1 366 8
 	cmp	DWORD PTR -16[rbp], 1	# turbo_transition_attenuation,
 	jne	.L97	#,
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:367:     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
-	.loc 1 367 44 discriminator 1
-	lea	rax, .LC43[rip]	# tmp131,
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:366:     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
+	.loc 1 366 44 discriminator 1
+	lea	rax, .LC39[rip]	# tmp131,
 	mov	rdi, rax	#, tmp131
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L97:
-# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:368: }
-	.loc 1 368 1
+# /home/jscha/dvp/cpumon/src/machine_specific_registers.c:367: }
+	.loc 1 367 1
 	nop	
 	leave	
 .LCFI26:
@@ -2106,30 +2083,27 @@ get_msr_power_limits_w:
 	.comm	package_before.0,4,4
 	.section	.rodata
 	.align 8
-.LC9:
+.LC7:
 	.long	0
 	.long	1059061760
 	.align 8
-.LC11:
+.LC9:
 	.long	0
 	.long	1073741824
 	.align 8
-.LC12:
+.LC10:
 	.long	0
 	.long	1072693248
 	.align 8
-.LC15:
+.LC13:
 	.long	0
 	.long	1074790400
 	.align 8
-.LC27:
+.LC25:
 	.long	-1598689907
 	.long	1051772663
-	.align 4
-.LC29:
-	.long	931135494
 	.align 8
-.LC32:
+.LC28:
 	.long	0
 	.long	1071644672
 	.text
@@ -2149,7 +2123,7 @@ get_msr_power_limits_w:
 	.file 14 "/usr/include/errno.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0xcd1
+	.long	0xcc2
 	.value	0x2
 	.long	.Ldebug_abbrev0
 	.byte	0x8
@@ -2606,13 +2580,13 @@ get_msr_power_limits_w:
 	.long	.LASF3559
 	.byte	0x20
 	.byte	0x8
-	.byte	0x1c
+	.byte	0x19
 	.byte	0x8
 	.long	0x3dd
 	.uleb128 0x9
 	.long	.LASF3560
 	.byte	0x8
-	.byte	0x1d
+	.byte	0x1a
 	.byte	0xb
 	.long	0x324
 	.byte	0x2
@@ -2621,7 +2595,7 @@ get_msr_power_limits_w:
 	.uleb128 0x10
 	.string	"gpu"
 	.byte	0x8
-	.byte	0x1e
+	.byte	0x1b
 	.byte	0xb
 	.long	0x324
 	.byte	0x2
@@ -2630,7 +2604,7 @@ get_msr_power_limits_w:
 	.uleb128 0x9
 	.long	.LASF3561
 	.byte	0x8
-	.byte	0x1f
+	.byte	0x1c
 	.byte	0xb
 	.long	0x324
 	.byte	0x2
@@ -2639,7 +2613,7 @@ get_msr_power_limits_w:
 	.uleb128 0x9
 	.long	.LASF3562
 	.byte	0x8
-	.byte	0x20
+	.byte	0x1d
 	.byte	0xb
 	.long	0x324
 	.byte	0x2
@@ -2648,7 +2622,7 @@ get_msr_power_limits_w:
 	.uleb128 0x9
 	.long	.LASF3563
 	.byte	0x8
-	.byte	0x21
+	.byte	0x1e
 	.byte	0xb
 	.long	0x324
 	.byte	0x2
@@ -2657,34 +2631,34 @@ get_msr_power_limits_w:
 	.uleb128 0x9
 	.long	.LASF3564
 	.byte	0x8
-	.byte	0x22
-	.byte	0x12
-	.long	0x44
+	.byte	0x1f
+	.byte	0xb
+	.long	0x324
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x14
 	.uleb128 0x9
 	.long	.LASF3565
 	.byte	0x8
-	.byte	0x22
-	.byte	0x1d
-	.long	0x44
+	.byte	0x1f
+	.byte	0x16
+	.long	0x324
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x18
 	.uleb128 0x9
 	.long	.LASF3566
 	.byte	0x8
-	.byte	0x22
-	.byte	0x2a
-	.long	0x44
+	.byte	0x1f
+	.byte	0x23
+	.long	0x324
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x1c
 	.uleb128 0x9
 	.long	.LASF3567
 	.byte	0x8
-	.byte	0x23
+	.byte	0x20
 	.byte	0xb
 	.long	0x339
 	.byte	0x2
@@ -2694,7 +2668,7 @@ get_msr_power_limits_w:
 	.uleb128 0x2
 	.long	.LASF3559
 	.byte	0x8
-	.byte	0x25
+	.byte	0x22
 	.byte	0x16
 	.long	0x348
 	.uleb128 0x11
@@ -2702,7 +2676,7 @@ get_msr_power_limits_w:
 	.byte	0x4
 	.long	0x44
 	.byte	0x8
-	.byte	0x32
+	.byte	0x2f
 	.byte	0xe
 	.long	0x404
 	.uleb128 0x12
@@ -2715,7 +2689,7 @@ get_msr_power_limits_w:
 	.uleb128 0x2
 	.long	.LASF3569
 	.byte	0x8
-	.byte	0x32
+	.byte	0x2f
 	.byte	0x1d
 	.long	0x3e9
 	.uleb128 0x3
@@ -2788,6 +2762,20 @@ get_msr_power_limits_w:
 	.uleb128 0x15
 	.long	0x439
 	.byte	0
+	.uleb128 0x14
+	.byte	0x1
+	.long	.LASF3575
+	.byte	0x6
+	.value	0x164
+	.byte	0xc
+	.byte	0x1
+	.long	0x69
+	.byte	0x1
+	.long	0x4b6
+	.uleb128 0x15
+	.long	0x439
+	.uleb128 0x16
+	.byte	0
 	.uleb128 0x19
 	.byte	0x1
 	.string	"pow"
@@ -2797,7 +2785,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	0x32b
 	.byte	0x1
-	.long	0x4b9
+	.long	0x4d4
 	.uleb128 0x15
 	.long	0x32b
 	.uleb128 0x15
@@ -2805,27 +2793,27 @@ get_msr_power_limits_w:
 	.byte	0
 	.uleb128 0x14
 	.byte	0x1
-	.long	.LASF3575
+	.long	.LASF3576
 	.byte	0xa
 	.value	0x166
 	.byte	0xc
 	.byte	0x1
 	.long	0x69
 	.byte	0x1
-	.long	0x4d3
+	.long	0x4ee
 	.uleb128 0x15
 	.long	0x69
 	.byte	0
 	.uleb128 0x14
 	.byte	0x1
-	.long	.LASF3576
+	.long	.LASF3577
 	.byte	0xa
 	.value	0x185
 	.byte	0x10
 	.byte	0x1
 	.long	0x2ea
 	.byte	0x1
-	.long	0x4fc
+	.long	0x517
 	.uleb128 0x15
 	.long	0x69
 	.uleb128 0x15
@@ -2834,20 +2822,6 @@ get_msr_power_limits_w:
 	.long	0x31
 	.uleb128 0x15
 	.long	0x83
-	.byte	0
-	.uleb128 0x14
-	.byte	0x1
-	.long	.LASF3577
-	.byte	0x6
-	.value	0x164
-	.byte	0xc
-	.byte	0x1
-	.long	0x69
-	.byte	0x1
-	.long	0x517
-	.uleb128 0x15
-	.long	0x439
-	.uleb128 0x16
 	.byte	0
 	.uleb128 0x1a
 	.byte	0x1
@@ -2938,7 +2912,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3606
 	.byte	0x1
-	.value	0x142
+	.value	0x141
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB44
@@ -2949,7 +2923,7 @@ get_msr_power_limits_w:
 	.uleb128 0x1e
 	.long	.LASF3594
 	.byte	0x1
-	.value	0x142
+	.value	0x141
 	.byte	0x21
 	.long	0x69
 	.byte	0x3
@@ -2958,7 +2932,7 @@ get_msr_power_limits_w:
 	.uleb128 0x1f
 	.string	"fd"
 	.byte	0x1
-	.value	0x143
+	.value	0x142
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -2967,7 +2941,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3582
 	.byte	0x1
-	.value	0x144
+	.value	0x143
 	.byte	0xe
 	.long	0x30a
 	.byte	0x2
@@ -2976,7 +2950,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3583
 	.byte	0x1
-	.value	0x146
+	.value	0x145
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -2985,7 +2959,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3584
 	.byte	0x1
-	.value	0x147
+	.value	0x146
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -2994,7 +2968,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3585
 	.byte	0x1
-	.value	0x148
+	.value	0x147
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3003,7 +2977,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3586
 	.byte	0x1
-	.value	0x149
+	.value	0x148
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3012,7 +2986,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3587
 	.byte	0x1
-	.value	0x14a
+	.value	0x149
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3021,7 +2995,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3588
 	.byte	0x1
-	.value	0x14b
+	.value	0x14a
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3030,7 +3004,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3589
 	.byte	0x1
-	.value	0x14c
+	.value	0x14b
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3039,7 +3013,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3590
 	.byte	0x1
-	.value	0x14d
+	.value	0x14c
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3048,7 +3022,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3591
 	.byte	0x1
-	.value	0x14e
+	.value	0x14d
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3057,7 +3031,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3592
 	.byte	0x1
-	.value	0x14f
+	.value	0x14e
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3066,7 +3040,7 @@ get_msr_power_limits_w:
 	.uleb128 0x20
 	.long	.LASF3593
 	.byte	0x1
-	.value	0x150
+	.value	0x14f
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3078,7 +3052,7 @@ get_msr_power_limits_w:
 	.uleb128 0x1f
 	.string	"i"
 	.byte	0x1
-	.value	0x153
+	.value	0x152
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3090,7 +3064,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3601
 	.byte	0x1
-	.byte	0xe1
+	.byte	0xe0
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -3102,7 +3076,7 @@ get_msr_power_limits_w:
 	.uleb128 0x23
 	.long	.LASF3595
 	.byte	0x1
-	.byte	0xe1
+	.byte	0xe0
 	.byte	0x1f
 	.long	0x782
 	.byte	0x2
@@ -3111,7 +3085,7 @@ get_msr_power_limits_w:
 	.uleb128 0x23
 	.long	.LASF3596
 	.byte	0x1
-	.byte	0xe1
+	.byte	0xe0
 	.byte	0x38
 	.long	0x404
 	.byte	0x2
@@ -3123,7 +3097,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"fp"
 	.byte	0x1
-	.byte	0xe6
+	.byte	0xe5
 	.byte	0x11
 	.long	0x69
 	.byte	0x2
@@ -3132,7 +3106,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3597
 	.byte	0x1
-	.byte	0xe7
+	.byte	0xe6
 	.byte	0x11
 	.long	0x69
 	.byte	0x2
@@ -3141,7 +3115,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3598
 	.byte	0x1
-	.byte	0xe8
+	.byte	0xe7
 	.byte	0x1a
 	.long	0x44
 	.byte	0x2
@@ -3150,7 +3124,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3599
 	.byte	0x1
-	.byte	0xe9
+	.byte	0xe8
 	.byte	0x17
 	.long	0x44
 	.byte	0x2
@@ -3159,7 +3133,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3600
 	.byte	0x1
-	.byte	0xea
+	.byte	0xe9
 	.byte	0x17
 	.long	0x44
 	.byte	0x2
@@ -3174,7 +3148,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3602
 	.byte	0x1
-	.byte	0xca
+	.byte	0xcb
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -3182,20 +3156,20 @@ get_msr_power_limits_w:
 	.quad	.LFE42
 	.long	.LLST6
 	.byte	0x1
-	.long	0x810
+	.long	0x801
 	.uleb128 0x23
 	.long	.LASF3595
 	.byte	0x1
-	.byte	0xca
+	.byte	0xcb
 	.byte	0x20
-	.long	0x810
+	.long	0x782
 	.byte	0x2
 	.byte	0x91
-	.sleb128 -56
+	.sleb128 -40
 	.uleb128 0x25
 	.long	.LASF3603
 	.byte	0x1
-	.byte	0xcf
+	.byte	0xd0
 	.byte	0x12
 	.long	0x324
 	.byte	0x9
@@ -3203,15 +3177,6 @@ get_msr_power_limits_w:
 	.quad	package_before.0
 	.uleb128 0x25
 	.long	.LASF3604
-	.byte	0x1
-	.byte	0xd0
-	.byte	0xb
-	.long	0x324
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -36
-	.uleb128 0x25
-	.long	.LASF3565
 	.byte	0x1
 	.byte	0xd1
 	.byte	0xb
@@ -3238,34 +3203,31 @@ get_msr_power_limits_w:
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x6
-	.byte	0x8
-	.long	0x324
 	.uleb128 0x26
 	.byte	0x1
 	.long	.LASF3607
 	.byte	0x1
-	.byte	0xa9
+	.byte	0xaa
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB41
 	.quad	.LFE41
 	.long	.LLST5
 	.byte	0x1
-	.long	0x8f6
+	.long	0x8e1
 	.uleb128 0x23
 	.long	.LASF3608
 	.byte	0x1
-	.byte	0xa9
+	.byte	0xaa
 	.byte	0x24
-	.long	0x810
+	.long	0x8e1
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -120
 	.uleb128 0x24
 	.string	"fp"
 	.byte	0x1
-	.byte	0xab
+	.byte	0xac
 	.byte	0x8
 	.long	0x2f6
 	.byte	0x3
@@ -3274,38 +3236,38 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3609
 	.byte	0x1
-	.byte	0xac
+	.byte	0xad
 	.byte	0x16
-	.long	0x8f6
+	.long	0x8e7
 	.byte	0x9
 	.byte	0x3
 	.quad	energy_uj_before.1
 	.uleb128 0x25
 	.long	.LASF3610
 	.byte	0x1
-	.byte	0xad
+	.byte	0xae
 	.byte	0xf
-	.long	0x8f6
+	.long	0x8e7
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -80
 	.uleb128 0x25
 	.long	.LASF3611
 	.byte	0x1
-	.byte	0xaf
+	.byte	0xb0
 	.byte	0xb
-	.long	0x906
+	.long	0x8f7
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x27
 	.quad	.LBB8
 	.quad	.LBE8
-	.long	0x8b1
+	.long	0x89c
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0xb3
+	.byte	0xb4
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3315,11 +3277,11 @@ get_msr_power_limits_w:
 	.uleb128 0x27
 	.quad	.LBB9
 	.quad	.LBE9
-	.long	0x8d5
+	.long	0x8c0
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0xc2
+	.byte	0xc3
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3332,7 +3294,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0xc5
+	.byte	0xc6
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3340,16 +3302,19 @@ get_msr_power_limits_w:
 	.sleb128 -92
 	.byte	0
 	.byte	0
+	.uleb128 0x6
+	.byte	0x8
+	.long	0x324
 	.uleb128 0xc
 	.long	0x316
-	.long	0x906
+	.long	0x8f7
 	.uleb128 0xd
 	.long	0x3d
 	.byte	0x2
 	.byte	0
 	.uleb128 0xc
 	.long	0xa7
-	.long	0x916
+	.long	0x907
 	.uleb128 0xd
 	.long	0x3d
 	.byte	0x2
@@ -3358,19 +3323,19 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3612
 	.byte	0x1
-	.byte	0x86
+	.byte	0x87
 	.byte	0xa
 	.byte	0x1
-	.long	0x9c7
+	.long	0x9b8
 	.quad	.LFB40
 	.quad	.LFE40
 	.long	.LLST4
 	.byte	0x1
-	.long	0x9c7
+	.long	0x9b8
 	.uleb128 0x24
 	.string	"fd"
 	.byte	0x1
-	.byte	0x88
+	.byte	0x89
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -3379,7 +3344,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3582
 	.byte	0x1
-	.byte	0x89
+	.byte	0x8a
 	.byte	0x18
 	.long	0x31d
 	.byte	0x3
@@ -3388,7 +3353,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3613
 	.byte	0x1
-	.byte	0x89
+	.byte	0x8a
 	.byte	0x20
 	.long	0x31d
 	.byte	0x2
@@ -3397,7 +3362,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3566
 	.byte	0x1
-	.byte	0x8a
+	.byte	0x8b
 	.byte	0xc
 	.long	0x32b
 	.byte	0x3
@@ -3406,7 +3371,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3564
 	.byte	0x1
-	.byte	0x8a
+	.byte	0x8b
 	.byte	0x18
 	.long	0x32b
 	.byte	0x2
@@ -3415,7 +3380,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3614
 	.byte	0x1
-	.byte	0x8a
+	.byte	0x8b
 	.byte	0x23
 	.long	0x32b
 	.byte	0x2
@@ -3424,7 +3389,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3615
 	.byte	0x1
-	.byte	0x8a
+	.byte	0x8b
 	.byte	0x2b
 	.long	0x32b
 	.byte	0x2
@@ -3433,7 +3398,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3590
 	.byte	0x1
-	.byte	0x8b
+	.byte	0x8c
 	.byte	0xc
 	.long	0x32b
 	.byte	0x2
@@ -3442,7 +3407,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3616
 	.byte	0x1
-	.byte	0x8b
+	.byte	0x8c
 	.byte	0x15
 	.long	0x32b
 	.byte	0x2
@@ -3456,36 +3421,36 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3617
 	.byte	0x1
-	.byte	0x59
+	.byte	0x5a
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB39
 	.quad	.LFE39
 	.long	.LLST3
 	.byte	0x1
-	.long	0xb03
+	.long	0xaf4
 	.uleb128 0x23
 	.long	.LASF3618
 	.byte	0x1
-	.byte	0x59
+	.byte	0x5a
 	.byte	0x1f
-	.long	0x810
+	.long	0x8e1
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -152
 	.uleb128 0x23
 	.long	.LASF3619
 	.byte	0x1
-	.byte	0x59
+	.byte	0x5a
 	.byte	0x33
-	.long	0x810
+	.long	0x8e1
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -160
 	.uleb128 0x23
 	.long	.LASF3594
 	.byte	0x1
-	.byte	0x59
+	.byte	0x5a
 	.byte	0x40
 	.long	0x69
 	.byte	0x3
@@ -3494,7 +3459,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"fd"
 	.byte	0x1
-	.byte	0x5b
+	.byte	0x5c
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -3503,9 +3468,9 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3620
 	.byte	0x1
-	.byte	0x5c
+	.byte	0x5d
 	.byte	0xe
-	.long	0xb03
+	.long	0xaf4
 	.byte	0x4
 	.byte	0x91
 	.sleb128 -112
@@ -3513,9 +3478,9 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3621
 	.byte	0x1
-	.byte	0x5d
+	.byte	0x5e
 	.byte	0xb
-	.long	0xb17
+	.long	0xb08
 	.byte	0x4
 	.byte	0x91
 	.sleb128 -96
@@ -3523,7 +3488,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3622
 	.byte	0x1
-	.byte	0x5e
+	.byte	0x5f
 	.byte	0xb
 	.long	0x324
 	.byte	0x3
@@ -3532,9 +3497,9 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3623
 	.byte	0x1
-	.byte	0x6d
+	.byte	0x6e
 	.byte	0xb
-	.long	0xb2b
+	.long	0xb1c
 	.byte	0x4
 	.byte	0x91
 	.sleb128 -80
@@ -3542,11 +3507,11 @@ get_msr_power_limits_w:
 	.uleb128 0x27
 	.quad	.LBB4
 	.quad	.LBE4
-	.long	0xa98
+	.long	0xa89
 	.uleb128 0x25
 	.long	.LASF3624
 	.byte	0x1
-	.byte	0x60
+	.byte	0x61
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3556,11 +3521,11 @@ get_msr_power_limits_w:
 	.uleb128 0x27
 	.quad	.LBB5
 	.quad	.LBE5
-	.long	0xabc
+	.long	0xaad
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0x66
+	.byte	0x67
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3570,11 +3535,11 @@ get_msr_power_limits_w:
 	.uleb128 0x27
 	.quad	.LBB6
 	.quad	.LBE6
-	.long	0xae2
+	.long	0xad3
 	.uleb128 0x25
 	.long	.LASF3624
 	.byte	0x1
-	.byte	0x6f
+	.byte	0x70
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3587,7 +3552,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0x75
+	.byte	0x76
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3597,7 +3562,7 @@ get_msr_power_limits_w:
 	.byte	0
 	.uleb128 0xc
 	.long	0x30a
-	.long	0xb17
+	.long	0xb08
 	.uleb128 0x28
 	.long	0x3d
 	.byte	0x4
@@ -3607,7 +3572,7 @@ get_msr_power_limits_w:
 	.byte	0
 	.uleb128 0xc
 	.long	0x324
-	.long	0xb2b
+	.long	0xb1c
 	.uleb128 0x28
 	.long	0x3d
 	.byte	0x4
@@ -3617,7 +3582,7 @@ get_msr_power_limits_w:
 	.byte	0
 	.uleb128 0xc
 	.long	0x324
-	.long	0xb3f
+	.long	0xb30
 	.uleb128 0x28
 	.long	0x3d
 	.byte	0x4
@@ -3629,36 +3594,36 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3625
 	.byte	0x1
-	.byte	0x43
+	.byte	0x44
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB38
 	.quad	.LFE38
 	.long	.LLST2
 	.byte	0x1
-	.long	0xc06
+	.long	0xbf7
 	.uleb128 0x23
 	.long	.LASF3626
 	.byte	0x1
-	.byte	0x43
+	.byte	0x44
 	.byte	0x17
-	.long	0x810
+	.long	0x8e1
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -88
 	.uleb128 0x23
 	.long	.LASF3619
 	.byte	0x1
-	.byte	0x43
+	.byte	0x44
 	.byte	0x27
-	.long	0x810
+	.long	0x8e1
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -96
 	.uleb128 0x23
 	.long	.LASF3594
 	.byte	0x1
-	.byte	0x43
+	.byte	0x44
 	.byte	0x34
 	.long	0x69
 	.byte	0x3
@@ -3667,7 +3632,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"fd"
 	.byte	0x1
-	.byte	0x45
+	.byte	0x46
 	.byte	0x9
 	.long	0x69
 	.byte	0x2
@@ -3676,9 +3641,9 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3582
 	.byte	0x1
-	.byte	0x46
+	.byte	0x47
 	.byte	0xe
-	.long	0xc06
+	.long	0xbf7
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -48
@@ -3686,7 +3651,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3622
 	.byte	0x1
-	.byte	0x47
+	.byte	0x48
 	.byte	0xb
 	.long	0x324
 	.byte	0x3
@@ -3695,11 +3660,11 @@ get_msr_power_limits_w:
 	.uleb128 0x27
 	.quad	.LBB2
 	.quad	.LBE2
-	.long	0xbe6
+	.long	0xbd7
 	.uleb128 0x25
 	.long	.LASF3624
 	.byte	0x1
-	.byte	0x49
+	.byte	0x4a
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -3712,7 +3677,7 @@ get_msr_power_limits_w:
 	.uleb128 0x24
 	.string	"i"
 	.byte	0x1
-	.byte	0x4f
+	.byte	0x50
 	.byte	0xe
 	.long	0x69
 	.byte	0x2
@@ -3722,7 +3687,7 @@ get_msr_power_limits_w:
 	.byte	0
 	.uleb128 0xc
 	.long	0x30a
-	.long	0xc19
+	.long	0xc0a
 	.uleb128 0x28
 	.long	0x3d
 	.byte	0x3
@@ -3734,7 +3699,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3627
 	.byte	0x1
-	.byte	0x32
+	.byte	0x33
 	.byte	0xb
 	.byte	0x1
 	.long	0x316
@@ -3742,11 +3707,11 @@ get_msr_power_limits_w:
 	.quad	.LFE37
 	.long	.LLST1
 	.byte	0x1
-	.long	0xc6d
+	.long	0xc5e
 	.uleb128 0x29
 	.string	"fd"
 	.byte	0x1
-	.byte	0x32
+	.byte	0x33
 	.byte	0x18
 	.long	0x69
 	.byte	0x2
@@ -3755,7 +3720,7 @@ get_msr_power_limits_w:
 	.uleb128 0x23
 	.long	.LASF3628
 	.byte	0x1
-	.byte	0x32
+	.byte	0x33
 	.byte	0x29
 	.long	0x44
 	.byte	0x2
@@ -3764,7 +3729,7 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3629
 	.byte	0x1
-	.byte	0x34
+	.byte	0x35
 	.byte	0xb
 	.long	0x30a
 	.byte	0x2
@@ -3775,7 +3740,7 @@ get_msr_power_limits_w:
 	.byte	0x1
 	.long	.LASF3630
 	.byte	0x1
-	.byte	0x17
+	.byte	0x18
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -3783,11 +3748,11 @@ get_msr_power_limits_w:
 	.quad	.LFE36
 	.long	.LLST0
 	.byte	0x1
-	.long	0xcc7
+	.long	0xcb8
 	.uleb128 0x23
 	.long	.LASF3624
 	.byte	0x1
-	.byte	0x17
+	.byte	0x18
 	.byte	0x12
 	.long	0x69
 	.byte	0x4
@@ -3796,16 +3761,16 @@ get_msr_power_limits_w:
 	.uleb128 0x25
 	.long	.LASF3631
 	.byte	0x1
-	.byte	0x19
+	.byte	0x1a
 	.byte	0x7
-	.long	0xcc7
+	.long	0xcb8
 	.byte	0x4
 	.byte	0x91
 	.sleb128 -8224
 	.uleb128 0x24
 	.string	"fd"
 	.byte	0x1
-	.byte	0x1a
+	.byte	0x1b
 	.byte	0x6
 	.long	0x69
 	.byte	0x4
@@ -6644,90 +6609,98 @@ get_msr_power_limits_w:
 	.long	.LASF2484
 	.byte	0x4
 	.byte	0x4
-	.file 91 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h"
+	.file 91 "/home/jscha/dvp/cpumon/src/../include/utils.h"
 	.byte	0x3
 	.uleb128 0xe
 	.uleb128 0x5b
-	.byte	0x7
-	.long	.Ldebug_macro82
+	.byte	0x5
+	.uleb128 0x2
+	.long	.LASF2485
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0xf
 	.uleb128 0x8
 	.byte	0x7
+	.long	.Ldebug_macro82
+	.byte	0x4
+	.file 92 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h"
+	.byte	0x3
+	.uleb128 0x10
+	.uleb128 0x5c
+	.byte	0x7
 	.long	.Ldebug_macro83
 	.byte	0x4
-	.file 92 "/usr/include/x86_64-linux-gnu/sys/syscall.h"
+	.file 93 "/usr/include/x86_64-linux-gnu/sys/syscall.h"
 	.byte	0x3
-	.uleb128 0x12
-	.uleb128 0x5c
+	.uleb128 0x13
+	.uleb128 0x5d
 	.byte	0x5
 	.uleb128 0x13
 	.long	.LASF2524
-	.file 93 "/usr/include/x86_64-linux-gnu/asm/unistd.h"
+	.file 94 "/usr/include/x86_64-linux-gnu/asm/unistd.h"
 	.byte	0x3
 	.uleb128 0x18
-	.uleb128 0x5d
+	.uleb128 0x5e
 	.byte	0x7
 	.long	.Ldebug_macro84
-	.file 94 "/usr/include/x86_64-linux-gnu/asm/unistd_64.h"
+	.file 95 "/usr/include/x86_64-linux-gnu/asm/unistd_64.h"
 	.byte	0x3
 	.uleb128 0x14
-	.uleb128 0x5e
+	.uleb128 0x5f
 	.byte	0x7
 	.long	.Ldebug_macro85
 	.byte	0x4
 	.byte	0x4
-	.file 95 "/usr/include/x86_64-linux-gnu/bits/syscall.h"
+	.file 96 "/usr/include/x86_64-linux-gnu/bits/syscall.h"
 	.byte	0x3
 	.uleb128 0x1d
-	.uleb128 0x5f
+	.uleb128 0x60
 	.byte	0x7
 	.long	.Ldebug_macro86
 	.byte	0x4
 	.byte	0x4
-	.file 96 "/usr/include/linux/perf_event.h"
+	.file 97 "/usr/include/linux/perf_event.h"
 	.byte	0x3
-	.uleb128 0x13
-	.uleb128 0x60
+	.uleb128 0x14
+	.uleb128 0x61
 	.byte	0x5
 	.uleb128 0x10
 	.long	.LASF3263
-	.file 97 "/usr/include/linux/types.h"
+	.file 98 "/usr/include/linux/types.h"
 	.byte	0x3
 	.uleb128 0x12
-	.uleb128 0x61
+	.uleb128 0x62
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3264
-	.file 98 "/usr/include/x86_64-linux-gnu/asm/types.h"
+	.file 99 "/usr/include/x86_64-linux-gnu/asm/types.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x62
-	.file 99 "/usr/include/asm-generic/types.h"
+	.uleb128 0x63
+	.file 100 "/usr/include/asm-generic/types.h"
 	.byte	0x3
 	.uleb128 0x1
-	.uleb128 0x63
+	.uleb128 0x64
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3265
-	.file 100 "/usr/include/asm-generic/int-ll64.h"
+	.file 101 "/usr/include/asm-generic/int-ll64.h"
 	.byte	0x3
 	.uleb128 0x7
-	.uleb128 0x64
+	.uleb128 0x65
 	.byte	0x5
 	.uleb128 0xa
 	.long	.LASF3266
-	.file 101 "/usr/include/x86_64-linux-gnu/asm/bitsperlong.h"
+	.file 102 "/usr/include/x86_64-linux-gnu/asm/bitsperlong.h"
 	.byte	0x3
 	.uleb128 0xc
-	.uleb128 0x65
+	.uleb128 0x66
 	.byte	0x7
 	.long	.Ldebug_macro87
-	.file 102 "/usr/include/asm-generic/bitsperlong.h"
+	.file 103 "/usr/include/asm-generic/bitsperlong.h"
 	.byte	0x3
 	.uleb128 0xb
-	.uleb128 0x66
+	.uleb128 0x67
 	.byte	0x7
 	.long	.Ldebug_macro88
 	.byte	0x4
@@ -6735,36 +6708,36 @@ get_msr_power_limits_w:
 	.byte	0x4
 	.byte	0x4
 	.byte	0x4
-	.file 103 "/usr/include/linux/posix_types.h"
+	.file 104 "/usr/include/linux/posix_types.h"
 	.byte	0x3
 	.uleb128 0x9
-	.uleb128 0x67
+	.uleb128 0x68
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3271
-	.file 104 "/usr/include/linux/stddef.h"
+	.file 105 "/usr/include/linux/stddef.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x68
+	.uleb128 0x69
 	.byte	0x7
 	.long	.Ldebug_macro89
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro90
-	.file 105 "/usr/include/x86_64-linux-gnu/asm/posix_types.h"
+	.file 106 "/usr/include/x86_64-linux-gnu/asm/posix_types.h"
 	.byte	0x3
 	.uleb128 0x24
-	.uleb128 0x69
-	.file 106 "/usr/include/x86_64-linux-gnu/asm/posix_types_64.h"
+	.uleb128 0x6a
+	.file 107 "/usr/include/x86_64-linux-gnu/asm/posix_types_64.h"
 	.byte	0x3
 	.uleb128 0x7
-	.uleb128 0x6a
+	.uleb128 0x6b
 	.byte	0x7
 	.long	.Ldebug_macro91
-	.file 107 "/usr/include/asm-generic/posix_types.h"
+	.file 108 "/usr/include/asm-generic/posix_types.h"
 	.byte	0x3
 	.uleb128 0x12
-	.uleb128 0x6b
+	.uleb128 0x6c
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3280
@@ -6775,50 +6748,50 @@ get_msr_power_limits_w:
 	.byte	0x7
 	.long	.Ldebug_macro92
 	.byte	0x4
-	.file 108 "/usr/include/linux/ioctl.h"
+	.file 109 "/usr/include/linux/ioctl.h"
 	.byte	0x3
 	.uleb128 0x13
-	.uleb128 0x6c
+	.uleb128 0x6d
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3286
-	.file 109 "/usr/include/x86_64-linux-gnu/asm/ioctl.h"
+	.file 110 "/usr/include/x86_64-linux-gnu/asm/ioctl.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x6d
-	.file 110 "/usr/include/asm-generic/ioctl.h"
+	.uleb128 0x6e
+	.file 111 "/usr/include/asm-generic/ioctl.h"
 	.byte	0x3
 	.uleb128 0x1
-	.uleb128 0x6e
+	.uleb128 0x6f
 	.byte	0x7
 	.long	.Ldebug_macro93
 	.byte	0x4
 	.byte	0x4
 	.byte	0x4
-	.file 111 "/usr/include/x86_64-linux-gnu/asm/byteorder.h"
+	.file 112 "/usr/include/x86_64-linux-gnu/asm/byteorder.h"
 	.byte	0x3
 	.uleb128 0x14
-	.uleb128 0x6f
+	.uleb128 0x70
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3321
-	.file 112 "/usr/include/linux/byteorder/little_endian.h"
+	.file 113 "/usr/include/linux/byteorder/little_endian.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x70
+	.uleb128 0x71
 	.byte	0x7
 	.long	.Ldebug_macro94
-	.file 113 "/usr/include/linux/swab.h"
+	.file 114 "/usr/include/linux/swab.h"
 	.byte	0x3
 	.uleb128 0xe
-	.uleb128 0x71
+	.uleb128 0x72
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF3324
-	.file 114 "/usr/include/x86_64-linux-gnu/asm/swab.h"
+	.file 115 "/usr/include/x86_64-linux-gnu/asm/swab.h"
 	.byte	0x3
 	.uleb128 0x8
-	.uleb128 0x72
+	.uleb128 0x73
 	.byte	0x7
 	.long	.Ldebug_macro95
 	.byte	0x4
@@ -13807,134 +13780,131 @@ get_msr_power_limits_w:
 	.uleb128 0x31
 	.long	.LASF1997
 	.byte	0
-	.section	.debug_macro,"G",@progbits,wm4.machine_specific_registers.h.3.d2e1d0b1ada7d991f2dcf44fe45b2999,comdat
+	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.02eaf6afe85a1ee5acd07b0e880f112e,comdat
 .Ldebug_macro82:
 	.value	0x4
 	.byte	0
 	.byte	0x5
 	.uleb128 0x3
-	.long	.LASF2485
-	.byte	0x5
-	.uleb128 0x5
 	.long	.LASF2486
 	.byte	0x5
 	.uleb128 0x6
 	.long	.LASF2487
 	.byte	0x5
-	.uleb128 0xa
+	.uleb128 0x7
 	.long	.LASF2488
 	.byte	0x5
-	.uleb128 0xb
+	.uleb128 0x8
 	.long	.LASF2489
 	.byte	0x5
-	.uleb128 0xc
+	.uleb128 0x9
 	.long	.LASF2490
 	.byte	0x5
-	.uleb128 0xd
+	.uleb128 0xa
 	.long	.LASF2491
-	.byte	0x5
-	.uleb128 0xe
-	.long	.LASF2492
-	.byte	0x5
-	.uleb128 0xf
-	.long	.LASF2493
-	.byte	0x5
-	.uleb128 0x11
-	.long	.LASF2494
-	.byte	0x5
-	.uleb128 0x12
-	.long	.LASF2495
-	.byte	0x5
-	.uleb128 0x13
-	.long	.LASF2496
-	.byte	0x5
-	.uleb128 0x15
-	.long	.LASF2497
-	.byte	0x5
-	.uleb128 0x16
-	.long	.LASF2498
-	.byte	0x5
-	.uleb128 0x17
-	.long	.LASF2499
-	.byte	0x5
-	.uleb128 0x18
-	.long	.LASF2500
-	.byte	0x5
-	.uleb128 0x19
-	.long	.LASF2501
-	.byte	0x5
-	.uleb128 0x1a
-	.long	.LASF2502
-	.byte	0x5
-	.uleb128 0x1b
-	.long	.LASF2503
-	.byte	0x5
-	.uleb128 0x1c
-	.long	.LASF2504
-	.byte	0x5
-	.uleb128 0x1d
-	.long	.LASF2505
-	.byte	0x5
-	.uleb128 0x1e
-	.long	.LASF2506
-	.byte	0x5
-	.uleb128 0x1f
-	.long	.LASF2507
-	.byte	0x5
-	.uleb128 0x20
-	.long	.LASF2508
-	.byte	0x5
-	.uleb128 0x22
-	.long	.LASF2509
-	.byte	0x5
-	.uleb128 0x24
-	.long	.LASF2510
-	.byte	0x5
-	.uleb128 0x29
-	.long	.LASF2511
-	.byte	0x5
-	.uleb128 0x2c
-	.long	.LASF2512
-	.byte	0x5
-	.uleb128 0x2d
-	.long	.LASF2513
-	.byte	0x5
-	.uleb128 0x2e
-	.long	.LASF2514
-	.byte	0x5
-	.uleb128 0x30
-	.long	.LASF2515
-	.byte	0x5
-	.uleb128 0x31
-	.long	.LASF2516
-	.byte	0x5
-	.uleb128 0x32
-	.long	.LASF2517
 	.byte	0
-	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.53a80dcb972256ad710bb0611da875ed,comdat
+	.section	.debug_macro,"G",@progbits,wm4.machine_specific_registers.h.3.d2e1d0b1ada7d991f2dcf44fe45b2999,comdat
 .Ldebug_macro83:
 	.value	0x4
 	.byte	0
 	.byte	0x5
 	.uleb128 0x3
-	.long	.LASF2518
+	.long	.LASF2492
+	.byte	0x5
+	.uleb128 0x5
+	.long	.LASF2493
 	.byte	0x5
 	.uleb128 0x6
-	.long	.LASF2519
-	.byte	0x5
-	.uleb128 0x7
-	.long	.LASF2520
-	.byte	0x5
-	.uleb128 0x8
-	.long	.LASF2521
-	.byte	0x5
-	.uleb128 0x9
-	.long	.LASF2522
+	.long	.LASF2491
 	.byte	0x5
 	.uleb128 0xa
-	.long	.LASF2487
+	.long	.LASF2494
+	.byte	0x5
+	.uleb128 0xb
+	.long	.LASF2495
 	.byte	0x5
 	.uleb128 0xc
+	.long	.LASF2496
+	.byte	0x5
+	.uleb128 0xd
+	.long	.LASF2497
+	.byte	0x5
+	.uleb128 0xe
+	.long	.LASF2498
+	.byte	0x5
+	.uleb128 0xf
+	.long	.LASF2499
+	.byte	0x5
+	.uleb128 0x11
+	.long	.LASF2500
+	.byte	0x5
+	.uleb128 0x12
+	.long	.LASF2501
+	.byte	0x5
+	.uleb128 0x13
+	.long	.LASF2502
+	.byte	0x5
+	.uleb128 0x15
+	.long	.LASF2503
+	.byte	0x5
+	.uleb128 0x16
+	.long	.LASF2504
+	.byte	0x5
+	.uleb128 0x17
+	.long	.LASF2505
+	.byte	0x5
+	.uleb128 0x18
+	.long	.LASF2506
+	.byte	0x5
+	.uleb128 0x19
+	.long	.LASF2507
+	.byte	0x5
+	.uleb128 0x1a
+	.long	.LASF2508
+	.byte	0x5
+	.uleb128 0x1b
+	.long	.LASF2509
+	.byte	0x5
+	.uleb128 0x1c
+	.long	.LASF2510
+	.byte	0x5
+	.uleb128 0x1d
+	.long	.LASF2511
+	.byte	0x5
+	.uleb128 0x1e
+	.long	.LASF2512
+	.byte	0x5
+	.uleb128 0x1f
+	.long	.LASF2513
+	.byte	0x5
+	.uleb128 0x20
+	.long	.LASF2514
+	.byte	0x5
+	.uleb128 0x22
+	.long	.LASF2515
+	.byte	0x5
+	.uleb128 0x24
+	.long	.LASF2516
+	.byte	0x5
+	.uleb128 0x29
+	.long	.LASF2517
+	.byte	0x5
+	.uleb128 0x2c
+	.long	.LASF2518
+	.byte	0x5
+	.uleb128 0x2d
+	.long	.LASF2519
+	.byte	0x5
+	.uleb128 0x2e
+	.long	.LASF2520
+	.byte	0x5
+	.uleb128 0x30
+	.long	.LASF2521
+	.byte	0x5
+	.uleb128 0x31
+	.long	.LASF2522
+	.byte	0x5
+	.uleb128 0x32
 	.long	.LASF2523
 	.byte	0
 	.section	.debug_macro,"G",@progbits,wm4.unistd.h.3.07fa498113c35e37966156c8d3da3918,comdat
@@ -16949,7 +16919,7 @@ get_msr_power_limits_w:
 	.string	"__DECL_SIMD_exp10l "
 .LASF1292:
 	.string	"_POSIX_V6_LPBIG_OFFBIG -1"
-.LASF2500:
+.LASF2506:
 	.string	"RESIDENCY_STATE_REGULATION_STATUS 16"
 .LASF2705:
 	.string	"__NR_get_kernel_syms 177"
@@ -17263,7 +17233,7 @@ get_msr_power_limits_w:
 	.string	"S_IXGRP (S_IXUSR >> 3)"
 .LASF1579:
 	.string	"_CS_XBS5_LPBIG_OFFBIG_CFLAGS _CS_XBS5_LPBIG_OFFBIG_CFLAGS"
-.LASF2494:
+.LASF2500:
 	.string	"PKG_THERMAL_STATUS 1"
 .LASF1345:
 	.string	"_SC_PRIORITIZED_IO _SC_PRIORITIZED_IO"
@@ -17285,8 +17255,8 @@ get_msr_power_limits_w:
 	.string	"_PC_SOCK_MAXBUF _PC_SOCK_MAXBUF"
 .LASF118:
 	.string	"__INT_LEAST32_MAX__ 0x7fffffff"
-.LASF2895:
-	.string	"__NR_futex_requeue 456"
+.LASF399:
+	.string	"__GNUC_PREREQ(maj,min) ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))"
 .LASF2388:
 	.string	"KEY_SCOPY 0575"
 .LASF466:
@@ -17325,6 +17295,8 @@ get_msr_power_limits_w:
 	.string	"_CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS"
 .LASF2988:
 	.string	"SYS_getcwd __NR_getcwd"
+.LASF3602:
+	.string	"get_amd_pkg_power_w"
 .LASF2012:
 	.string	"NCURSES_INLINE"
 .LASF3316:
@@ -17439,7 +17411,7 @@ get_msr_power_limits_w:
 	.string	"__UINT_FAST64_TYPE__ long unsigned int"
 .LASF3031:
 	.string	"SYS_iopl __NR_iopl"
-.LASF2488:
+.LASF2494:
 	.string	"MSR_PERF_STATUS 0x198"
 .LASF2383:
 	.string	"KEY_RESUME 0570"
@@ -17447,7 +17419,7 @@ get_msr_power_limits_w:
 	.string	"__NR_timerfd_gettime 287"
 .LASF1015:
 	.string	"ESOCKTNOSUPPORT 94"
-.LASF2490:
+.LASF2496:
 	.string	"MSR_PKG_POWER_LIMIT 0x610"
 .LASF3583:
 	.string	"prochot"
@@ -17503,7 +17475,7 @@ get_msr_power_limits_w:
 	.string	"__f32(x) x ##f32"
 .LASF2925:
 	.string	"SYS_clock_settime __NR_clock_settime"
-.LASF2520:
+.LASF2488:
 	.string	"BATTERY_STATUS_BUF_SIZE 20"
 .LASF2106:
 	.string	"ACS_LARROW NCURSES_ACS(',')"
@@ -17953,7 +17925,7 @@ get_msr_power_limits_w:
 	.string	"__WINT_WIDTH__ 32"
 .LASF565:
 	.string	"__need_NULL"
-.LASF2514:
+.LASF2520:
 	.string	"AMD_MSR_PACKAGE_ENERGY 0xC001029B"
 .LASF518:
 	.string	"__attr_dealloc(dealloc,argno) __attribute__ ((__malloc__ (dealloc, argno)))"
@@ -18051,7 +18023,7 @@ get_msr_power_limits_w:
 	.string	"_SC_SHARED_MEMORY_OBJECTS _SC_SHARED_MEMORY_OBJECTS"
 .LASF56:
 	.string	"__UINT64_TYPE__ long unsigned int"
-.LASF2505:
+.LASF2511:
 	.string	"PKG_PL1_STATUS 1024"
 .LASF477:
 	.string	"__attribute_maybe_unused__ __attribute__ ((__unused__))"
@@ -18151,7 +18123,7 @@ get_msr_power_limits_w:
 	.string	"NCURSES_ACS(c) (acs_map[NCURSES_CAST(unsigned char,(c))])"
 .LASF2047:
 	.string	"_VA_LIST_T_H "
-.LASF3575:
+.LASF3576:
 	.string	"close"
 .LASF1913:
 	.string	"__MATH_PRECNAME(name,r) __CONCAT(name,r)"
@@ -18565,8 +18537,8 @@ get_msr_power_limits_w:
 	.string	"KEY_SREDO 0620"
 .LASF137:
 	.string	"__INT_FAST32_WIDTH__ 64"
-.LASF2696:
-	.string	"__NR_swapoff 168"
+.LASF353:
+	.string	"__linux 1"
 .LASF2818:
 	.string	"__NR_eventfd2 290"
 .LASF2548:
@@ -18659,7 +18631,7 @@ get_msr_power_limits_w:
 	.string	"__MMX__ 1"
 .LASF2306:
 	.string	"slk_attr_off(a,v) ((v) ? ERR : slk_attroff(a))"
-.LASF2497:
+.LASF2503:
 	.string	"MSR_CORE_PERF_LIMIT_REASONS 0x64F"
 .LASF1782:
 	.string	"__DECL_SIMD_atan2f "
@@ -18879,8 +18851,6 @@ get_msr_power_limits_w:
 	.string	"__NR_timer_create 222"
 .LASF2212:
 	.string	"vline(ch,n) wvline(stdscr, ch, (n))"
-.LASF2523:
-	.string	"DEBUG_ENABLE 1"
 .LASF1661:
 	.string	"__DECL_SIMD_exp "
 .LASF3375:
@@ -18897,7 +18867,7 @@ get_msr_power_limits_w:
 	.string	"SIG_ATOMIC_MAX (2147483647)"
 .LASF1758:
 	.string	"__DECL_SIMD_expm1f32x "
-.LASF2522:
+.LASF2490:
 	.string	"BUFSIZE 64"
 .LASF2050:
 	.string	"TRUE 1"
@@ -18971,7 +18941,7 @@ get_msr_power_limits_w:
 	.string	"mvinchstr(y,x,s) mvwinchstr(stdscr,(y),(x),(s))"
 .LASF3259:
 	.string	"SYS_wait4 __NR_wait4"
-.LASF2498:
+.LASF2504:
 	.string	"PROCHOT 1"
 .LASF795:
 	.string	"__WSTOPSIG(status) __WEXITSTATUS(status)"
@@ -19009,7 +18979,7 @@ get_msr_power_limits_w:
 	.string	"attron(at) wattron(stdscr,(at))"
 .LASF3527:
 	.string	"_IO_save_base"
-.LASF3577:
+.LASF3575:
 	.string	"printf"
 .LASF1718:
 	.string	"__DECL_SIMD_hypotf32x "
@@ -19051,7 +19021,7 @@ get_msr_power_limits_w:
 	.string	"__NR_fchdir 81"
 .LASF2309:
 	.string	"is_idcok(win) (NCURSES_OK_ADDR(win) ? (win)->_idcok : FALSE)"
-.LASF2495:
+.LASF2501:
 	.string	"PKG_CRITICAL_TEMPERATURE_STATUS 16"
 .LASF813:
 	.string	"__lldiv_t_defined 1"
@@ -19201,7 +19171,7 @@ get_msr_power_limits_w:
 	.string	"_SC_TRACE _SC_TRACE"
 .LASF1692:
 	.string	"__DECL_SIMD_atanf "
-.LASF2509:
+.LASF2515:
 	.string	"BIT31 0x8000000"
 .LASF3539:
 	.string	"_offset"
@@ -19237,8 +19207,8 @@ get_msr_power_limits_w:
 	.string	"_SC_XBS5_LP64_OFF64 _SC_XBS5_LP64_OFF64"
 .LASF1346:
 	.string	"_SC_SYNCHRONIZED_IO _SC_SYNCHRONIZED_IO"
-.LASF353:
-	.string	"__linux 1"
+.LASF864:
+	.string	"le64toh(x) __uint64_identity (x)"
 .LASF2851:
 	.string	"__NR_userfaultfd 323"
 .LASF229:
@@ -19463,7 +19433,7 @@ get_msr_power_limits_w:
 	.string	"__LEAF , __leaf__"
 .LASF628:
 	.string	"__TIME64_T_TYPE __TIME_T_TYPE"
-.LASF2519:
+.LASF2487:
 	.string	"AVG_WINDOW 60"
 .LASF364:
 	.string	"__STDC_IEC_559_COMPLEX__ 1"
@@ -19649,10 +19619,12 @@ get_msr_power_limits_w:
 	.string	"_SC_UINT_MAX _SC_UINT_MAX"
 .LASF2536:
 	.string	"__NR_lseek 8"
-.LASF2828:
-	.string	"__NR_fanotify_init 300"
+.LASF2696:
+	.string	"__NR_swapoff 168"
 .LASF3523:
 	.string	"_IO_write_ptr"
+.LASF2895:
+	.string	"__NR_futex_requeue 456"
 .LASF742:
 	.string	"INTMAX_MIN (-__INT64_C(9223372036854775807)-1)"
 .LASF2628:
@@ -19681,8 +19653,8 @@ get_msr_power_limits_w:
 	.string	"__ILP32_OFF32_LDFLAGS \"-m32\""
 .LASF3196:
 	.string	"SYS_setresuid __NR_setresuid"
-.LASF3602:
-	.string	"get_amd_pck_power_w"
+.LASF3188:
+	.string	"SYS_setgroups __NR_setgroups"
 .LASF1466:
 	.string	"_SC_ADVISORY_INFO _SC_ADVISORY_INFO"
 .LASF1589:
@@ -19901,7 +19873,7 @@ get_msr_power_limits_w:
 	.string	"_SC_PRIORITY_SCHEDULING _SC_PRIORITY_SCHEDULING"
 .LASF3460:
 	.string	"PERF_MEM_REMOTE_SHIFT 37"
-.LASF2508:
+.LASF2514:
 	.string	"TURBO_TRANSITION_ATTENUATION_STATUS 8192"
 .LASF2260:
 	.string	"standend() wstandend(stdscr)"
@@ -20211,7 +20183,7 @@ get_msr_power_limits_w:
 	.string	"__DECL_SIMD_atanhf32x "
 .LASF2581:
 	.string	"__NR_socketpair 53"
-.LASF2515:
+.LASF2521:
 	.string	"AMD_TIME_UNIT_MASK 0xF0000"
 .LASF1023:
 	.string	"ENETRESET 102"
@@ -20513,7 +20485,7 @@ get_msr_power_limits_w:
 	.string	"__FLT128_HAS_DENORM__ 1"
 .LASF2254:
 	.string	"insstr(s) winsstr(stdscr,(s))"
-.LASF2506:
+.LASF2512:
 	.string	"PKG_PL2_STATUS 2048"
 .LASF1608:
 	.string	"_CS_POSIX_V7_LP64_OFF64_LDFLAGS _CS_POSIX_V7_LP64_OFF64_LDFLAGS"
@@ -20651,6 +20623,8 @@ get_msr_power_limits_w:
 	.string	"SYS_set_robust_list __NR_set_robust_list"
 .LASF1501:
 	.string	"_SC_USER_GROUPS_R _SC_USER_GROUPS_R"
+.LASF2485:
+	.string	"UTILS "
 .LASF984:
 	.string	"ENOSR 63"
 .LASF1107:
@@ -20661,7 +20635,7 @@ get_msr_power_limits_w:
 	.string	"INT32_C(c) c"
 .LASF780:
 	.string	"_WCHAR_T_DECLARED "
-.LASF2517:
+.LASF2523:
 	.string	"AMD_POWER_UNIT_MASK 0xF"
 .LASF412:
 	.string	"_POSIX_C_SOURCE 200809L"
@@ -20921,7 +20895,7 @@ get_msr_power_limits_w:
 	.string	"_XOPEN_LEGACY 1"
 .LASF3373:
 	.string	"__be64_to_cpus(x) __swab64s((x))"
-.LASF2507:
+.LASF2513:
 	.string	"MAX_TURBO_LIMIT_STATUS 4096"
 .LASF1249:
 	.string	"_POSIX_THREAD_ATTR_STACKSIZE 200809L"
@@ -20949,6 +20923,8 @@ get_msr_power_limits_w:
 	.string	"__NR_capset 126"
 .LASF1283:
 	.string	"_POSIX2_CHAR_TERM 200809L"
+.LASF2828:
+	.string	"__NR_fanotify_init 300"
 .LASF13:
 	.string	"__ATOMIC_ACQ_REL 4"
 .LASF3295:
@@ -21001,11 +20977,11 @@ get_msr_power_limits_w:
 	.string	"__INT_FAST32_TYPE__ long int"
 .LASF1607:
 	.string	"_CS_POSIX_V7_LP64_OFF64_CFLAGS _CS_POSIX_V7_LP64_OFF64_CFLAGS"
-.LASF2492:
+.LASF2498:
 	.string	"MSR_TEMPERATURE_TARGET 0x1A2"
 .LASF2897:
 	.string	"__NR_listmount 458"
-.LASF2511:
+.LASF2517:
 	.string	"AMD_CPUID 0x80000007"
 .LASF1542:
 	.string	"_SC_TRACE_NAME_MAX _SC_TRACE_NAME_MAX"
@@ -21193,7 +21169,7 @@ get_msr_power_limits_w:
 	.string	"__NR_copy_file_range 326"
 .LASF2435:
 	.string	"BUTTON2_DOUBLE_CLICKED NCURSES_MOUSE_MASK(2, NCURSES_DOUBLE_CLICKED)"
-.LASF2491:
+.LASF2497:
 	.string	"IA32_PACKAGE_THERM_STATUS 0x1B1"
 .LASF1895:
 	.string	"NAN (__builtin_nanf (\"\"))"
@@ -21221,7 +21197,7 @@ get_msr_power_limits_w:
 	.string	"SYS_sendfile __NR_sendfile"
 .LASF1788:
 	.string	"__DECL_SIMD_atan2f32x "
-.LASF2499:
+.LASF2505:
 	.string	"THERMAL_STATUS 2"
 .LASF1208:
 	.string	"F_ULOCK 0"
@@ -21237,7 +21213,7 @@ get_msr_power_limits_w:
 	.string	"UINT64_C(c) c ## UL"
 .LASF168:
 	.string	"__FLT_IS_IEC_60559__ 2"
-.LASF2510:
+.LASF2516:
 	.string	"CPU_TIGERLAKE 140"
 .LASF1359:
 	.string	"_SC_MQ_OPEN_MAX _SC_MQ_OPEN_MAX"
@@ -21315,7 +21291,7 @@ get_msr_power_limits_w:
 	.string	"__NR_mremap 25"
 .LASF3003:
 	.string	"SYS_getrandom __NR_getrandom"
-.LASF2512:
+.LASF2518:
 	.string	"AMD_MSR_PWR_UNIT 0xC0010299"
 .LASF1848:
 	.string	"__DECL_SIMD_erff32x "
@@ -21351,7 +21327,7 @@ get_msr_power_limits_w:
 	.string	"KEY_OPEN 0560"
 .LASF1189:
 	.string	"FNDELAY O_NDELAY"
-.LASF2493:
+.LASF2499:
 	.string	"IA32_THERM_STATUS 0x19C"
 .LASF1378:
 	.string	"_SC_CHARCLASS_NAME_MAX _SC_CHARCLASS_NAME_MAX"
@@ -21647,9 +21623,9 @@ get_msr_power_limits_w:
 	.string	"_POSIX_NO_TRUNC 1"
 .LASF1190:
 	.string	"__POSIX_FADV_DONTNEED 4"
-.LASF2486:
+.LASF2493:
 	.string	"POWER_DOMAIN_COUNT 3"
-.LASF2503:
+.LASF2509:
 	.string	"VR_THERM_DESIGN_CURRENT_STATUS 128"
 .LASF504:
 	.string	"__LDBL_REDIR1(name,proto,alias) name proto"
@@ -22161,7 +22137,7 @@ get_msr_power_limits_w:
 	.string	"KEY_DOWN 0402"
 .LASF2247:
 	.string	"inchnstr(s,n) winchnstr(stdscr,(s),(n))"
-.LASF2489:
+.LASF2495:
 	.string	"MSR_RAPL_POWER_UNIT 0x606"
 .LASF1477:
 	.string	"_SC_FD_MGMT _SC_FD_MGMT"
@@ -22285,7 +22261,7 @@ get_msr_power_limits_w:
 	.string	"__NR_settimeofday 164"
 .LASF2923:
 	.string	"SYS_clock_gettime __NR_clock_gettime"
-.LASF2485:
+.LASF2492:
 	.string	"MACHINE_SPECIFIC_REGISTERS "
 .LASF883:
 	.string	"FD_SET(fd,fdsetp) __FD_SET (fd, fdsetp)"
@@ -22359,7 +22335,7 @@ get_msr_power_limits_w:
 	.string	"__NR_rt_sigprocmask 14"
 .LASF3215:
 	.string	"SYS_stat __NR_stat"
-.LASF2516:
+.LASF2522:
 	.string	"AMD_ENERGY_UNIT_MASK 0x1F00"
 .LASF3111:
 	.string	"SYS_poll __NR_poll"
@@ -22487,8 +22463,6 @@ get_msr_power_limits_w:
 	.string	"__FLT64_MANT_DIG__ 53"
 .LASF2289:
 	.string	"mvaddstr(y,x,str) mvwaddstr(stdscr,(y),(x),(str))"
-.LASF399:
-	.string	"__GNUC_PREREQ(maj,min) ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))"
 .LASF1338:
 	.string	"_SC_TZNAME_MAX _SC_TZNAME_MAX"
 .LASF3623:
@@ -22503,8 +22477,6 @@ get_msr_power_limits_w:
 	.string	"__NR_set_mempolicy 238"
 .LASF3213:
 	.string	"SYS_socketpair __NR_socketpair"
-.LASF864:
-	.string	"le64toh(x) __uint64_identity (x)"
 .LASF33:
 	.string	"__ORDER_BIG_ENDIAN__ 4321"
 .LASF29:
@@ -22585,7 +22557,7 @@ get_msr_power_limits_w:
 	.string	"__ID_T_TYPE __U32_TYPE"
 .LASF647:
 	.string	"_IOLBF 1"
-.LASF2518:
+.LASF2486:
 	.string	"CPUMONLIB "
 .LASF415:
 	.string	"__USE_POSIX199309 1"
@@ -23012,7 +22984,7 @@ get_msr_power_limits_w:
 	.string	"__NR_syslog 103"
 .LASF520:
 	.string	"__attribute_returns_twice__ __attribute__ ((__returns_twice__))"
-.LASF2521:
+.LASF2489:
 	.string	"POWER_LIMIT_COUNT 2"
 .LASF2648:
 	.string	"__NR_getresgid 120"
@@ -23026,7 +22998,7 @@ get_msr_power_limits_w:
 	.string	"__LDBL_REDIR_NTH(name,proto) name proto __THROW"
 .LASF317:
 	.string	"__GCC_ATOMIC_INT_LOCK_FREE 2"
-.LASF2504:
+.LASF2510:
 	.string	"OTHER_STATUS 256"
 .LASF1027:
 	.string	"EISCONN 106"
@@ -23186,7 +23158,7 @@ get_msr_power_limits_w:
 	.string	"__MATHDECL(type,function,suffix,args) __MATHDECL_1(type, function,suffix, args); __MATHDECL_1(type, __CONCAT(__,function),suffix, args)"
 .LASF179:
 	.string	"__DBL_EPSILON__ ((double)2.22044604925031308084726333618164062e-16L)"
-.LASF2487:
+.LASF2491:
 	.string	"POLL_INTERVAL_S 1"
 .LASF1194:
 	.string	"POSIX_FADV_SEQUENTIAL 2"
@@ -23194,7 +23166,7 @@ get_msr_power_limits_w:
 	.string	"INT_LEAST8_MAX (127)"
 .LASF1125:
 	.string	"S_BLKSIZE 512"
-.LASF3576:
+.LASF3577:
 	.string	"pread"
 .LASF1475:
 	.string	"_SC_DEVICE_SPECIFIC _SC_DEVICE_SPECIFIC"
@@ -23272,7 +23244,7 @@ get_msr_power_limits_w:
 	.string	"NCURSES_BITS(mask,shift) (NCURSES_CAST(chtype,(mask)) << ((shift) + NCURSES_ATTR_SHIFT))"
 .LASF760:
 	.string	"UINT32_C(c) c ## U"
-.LASF2496:
+.LASF2502:
 	.string	"PKG_POWER_LIMITATION_STATUS 1024"
 .LASF1336:
 	.string	"_SC_OPEN_MAX _SC_OPEN_MAX"
@@ -23354,7 +23326,7 @@ get_msr_power_limits_w:
 	.string	"SYS_epoll_pwait2 __NR_epoll_pwait2"
 .LASF3367:
 	.string	"__le64_to_cpus(x) do { (void)(x); } while (0)"
-.LASF2502:
+.LASF2508:
 	.string	"VR_THERM_ALERT_STATUS 64"
 .LASF1603:
 	.string	"_CS_POSIX_V7_ILP32_OFFBIG_CFLAGS _CS_POSIX_V7_ILP32_OFFBIG_CFLAGS"
@@ -23482,7 +23454,7 @@ get_msr_power_limits_w:
 	.string	"__NR__sysctl 156"
 .LASF2479:
 	.string	"TRACE_DATABASE 0x0800"
-.LASF2513:
+.LASF2519:
 	.string	"AMD_MSR_CORE_ENERGY 0xC001029A"
 .LASF2349:
 	.string	"KEY_STAB 0524"
@@ -23826,7 +23798,7 @@ get_msr_power_limits_w:
 	.string	"__SIZE_WIDTH__ 64"
 .LASF2902:
 	.string	"SYS__sysctl __NR__sysctl"
-.LASF2501:
+.LASF2507:
 	.string	"RUNNING_AVERAGE_THERMAL_LIMIT_STATUS 32"
 .LASF12:
 	.string	"__ATOMIC_RELEASE 3"
@@ -24168,8 +24140,6 @@ get_msr_power_limits_w:
 	.string	"KEY_ENTER 0527"
 .LASF531:
 	.string	"__GLIBC_USE_IEC_60559_BFP_EXT"
-.LASF3188:
-	.string	"SYS_setgroups __NR_setgroups"
 .LASF3543:
 	.string	"_freeres_buf"
 .LASF235:

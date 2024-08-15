@@ -43,7 +43,7 @@ running_with_privileges:
 init_environment:
 .LFB6:
 	.file 1 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-	.loc 1 35 1
+	.loc 1 36 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -54,46 +54,46 @@ init_environment:
 .LCFI1:
 	.cfi_def_cfa_register 6
 	sub	rsp, 16	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:37:     if ((fp = popen("sudo modprobe msr", "r")) == NULL)
-	.loc 1 37 15
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:38:     if ((fp = popen("sudo modprobe msr", "r")) == NULL)
+	.loc 1 38 15
 	lea	rax, .LC0[rip]	# tmp87,
 	mov	rsi, rax	#, tmp87
 	lea	rax, .LC1[rip]	# tmp88,
 	mov	rdi, rax	#, tmp88
 	call	popen@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# fp, tmp89
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:37:     if ((fp = popen("sudo modprobe msr", "r")) == NULL)
-	.loc 1 37 8
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:38:     if ((fp = popen("sudo modprobe msr", "r")) == NULL)
+	.loc 1 38 8
 	cmp	QWORD PTR -8[rbp], 0	# fp,
 	jne	.L2	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:39:         printf("Error modprobe msr\n");
-	.loc 1 39 9
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:40:         printf("Error modprobe msr\n");
+	.loc 1 40 9
 	lea	rax, .LC2[rip]	# tmp90,
 	mov	rdi, rax	#, tmp90
 	call	puts@PLT	#
 .L2:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:42:     setlocale(LC_NUMERIC, "");
-	.loc 1 42 5
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:43:     setlocale(LC_NUMERIC, "");
+	.loc 1 43 5
 	lea	rax, .LC3[rip]	# tmp91,
 	mov	rsi, rax	#, tmp91
 	mov	edi, 1	#,
 	call	setlocale@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:44:     core_count = sysconf(_SC_NPROCESSORS_ONLN);
-	.loc 1 44 18
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:45:     core_count = sysconf(_SC_NPROCESSORS_ONLN);
+	.loc 1 45 18
 	mov	edi, 84	#,
 	call	sysconf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:44:     core_count = sysconf(_SC_NPROCESSORS_ONLN);
-	.loc 1 44 16
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:45:     core_count = sysconf(_SC_NPROCESSORS_ONLN);
+	.loc 1 45 16
 	mov	DWORD PTR core_count[rip], eax	# core_count, _2
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:45:     if (core_count == -1)
-	.loc 1 45 20
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:46:     if (core_count == -1)
+	.loc 1 46 20
 	mov	eax, DWORD PTR core_count[rip]	# core_count.0_3, core_count
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:45:     if (core_count == -1)
-	.loc 1 45 8
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:46:     if (core_count == -1)
+	.loc 1 46 8
 	cmp	eax, -1	# core_count.0_3,
 	jne	.L3	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:47:         fprintf(stderr, "Could not determine CPU core count from sysconf\n");
-	.loc 1 47 9
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:48:         fprintf(stderr, "Could not determine CPU core count from sysconf\n");
+	.loc 1 48 9
 	mov	rax, QWORD PTR stderr[rip]	# stderr.1_4, stderr
 	mov	rcx, rax	#, stderr.1_4
 	mov	edx, 48	#,
@@ -102,22 +102,22 @@ init_environment:
 	mov	rdi, rax	#, tmp92
 	call	fwrite@PLT	#
 .L3:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:50:     running_with_privileges = FALSE;
-	.loc 1 50 29
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:51:     running_with_privileges = FALSE;
+	.loc 1 51 29
 	mov	BYTE PTR running_with_privileges[rip], 0	# running_with_privileges,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:51:     if (geteuid() == 0)
-	.loc 1 51 9
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:52:     if (geteuid() == 0)
+	.loc 1 52 9
 	call	geteuid@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:51:     if (geteuid() == 0)
-	.loc 1 51 8
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:52:     if (geteuid() == 0)
+	.loc 1 52 8
 	test	eax, eax	# _5
 	jne	.L5	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:53:         running_with_privileges = TRUE; 
-	.loc 1 53 33
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:54:         running_with_privileges = TRUE; 
+	.loc 1 54 33
 	mov	BYTE PTR running_with_privileges[rip], 1	# running_with_privileges,
 .L5:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:55: }
-	.loc 1 55 1
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:56: }
+	.loc 1 56 1
 	nop	
 	leave	
 .LCFI2:
@@ -126,11 +126,11 @@ init_environment:
 	.cfi_endproc
 .LFE6:
 	.size	init_environment, .-init_environment
-	.globl	init_sensors
-	.type	init_sensors, @function
-init_sensors:
+	.globl	init_sensor_power
+	.type	init_sensor_power, @function
+init_sensor_power:
 .LFB7:
-	.loc 1 58 1
+	.loc 1 59 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -140,30 +140,74 @@ init_sensors:
 	mov	rbp, rsp	#,
 .LCFI4:
 	.cfi_def_cfa_register 6
-	mov	DWORD PTR -4[rbp], edi	# designer, designer
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:59:     return 0;
-	.loc 1 59 12
-	mov	eax, 0	# _1,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:60: }
-	.loc 1 60 1
-	pop	rbp	#
+	sub	rsp, 32	#,
+	mov	DWORD PTR -20[rbp], edi	# cpu_designer, cpu_designer
+	mov	DWORD PTR -24[rbp], esi	# core_count, core_count
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:62:     switch (cpu_designer)
+	.loc 1 62 5
+	cmp	DWORD PTR -20[rbp], 0	# cpu_designer,
+	je	.L7	#,
+	cmp	DWORD PTR -20[rbp], 1	# cpu_designer,
+	je	.L8	#,
+	jmp	.L12	#
+.L7:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:65:             my_power = malloc(sizeof(power)); 
+	.loc 1 65 24
+	mov	edi, 32	#,
+	call	malloc@PLT	#
+	mov	QWORD PTR -8[rbp], rax	# my_power, tmp87
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:66:             break;
+	.loc 1 66 13
+	jmp	.L10	#
+.L8:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:68:             my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
+	.loc 1 68 46
+	mov	eax, DWORD PTR -24[rbp]	# tmp88, core_count
+	cdqe
+	add	rax, 8	# _2,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:68:             my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
+	.loc 1 68 24
+	sal	rax, 2	# _3,
+	mov	rdi, rax	#, _3
+	call	malloc@PLT	#
+	mov	QWORD PTR -8[rbp], rax	# my_power, tmp89
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:69:             break;
+	.loc 1 69 13
+	jmp	.L10	#
+.L12:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:71:             my_power = malloc(sizeof(power)); 
+	.loc 1 71 24
+	mov	edi, 32	#,
+	call	malloc@PLT	#
+	mov	QWORD PTR -8[rbp], rax	# my_power, tmp90
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:72:             break;
+	.loc 1 72 13
+	nop	
+.L10:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:75:     get_msr_core_units(my_power, cpu_designer);
+	.loc 1 75 5
+	mov	edx, DWORD PTR -20[rbp]	# tmp91, cpu_designer
+	mov	rax, QWORD PTR -8[rbp]	# tmp92, my_power
+	mov	esi, edx	#, tmp91
+	mov	rdi, rax	#, tmp92
+	call	get_msr_core_units@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:77:     return my_power;
+	.loc 1 77 12
+	mov	rax, QWORD PTR -8[rbp]	# _16, my_power
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:78: }
+	.loc 1 78 1
+	leave	
 .LCFI5:
 	.cfi_def_cfa 7, 8
 	ret	
 	.cfi_endproc
 .LFE7:
-	.size	init_sensors, .-init_sensors
-	.section	.rodata
-.LC5:
-	.string	"read_string filepath = %s\n"
-.LC6:
-	.string	"Error opening file\n"
-	.text
-	.globl	read_string
-	.type	read_string, @function
-read_string:
+	.size	init_sensor_power, .-init_sensor_power
+	.globl	init_sensor
+	.type	init_sensor, @function
+init_sensor:
 .LFB8:
-	.loc 1 64 1
+	.loc 1 81 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -173,111 +217,55 @@ read_string:
 	mov	rbp, rsp	#,
 .LCFI7:
 	.cfi_def_cfa_register 6
-	sub	rsp, 32	#,
-	mov	QWORD PTR -24[rbp], rdi	# filepath, filepath
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:66:         printf("read_string filepath = %s\n", filepath);
-	.loc 1 66 9
-	mov	rax, QWORD PTR -24[rbp]	# tmp85, filepath
-	mov	rsi, rax	#, tmp85
-	lea	rax, .LC5[rip]	# tmp86,
-	mov	rdi, rax	#, tmp86
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:68:     FILE *fp = fopen(filepath, "r");
-	.loc 1 68 16
-	mov	rax, QWORD PTR -24[rbp]	# tmp87, filepath
-	lea	rdx, .LC0[rip]	# tmp88,
-	mov	rsi, rdx	#, tmp88
-	mov	rdi, rax	#, tmp87
-	call	fopen@PLT	#
-	mov	QWORD PTR -8[rbp], rax	# fp, tmp89
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:70:     int i = 0;
-	.loc 1 70 9
-	mov	DWORD PTR -16[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:73:     if(fp == NULL) {
-	.loc 1 73 7
-	cmp	QWORD PTR -8[rbp], 0	# fp,
-	jne	.L11	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:74:         perror("Error opening file\n");
-	.loc 1 74 9
-	lea	rax, .LC6[rip]	# tmp90,
-	mov	rdi, rax	#, tmp90
-	call	perror@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:75:         return NULL;
-	.loc 1 75 15
-	mov	eax, 0	# _3,
-	jmp	.L10	#
-.L14:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:79:         if(single_character == '\n') {
-	.loc 1 79 11
-	cmp	DWORD PTR -12[rbp], 10	# single_character,
-	jne	.L12	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:80:             continue;           // skip newline characters
-	.loc 1 80 13 discriminator 1
-	jmp	.L11	#
-.L12:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:82:             file_buf[i] = single_character;
+	sub	rsp, 64	#,
+	mov	DWORD PTR -52[rbp], edi	# core_count, core_count
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:81: {
+	.loc 1 81 1
+	mov	rax, QWORD PTR fs:40	# tmp93, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.6425, tmp93
+	xor	eax, eax	# tmp93
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:82:     sensor *my_sensor = malloc( sizeof(sensor) + core_count * sizeof(my_sensor->per_core[0]) );
+	.loc 1 82 48
+	mov	eax, DWORD PTR -52[rbp]	# tmp87, core_count
+	cdqe
+	add	rax, 5	# _2,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:82:     sensor *my_sensor = malloc( sizeof(sensor) + core_count * sizeof(my_sensor->per_core[0]) );
 	.loc 1 82 25
-	mov	eax, DWORD PTR -12[rbp]	# tmp91, single_character
-	mov	ecx, eax	# _1, tmp91
-	mov	eax, DWORD PTR -16[rbp]	# tmp93, i
-	cdqe
-	lea	rdx, file_buf.0[rip]	# tmp94,
-	mov	BYTE PTR [rax+rdx], cl	# file_buf[i_2], _1
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:84:     i++;
-	.loc 1 84 6
-	add	DWORD PTR -16[rbp], 1	# i,
-.L11:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:78:     while ((single_character = fgetc(fp)) != EOF && i < BUFSIZE -1 ){
-	.loc 1 78 32
-	mov	rax, QWORD PTR -8[rbp]	# tmp95, fp
-	mov	rdi, rax	#, tmp95
-	call	fgetc@PLT	#
-	mov	DWORD PTR -12[rbp], eax	# single_character, tmp96
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:78:     while ((single_character = fgetc(fp)) != EOF && i < BUFSIZE -1 ){
-	.loc 1 78 49
-	cmp	DWORD PTR -12[rbp], -1	# single_character,
-	je	.L13	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:78:     while ((single_character = fgetc(fp)) != EOF && i < BUFSIZE -1 ){
-	.loc 1 78 49 is_stmt 0 discriminator 1
-	cmp	DWORD PTR -16[rbp], 62	# i,
-	jle	.L14	#,
-.L13:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:87:     file_buf[i] = '\0';                 // terminate string
-	.loc 1 87 17 is_stmt 1
-	mov	eax, DWORD PTR -16[rbp]	# tmp98, i
-	cdqe
-	lea	rdx, file_buf.0[rip]	# tmp99,
-	mov	BYTE PTR [rax+rdx], 0	# file_buf[i_2],
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:88:     fclose(fp);
-	.loc 1 88 5
-	mov	rax, QWORD PTR -8[rbp]	# tmp100, fp
-	mov	rdi, rax	#, tmp100
-	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:90:     return file_buf;                    // return address to file
-	.loc 1 90 12
-	lea	rax, file_buf.0[rip]	# _3,
-.L10:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:91: }
-	.loc 1 91 1
+	sal	rax, 2	# _3,
+	mov	rdi, rax	#, _3
+	call	malloc@PLT	#
+	mov	QWORD PTR -40[rbp], rax	# my_sensor, tmp88
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:83:     *my_sensor = (sensor) {.min = 1000, .max = 0}; 
+	.loc 1 83 16
+	mov	rax, QWORD PTR -40[rbp]	# tmp89, my_sensor
+	mov	QWORD PTR [rax], 0	# *my_sensor_7,
+	mov	QWORD PTR 8[rax], 0	# *my_sensor_7,
+	mov	DWORD PTR 16[rax], 0	# *my_sensor_7,
+	mov	rax, QWORD PTR -40[rbp]	# tmp90, my_sensor
+	movss	xmm0, DWORD PTR .LC5[rip]	# tmp91,
+	movss	DWORD PTR 12[rax], xmm0	# my_sensor_7->min, tmp91
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:85:     return my_sensor;
+	.loc 1 85 12
+	mov	rax, QWORD PTR -40[rbp]	# _10, my_sensor
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:86: }
+	.loc 1 86 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp94, D.6425
+	sub	rdx, QWORD PTR fs:40	# tmp94, MEM[(<address-space-1> long unsigned int *)40B]
+	je	.L15	#,
+	call	__stack_chk_fail@PLT	#
+.L15:
 	leave	
 .LCFI8:
 	.cfi_def_cfa 7, 8
 	ret	
 	.cfi_endproc
 .LFE8:
-	.size	read_string, .-read_string
-	.section	.rodata
-.LC7:
-	.string	"read_line filepath = %s\n"
-.LC8:
-	.string	"%s"
-	.text
-	.globl	read_line
-	.type	read_line, @function
-read_line:
+	.size	init_sensor, .-init_sensor
+	.globl	init_sensor_battery
+	.type	init_sensor_battery, @function
+init_sensor_battery:
 .LFB9:
-	.loc 1 94 1
+	.loc 1 89 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -287,108 +275,50 @@ read_line:
 	mov	rbp, rsp	#,
 .LCFI10:
 	.cfi_def_cfa_register 6
-	sub	rsp, 32	#,
-	mov	QWORD PTR -24[rbp], rdi	# return_string, return_string
-	mov	QWORD PTR -32[rbp], rsi	# filepath, filepath
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:96:         printf("read_line filepath = %s\n", filepath);
-	.loc 1 96 9
-	mov	rax, QWORD PTR -32[rbp]	# tmp86, filepath
-	mov	rsi, rax	#, tmp86
-	lea	rax, .LC7[rip]	# tmp87,
-	mov	rdi, rax	#, tmp87
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:98:     FILE *fp = fopen(filepath, "r");
-	.loc 1 98 16
-	mov	rax, QWORD PTR -32[rbp]	# tmp88, filepath
-	lea	rdx, .LC0[rip]	# tmp89,
-	mov	rsi, rdx	#, tmp89
-	mov	rdi, rax	#, tmp88
-	call	fopen@PLT	#
-	mov	QWORD PTR -8[rbp], rax	# fp, tmp90
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:100:     if(fp == NULL) {
-	.loc 1 100 7
-	cmp	QWORD PTR -8[rbp], 0	# fp,
-	jne	.L16	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:101:         perror("Error opening file\n");
-	.loc 1 101 9
-	lea	rax, .LC6[rip]	# tmp91,
-	mov	rdi, rax	#, tmp91
-	call	perror@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:102:         return -1;
-	.loc 1 102 16
-	mov	eax, -1	# _3,
-	jmp	.L17	#
-.L16:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:104:     if (fscanf(fp, "%s", return_string) == 1)
-	.loc 1 104 9
-	mov	rdx, QWORD PTR -24[rbp]	# tmp92, return_string
-	mov	rax, QWORD PTR -8[rbp]	# tmp93, fp
-	lea	rcx, .LC8[rip]	# tmp94,
-	mov	rsi, rcx	#, tmp94
-	mov	rdi, rax	#, tmp93
-	mov	eax, 0	#,
-	call	__isoc99_fscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:104:     if (fscanf(fp, "%s", return_string) == 1)
-	.loc 1 104 8
-	cmp	eax, 1	# _1,
-	jne	.L18	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:106:         fclose(fp);
-	.loc 1 106 9
-	mov	rax, QWORD PTR -8[rbp]	# tmp95, fp
-	mov	rdi, rax	#, tmp95
-	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:107:         return 0;
-	.loc 1 107 16
-	mov	eax, 0	# _3,
-	jmp	.L17	#
+	sub	rsp, 64	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:89: {
+	.loc 1 89 1
+	mov	rax, QWORD PTR fs:40	# tmp89, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.6427, tmp89
+	xor	eax, eax	# tmp89
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:90:     battery_s *battery = malloc(sizeof(battery));
+	.loc 1 90 26
+	mov	edi, 8	#,
+	call	malloc@PLT	#
+	mov	QWORD PTR -56[rbp], rax	# battery, tmp84
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:91:     *battery = (battery_s) {.min = 1000, .max = 0};
+	.loc 1 91 14
+	mov	rax, QWORD PTR -56[rbp]	# tmp85, battery
+	mov	QWORD PTR [rax], 0	# *battery_3,
+	mov	QWORD PTR 8[rax], 0	# *battery_3,
+	mov	QWORD PTR 16[rax], 0	# *battery_3,
+	mov	QWORD PTR 24[rax], 0	# *battery_3,
+	mov	QWORD PTR 32[rax], 0	# *battery_3,
+	mov	rax, QWORD PTR -56[rbp]	# tmp86, battery
+	movss	xmm0, DWORD PTR .LC5[rip]	# tmp87,
+	movss	DWORD PTR 12[rax], xmm0	# battery_3->min, tmp87
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:93:     return battery;
+	.loc 1 93 12
+	mov	rax, QWORD PTR -56[rbp]	# _6, battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:94: }
+	.loc 1 94 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp90, D.6427
+	sub	rdx, QWORD PTR fs:40	# tmp90, MEM[(<address-space-1> long unsigned int *)40B]
+	je	.L18	#,
+	call	__stack_chk_fail@PLT	#
 .L18:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:109:     if (fscanf(fp, "%s", return_string) == EOF)
-	.loc 1 109 9
-	mov	rdx, QWORD PTR -24[rbp]	# tmp96, return_string
-	mov	rax, QWORD PTR -8[rbp]	# tmp97, fp
-	lea	rcx, .LC8[rip]	# tmp98,
-	mov	rsi, rcx	#, tmp98
-	mov	rdi, rax	#, tmp97
-	mov	eax, 0	#,
-	call	__isoc99_fscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:109:     if (fscanf(fp, "%s", return_string) == EOF)
-	.loc 1 109 8
-	cmp	eax, -1	# _2,
-	jne	.L19	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:112:         fclose(fp);
-	.loc 1 112 9
-	mov	rax, QWORD PTR -8[rbp]	# tmp99, fp
-	mov	rdi, rax	#, tmp99
-	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:113:         return -1;
-	.loc 1 113 16
-	mov	eax, -1	# _3,
-	jmp	.L17	#
-.L19:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:116:     fclose(fp);
-	.loc 1 116 5
-	mov	rax, QWORD PTR -8[rbp]	# tmp100, fp
-	mov	rdi, rax	#, tmp100
-	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:117:     return -1;
-	.loc 1 117 12
-	mov	eax, -1	# _3,
-.L17:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:119: }
-	.loc 1 119 1
 	leave	
 .LCFI11:
 	.cfi_def_cfa 7, 8
 	ret	
 	.cfi_endproc
 .LFE9:
-	.size	read_line, .-read_line
+	.size	init_sensor_battery, .-init_sensor_battery
 	.globl	update_sensor_data
 	.type	update_sensor_data, @function
 update_sensor_data:
 .LFB10:
-	.loc 1 122 1
+	.loc 1 99 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -405,217 +335,193 @@ update_sensor_data:
 	mov	QWORD PTR -32[rbp], rcx	# voltage, voltage
 	mov	QWORD PTR -40[rbp], r8	# power_per_domain, power_per_domain
 	mov	QWORD PTR -48[rbp], r9	# my_power, my_power
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:124:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
-	.loc 1 124 5
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:101:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+	.loc 1 101 5
 	mov	edx, DWORD PTR core_count[rip]	# core_count.2_1, core_count
 	mov	rax, QWORD PTR -8[rbp]	# _2, freq
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:124:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
-	.loc 1 124 24
-	mov	rcx, QWORD PTR -8[rbp]	# tmp123, freq
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:101:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+	.loc 1 101 24
+	mov	rcx, QWORD PTR -8[rbp]	# tmp118, freq
 	add	rcx, 20	# _3,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:124:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
-	.loc 1 124 5
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:101:     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+	.loc 1 101 5
 	mov	rsi, rax	#, _2
 	mov	rdi, rcx	#, _3
 	call	sysfs_freq_ghz@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:125:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
-	.loc 1 125 17
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:102:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
+	.loc 1 102 17
 	mov	edx, DWORD PTR core_count[rip]	# core_count.3_4, core_count
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:125:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
-	.loc 1 125 46
-	mov	rax, QWORD PTR -8[rbp]	# tmp124, freq
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:102:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
+	.loc 1 102 46
+	mov	rax, QWORD PTR -8[rbp]	# tmp119, freq
 	lea	rcx, 20[rax]	# _5,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:125:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
-	.loc 1 125 17
-	mov	rax, QWORD PTR -8[rbp]	# tmp125, freq
-	mov	eax, DWORD PTR 12[rax]	# _6, freq_45(D)->min
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:102:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
+	.loc 1 102 17
+	mov	rax, QWORD PTR -8[rbp]	# tmp120, freq
+	mov	eax, DWORD PTR 12[rax]	# _6, freq_39(D)->min
 	mov	esi, edx	#, core_count.3_4
 	mov	rdi, rcx	#, _5
 	movd	xmm0, eax	#, _6
-	call	get_min_value	#
+	call	get_min_value@PLT	#
 	movd	eax, xmm0	# _7,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:125:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
-	.loc 1 125 15
-	mov	rdx, QWORD PTR -8[rbp]	# tmp126, freq
-	mov	DWORD PTR 12[rdx], eax	# freq_45(D)->min, _7
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:126:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
-	.loc 1 126 17
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:102:     freq->min = get_min_value(freq->min, freq->per_core, core_count);
+	.loc 1 102 15
+	mov	rdx, QWORD PTR -8[rbp]	# tmp121, freq
+	mov	DWORD PTR 12[rdx], eax	# freq_39(D)->min, _7
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:103:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
+	.loc 1 103 17
 	mov	edx, DWORD PTR core_count[rip]	# core_count.4_8, core_count
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:126:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
-	.loc 1 126 46
-	mov	rax, QWORD PTR -8[rbp]	# tmp127, freq
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:103:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
+	.loc 1 103 46
+	mov	rax, QWORD PTR -8[rbp]	# tmp122, freq
 	lea	rcx, 20[rax]	# _9,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:126:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
-	.loc 1 126 17
-	mov	rax, QWORD PTR -8[rbp]	# tmp128, freq
-	mov	eax, DWORD PTR 16[rax]	# _10, freq_45(D)->max
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:103:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
+	.loc 1 103 17
+	mov	rax, QWORD PTR -8[rbp]	# tmp123, freq
+	mov	eax, DWORD PTR 16[rax]	# _10, freq_39(D)->max
 	mov	esi, edx	#, core_count.4_8
 	mov	rdi, rcx	#, _9
 	movd	xmm0, eax	#, _10
-	call	get_max_value	#
+	call	get_max_value@PLT	#
 	movd	eax, xmm0	# _11,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:126:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
-	.loc 1 126 15
-	mov	rdx, QWORD PTR -8[rbp]	# tmp129, freq
-	mov	DWORD PTR 16[rdx], eax	# freq_45(D)->max, _11
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:127:     freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
-	.loc 1 127 25
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:103:     freq->max = get_max_value(freq->max, freq->per_core, core_count);
+	.loc 1 103 15
+	mov	rdx, QWORD PTR -8[rbp]	# tmp124, freq
+	mov	DWORD PTR 16[rdx], eax	# freq_39(D)->max, _11
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:104:     freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
+	.loc 1 104 25
 	mov	rdx, QWORD PTR -8[rbp]	# _12, freq
-	mov	rax, QWORD PTR -8[rbp]	# tmp130, freq
+	mov	rax, QWORD PTR -8[rbp]	# tmp125, freq
 	lea	rcx, 8[rax]	# _13,
 	mov	rax, QWORD PTR poll_cycle_counter[rip]	# poll_cycle_counter.5_14, poll_cycle_counter
 	mov	rsi, rcx	#, _13
 	mov	rdi, rax	#, poll_cycle_counter.5_14
-	call	runtime_avg	#
+	call	runtime_avg@PLT	#
 	movd	eax, xmm0	# _15,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:127:     freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
-	.loc 1 127 23
-	mov	rdx, QWORD PTR -8[rbp]	# tmp131, freq
-	mov	DWORD PTR 4[rdx], eax	# freq_45(D)->runtime_avg, _15
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:129:     freq_his[period_counter] = freq->cpu_avg;
-	.loc 1 129 13
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:104:     freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
+	.loc 1 104 23
+	mov	rdx, QWORD PTR -8[rbp]	# tmp126, freq
+	mov	DWORD PTR 4[rdx], eax	# freq_39(D)->runtime_avg, _15
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:106:     freq_his[period_counter] = freq->cpu_avg;
+	.loc 1 106 13
 	mov	rdx, QWORD PTR period_counter[rip]	# period_counter.6_16, period_counter
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:129:     freq_his[period_counter] = freq->cpu_avg;
-	.loc 1 129 36
-	mov	rax, QWORD PTR -8[rbp]	# tmp132, freq
-	movss	xmm0, DWORD PTR [rax]	# _17, freq_45(D)->cpu_avg
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:129:     freq_his[period_counter] = freq->cpu_avg;
-	.loc 1 129 30
-	sal	rdx, 2	# tmp133,
-	lea	rax, freq_his[rip]	# tmp134,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:106:     freq_his[period_counter] = freq->cpu_avg;
+	.loc 1 106 36
+	mov	rax, QWORD PTR -8[rbp]	# tmp127, freq
+	movss	xmm0, DWORD PTR [rax]	# _17, freq_39(D)->cpu_avg
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:106:     freq_his[period_counter] = freq->cpu_avg;
+	.loc 1 106 30
+	sal	rdx, 2	# tmp128,
+	lea	rax, freq_his[rip]	# tmp129,
 	movss	DWORD PTR [rdx+rax], xmm0	# freq_his[period_counter.6_16], _17
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:131:     get_sysfs_power_battery_w(&my_battery->power_now);
-	.loc 1 131 5
-	mov	rax, QWORD PTR 16[rbp]	# _18, my_battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:108:     get_sysfs_power_battery_w(&battery->power_now);
+	.loc 1 108 5
+	mov	rax, QWORD PTR 16[rbp]	# _18, battery
 	mov	rdi, rax	#, _18
 	call	get_sysfs_power_battery_w@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:132:     get_battery_status(my_battery->status);
-	.loc 1 132 34
-	mov	rax, QWORD PTR 16[rbp]	# tmp135, my_battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:109:     get_battery_status(battery->status);
+	.loc 1 109 31
+	mov	rax, QWORD PTR 16[rbp]	# tmp130, battery
 	add	rax, 20	# _19,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:132:     get_battery_status(my_battery->status);
-	.loc 1 132 5
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:109:     get_battery_status(battery->status);
+	.loc 1 109 5
 	mov	rdi, rax	#, _19
 	call	get_battery_status@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:133:     reset_if_status_change(&my_battery->power_cumulative, my_battery->status, charging_status_before);
-	.loc 1 133 69
-	mov	rax, QWORD PTR 16[rbp]	# tmp136, my_battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:110:     reset_if_status_change(&battery->power_cumulative, battery->status, charging_status_before);
+	.loc 1 110 63
+	mov	rax, QWORD PTR 16[rbp]	# tmp131, battery
 	lea	rcx, 20[rax]	# _20,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:133:     reset_if_status_change(&my_battery->power_cumulative, my_battery->status, charging_status_before);
-	.loc 1 133 5
-	mov	rax, QWORD PTR 16[rbp]	# tmp137, my_battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:110:     reset_if_status_change(&battery->power_cumulative, battery->status, charging_status_before);
+	.loc 1 110 5
+	mov	rax, QWORD PTR 16[rbp]	# tmp132, battery
 	add	rax, 4	# _21,
-	lea	rdx, charging_status_before[rip]	# tmp138,
+	lea	rdx, charging_status_before[rip]	# tmp133,
 	mov	rsi, rcx	#, _20
 	mov	rdi, rax	#, _21
 	call	reset_if_status_change@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:134:     my_battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &my_battery->power_cumulative, &my_battery->power_now);
-	.loc 1 134 37
-	mov	rdx, QWORD PTR 16[rbp]	# _22, my_battery
-	mov	rax, QWORD PTR 16[rbp]	# tmp139, my_battery
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:111:     battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &battery->power_cumulative, &battery->power_now);
+	.loc 1 111 34
+	mov	rdx, QWORD PTR 16[rbp]	# _22, battery
+	mov	rax, QWORD PTR 16[rbp]	# tmp134, battery
 	lea	rcx, 4[rax]	# _23,
 	mov	rax, QWORD PTR poll_cycle_counter[rip]	# poll_cycle_counter.7_24, poll_cycle_counter
 	mov	rsi, rcx	#, _23
 	mov	rdi, rax	#, poll_cycle_counter.7_24
-	call	runtime_avg	#
+	call	runtime_avg@PLT	#
 	movd	eax, xmm0	# _25,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:134:     my_battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &my_battery->power_cumulative, &my_battery->power_now);
-	.loc 1 134 35
-	mov	rdx, QWORD PTR 16[rbp]	# tmp140, my_battery
-	mov	DWORD PTR 8[rdx], eax	# my_battery_54(D)->power_runtime_avg, _25
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:135:     my_battery->min = get_min_value(my_battery->min, &my_battery->power_now, 1);
-	.loc 1 135 23
-	mov	rdx, QWORD PTR 16[rbp]	# _26, my_battery
-	mov	rax, QWORD PTR 16[rbp]	# tmp141, my_battery
-	mov	eax, DWORD PTR 12[rax]	# _27, my_battery_54(D)->min
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:111:     battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &battery->power_cumulative, &battery->power_now);
+	.loc 1 111 32
+	mov	rdx, QWORD PTR 16[rbp]	# tmp135, battery
+	mov	DWORD PTR 8[rdx], eax	# battery_48(D)->power_runtime_avg, _25
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:112:     battery->min = get_min_value(battery->min, &battery->power_now, 1);
+	.loc 1 112 20
+	mov	rdx, QWORD PTR 16[rbp]	# _26, battery
+	mov	rax, QWORD PTR 16[rbp]	# tmp136, battery
+	mov	eax, DWORD PTR 12[rax]	# _27, battery_48(D)->min
 	mov	esi, 1	#,
 	mov	rdi, rdx	#, _26
 	movd	xmm0, eax	#, _27
-	call	get_min_value	#
+	call	get_min_value@PLT	#
 	movd	eax, xmm0	# _28,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:135:     my_battery->min = get_min_value(my_battery->min, &my_battery->power_now, 1);
-	.loc 1 135 21
-	mov	rdx, QWORD PTR 16[rbp]	# tmp142, my_battery
-	mov	DWORD PTR 12[rdx], eax	# my_battery_54(D)->min, _28
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:136:     my_battery->max = get_max_value(my_battery->max, &my_battery->power_now, 1);
-	.loc 1 136 23
-	mov	rdx, QWORD PTR 16[rbp]	# _29, my_battery
-	mov	rax, QWORD PTR 16[rbp]	# tmp143, my_battery
-	mov	eax, DWORD PTR 16[rax]	# _30, my_battery_54(D)->max
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:112:     battery->min = get_min_value(battery->min, &battery->power_now, 1);
+	.loc 1 112 18
+	mov	rdx, QWORD PTR 16[rbp]	# tmp137, battery
+	mov	DWORD PTR 12[rdx], eax	# battery_48(D)->min, _28
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:113:     battery->max = get_max_value(battery->max, &battery->power_now, 1);
+	.loc 1 113 20
+	mov	rdx, QWORD PTR 16[rbp]	# _29, battery
+	mov	rax, QWORD PTR 16[rbp]	# tmp138, battery
+	mov	eax, DWORD PTR 16[rax]	# _30, battery_48(D)->max
 	mov	esi, 1	#,
 	mov	rdi, rdx	#, _29
 	movd	xmm0, eax	#, _30
-	call	get_max_value	#
+	call	get_max_value@PLT	#
 	movd	eax, xmm0	# _31,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:136:     my_battery->max = get_max_value(my_battery->max, &my_battery->power_now, 1);
-	.loc 1 136 21
-	mov	rdx, QWORD PTR 16[rbp]	# tmp144, my_battery
-	mov	DWORD PTR 16[rdx], eax	# my_battery_54(D)->max, _31
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:138:     if (running_with_privileges == TRUE)
-	.loc 1 138 33
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:113:     battery->max = get_max_value(battery->max, &battery->power_now, 1);
+	.loc 1 113 18
+	mov	rdx, QWORD PTR 16[rbp]	# tmp139, battery
+	mov	DWORD PTR 16[rdx], eax	# battery_48(D)->max, _31
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:115:     if (running_with_privileges == TRUE)
+	.loc 1 115 33
 	movzx	eax, BYTE PTR running_with_privileges[rip]	# running_with_privileges.8_32, running_with_privileges
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:138:     if (running_with_privileges == TRUE)
-	.loc 1 138 8
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:115:     if (running_with_privileges == TRUE)
+	.loc 1 115 8
 	test	al, al	# running_with_privileges.8_32
-	je	.L23	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:159:         get_amd_pck_power_w(power_per_domain);
-	.loc 1 159 9
-	mov	rax, QWORD PTR -40[rbp]	# tmp145, power_per_domain
-	mov	rdi, rax	#, tmp145
-	call	get_amd_pck_power_w@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:161:         power_his[period_counter] = *power_per_domain;
-	.loc 1 161 18
+	je	.L21	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:136:         get_amd_pkg_power_w(my_power);
+	.loc 1 136 9
+	mov	rax, QWORD PTR -48[rbp]	# tmp140, my_power
+	mov	rdi, rax	#, tmp140
+	call	get_amd_pkg_power_w@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:138:         power_his[period_counter] = *power_per_domain;
+	.loc 1 138 18
 	mov	rdx, QWORD PTR period_counter[rip]	# period_counter.9_33, period_counter
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:161:         power_his[period_counter] = *power_per_domain;
-	.loc 1 161 37
-	mov	rax, QWORD PTR -40[rbp]	# tmp146, power_per_domain
-	movss	xmm0, DWORD PTR [rax]	# _34, *power_per_domain_64(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:161:         power_his[period_counter] = *power_per_domain;
-	.loc 1 161 35
-	sal	rdx, 2	# tmp147,
-	lea	rax, power_his[rip]	# tmp148,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:138:         power_his[period_counter] = *power_per_domain;
+	.loc 1 138 37
+	mov	rax, QWORD PTR -40[rbp]	# tmp141, power_per_domain
+	movss	xmm0, DWORD PTR [rax]	# _34, *power_per_domain_60(D)
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:138:         power_his[period_counter] = *power_per_domain;
+	.loc 1 138 35
+	sal	rdx, 2	# tmp142,
+	lea	rax, power_his[rip]	# tmp143,
 	movss	DWORD PTR [rdx+rax], xmm0	# power_his[period_counter.9_33], _34
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:162:         if (period_counter == 1)
-	.loc 1 162 28
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:139:         if (period_counter == 1)
+	.loc 1 139 28
 	mov	rax, QWORD PTR period_counter[rip]	# period_counter.10_35, period_counter
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:162:         if (period_counter == 1)
-	.loc 1 162 12
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:139:         if (period_counter == 1)
+	.loc 1 139 12
 	cmp	rax, 1	# period_counter.10_35,
-	jne	.L22	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:164:             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
-	.loc 1 164 28
-	mov	rax, QWORD PTR -40[rbp]	# tmp149, power_per_domain
-	movss	xmm0, DWORD PTR [rax]	# _36, *power_per_domain_64(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:164:             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
-	.loc 1 164 26
+	jne	.L21	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:141:             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+	.loc 1 141 28
+	mov	rax, QWORD PTR -40[rbp]	# tmp144, power_per_domain
+	movss	xmm0, DWORD PTR [rax]	# _36, *power_per_domain_60(D)
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:141:             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
+	.loc 1 141 26
 	movss	DWORD PTR power_his[rip], xmm0	# power_his[0], _36
-.L22:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:167:         my_power->pkg_now = power_per_domain[0];
-	.loc 1 167 45
-	mov	rax, QWORD PTR -40[rbp]	# tmp150, power_per_domain
-	movss	xmm0, DWORD PTR [rax]	# _37, *power_per_domain_64(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:167:         my_power->pkg_now = power_per_domain[0];
-	.loc 1 167 27
-	mov	rax, QWORD PTR -48[rbp]	# tmp151, my_power
-	movss	DWORD PTR 8[rax], xmm0	# my_power_68(D)->pkg_now, _37
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:168:         my_power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power->pkg_cumulative, &my_power->pkg_now);      
-	.loc 1 168 37
-	mov	rax, QWORD PTR -48[rbp]	# tmp152, my_power
-	lea	rdx, 8[rax]	# _38,
-	mov	rax, QWORD PTR -48[rbp]	# tmp153, my_power
-	lea	rcx, 12[rax]	# _39,
-	mov	rax, QWORD PTR poll_cycle_counter[rip]	# poll_cycle_counter.11_40, poll_cycle_counter
-	mov	rsi, rcx	#, _39
-	mov	rdi, rax	#, poll_cycle_counter.11_40
-	call	runtime_avg	#
-	movd	eax, xmm0	# _41,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:168:         my_power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power->pkg_cumulative, &my_power->pkg_now);      
-	.loc 1 168 35
-	mov	rdx, QWORD PTR -48[rbp]	# tmp154, my_power
-	mov	DWORD PTR 16[rdx], eax	# my_power_68(D)->pkg_runtime_avg, _41
-.L23:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:171: }
-	.loc 1 171 1
+.L21:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:148: }
+	.loc 1 148 1
 	nop	
 	leave	
 .LCFI14:
@@ -625,21 +531,27 @@ update_sensor_data:
 .LFE10:
 	.size	update_sensor_data, .-update_sensor_data
 	.section	.rodata
-.LC9:
-	.string	"cmd = %s\n"
-.LC10:
-	.string	"Error opening pipe"
-.LC11:
-	.string	" %s"
+.LC6:
+	.string	"ectool pwmgetduty 0"
 	.align 8
+.LC7:
+	.string	"Error accessing the ectool. Error opening pipe\n"
+.LC8:
+	.string	"%*s%*s%*s%d"
+.LC9:
+	.string	"Fan speed %d %% "
+.LC10:
+	.string	"ectool pwmgetfanrpm"
+.LC11:
+	.string	"%*s%*d%*s%d"
 .LC12:
-	.string	"Command not found or exited with error status"
+	.string	"(%d RPM)\n"
 	.text
-	.globl	acc_cmdln
-	.type	acc_cmdln, @function
-acc_cmdln:
+	.globl	print_fanspeed
+	.type	print_fanspeed, @function
+print_fanspeed:
 .LFB11:
-	.loc 1 177 25
+	.loc 1 152 25
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -649,714 +561,182 @@ acc_cmdln:
 	mov	rbp, rsp	#,
 .LCFI16:
 	.cfi_def_cfa_register 6
-	sub	rsp, 112	#,
-	mov	QWORD PTR -104[rbp], rdi	# cmd, cmd
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:177: int acc_cmdln(char *cmd){
-	.loc 1 177 25
-	mov	rax, QWORD PTR fs:40	# tmp99, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.6507, tmp99
-	xor	eax, eax	# tmp99
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:181:     if ((fp = popen(cmd, "r")) == NULL) {
-	.loc 1 181 15
-	mov	rax, QWORD PTR -104[rbp]	# tmp86, cmd
-	lea	rdx, .LC0[rip]	# tmp87,
-	mov	rsi, rdx	#, tmp87
-	mov	rdi, rax	#, tmp86
-	call	popen@PLT	#
-	mov	QWORD PTR -88[rbp], rax	# fp, tmp88
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:181:     if ((fp = popen(cmd, "r")) == NULL) {
-	.loc 1 181 8
-	cmp	QWORD PTR -88[rbp], 0	# fp,
-	jne	.L27	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:182:         printf("cmd = %s\n", cmd);
-	.loc 1 182 9
-	mov	rax, QWORD PTR -104[rbp]	# tmp89, cmd
-	mov	rsi, rax	#, tmp89
-	lea	rax, .LC9[rip]	# tmp90,
-	mov	rdi, rax	#, tmp90
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:183:         printf("Error opening pipe\n");
-	.loc 1 183 9
-	lea	rax, .LC10[rip]	# tmp91,
-	mov	rdi, rax	#, tmp91
-	call	puts@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:184:         return -1;
-	.loc 1 184 16
-	mov	eax, -1	# _3,
-	jmp	.L30	#
-.L28:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:188:         printf(" %s", buf);  // print response to console
-	.loc 1 188 9
-	lea	rax, -80[rbp]	# tmp92,
+	sub	rsp, 96	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:152: int print_fanspeed(void){  // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output
+	.loc 1 152 25
+	mov	rax, QWORD PTR fs:40	# tmp118, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.6428, tmp118
+	xor	eax, eax	# tmp118
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:156:     int duty = 0;
+	.loc 1 156 9
+	mov	DWORD PTR -96[rbp], 0	# duty,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:157:     if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
+	.loc 1 157 15
+	lea	rax, .LC0[rip]	# tmp92,
 	mov	rsi, rax	#, tmp92
-	lea	rax, .LC11[rip]	# tmp93,
+	lea	rax, .LC6[rip]	# tmp93,
 	mov	rdi, rax	#, tmp93
-	mov	eax, 0	#,
-	call	printf@PLT	#
-.L27:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:187:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 187 12
-	mov	rdx, QWORD PTR -88[rbp]	# tmp94, fp
-	lea	rax, -80[rbp]	# tmp95,
-	mov	esi, 64	#,
+	call	popen@PLT	#
+	mov	QWORD PTR -88[rbp], rax	# fp, tmp94
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:157:     if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
+	.loc 1 157 8
+	cmp	QWORD PTR -88[rbp], 0	# fp,
+	jne	.L25	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:158:         printw("Error accessing the ectool. Error opening pipe\n");
+	.loc 1 158 9
+	lea	rax, .LC7[rip]	# tmp95,
 	mov	rdi, rax	#, tmp95
-	call	fgets@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:187:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 187 31
-	test	rax, rax	# _1
-	jne	.L28	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:191:     if (pclose(fp) == -1) {
-	.loc 1 191 9
-	mov	rax, QWORD PTR -88[rbp]	# tmp96, fp
-	mov	rdi, rax	#, tmp96
-	call	pclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:191:     if (pclose(fp) == -1) {
-	.loc 1 191 8
-	cmp	eax, -1	# _2,
-	jne	.L29	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:192:         printf("Command not found or exited with error status\n");
-	.loc 1 192 9
-	lea	rax, .LC12[rip]	# tmp97,
+	mov	eax, 0	#,
+	call	printw@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:159:         return -1;
+	.loc 1 159 16
+	mov	eax, -1	# _9,
+	jmp	.L32	#
+.L26:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:162:         sscanf(buf, "%*s%*s%*s%d", &duty);
+	.loc 1 162 9
+	lea	rdx, -96[rbp]	# tmp96,
+	lea	rax, -80[rbp]	# tmp97,
+	lea	rcx, .LC8[rip]	# tmp98,
+	mov	rsi, rcx	#, tmp98
 	mov	rdi, rax	#, tmp97
-	call	puts@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:193:         return -1;
-	.loc 1 193 16
-	mov	eax, -1	# _3,
-	jmp	.L30	#
-.L29:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:196:     return 0;
-	.loc 1 196 12
-	mov	eax, 0	# _3,
+	mov	eax, 0	#,
+	call	__isoc99_sscanf@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:163:         printw("Fan speed %d %% ", (100 * duty)/ 65536 );  // print response to console
+	.loc 1 163 41
+	mov	eax, DWORD PTR -96[rbp]	# duty.11_1, duty
+	imul	eax, eax, 100	# _2, duty.11_1,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:163:         printw("Fan speed %d %% ", (100 * duty)/ 65536 );  // print response to console
+	.loc 1 163 9
+	lea	edx, 65535[rax]	# tmp100,
+	test	eax, eax	# tmp99
+	cmovs	eax, edx	# tmp100,, tmp99
+	sar	eax, 16	# tmp101,
+	mov	esi, eax	#, _3
+	lea	rax, .LC9[rip]	# tmp102,
+	mov	rdi, rax	#, tmp102
+	mov	eax, 0	#,
+	call	printw@PLT	#
+.L25:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:161:     while (fgets(buf, BUFSIZE, fp) != NULL) {
+	.loc 1 161 12
+	mov	rdx, QWORD PTR -88[rbp]	# tmp103, fp
+	lea	rax, -80[rbp]	# tmp104,
+	mov	esi, 64	#,
+	mov	rdi, rax	#, tmp104
+	call	fgets@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:161:     while (fgets(buf, BUFSIZE, fp) != NULL) {
+	.loc 1 161 31
+	test	rax, rax	# _4
+	jne	.L26	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:165:     if (pclose(fp)) {   // error
+	.loc 1 165 9
+	mov	rax, QWORD PTR -88[rbp]	# tmp105, fp
+	mov	rdi, rax	#, tmp105
+	call	pclose@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:165:     if (pclose(fp)) {   // error
+	.loc 1 165 8
+	test	eax, eax	# _5
+	je	.L27	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:166:         return -1;
+	.loc 1 166 16
+	mov	eax, -1	# _9,
+	jmp	.L32	#
+.L27:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:169:     int rpm = 0;
+	.loc 1 169 9
+	mov	DWORD PTR -92[rbp], 0	# rpm,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:170:     if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
+	.loc 1 170 15
+	lea	rax, .LC0[rip]	# tmp106,
+	mov	rsi, rax	#, tmp106
+	lea	rax, .LC10[rip]	# tmp107,
+	mov	rdi, rax	#, tmp107
+	call	popen@PLT	#
+	mov	QWORD PTR -88[rbp], rax	# fp, tmp108
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:170:     if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
+	.loc 1 170 8
+	cmp	QWORD PTR -88[rbp], 0	# fp,
+	jne	.L29	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:171:         printw("Error accessing the ectool. Error opening pipe\n");
+	.loc 1 171 9
+	lea	rax, .LC7[rip]	# tmp109,
+	mov	rdi, rax	#, tmp109
+	mov	eax, 0	#,
+	call	printw@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:172:         return -1;
+	.loc 1 172 16
+	mov	eax, -1	# _9,
+	jmp	.L32	#
 .L30:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:197: }
-	.loc 1 197 1 discriminator 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp100, D.6507
-	sub	rdx, QWORD PTR fs:40	# tmp100, MEM[(<address-space-1> long unsigned int *)40B]
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:175:         sscanf(buf, "%*s%*d%*s%d", &rpm);
+	.loc 1 175 9
+	lea	rdx, -92[rbp]	# tmp110,
+	lea	rax, -80[rbp]	# tmp111,
+	lea	rcx, .LC11[rip]	# tmp112,
+	mov	rsi, rcx	#, tmp112
+	mov	rdi, rax	#, tmp111
+	mov	eax, 0	#,
+	call	__isoc99_sscanf@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:176:         printw("(%d RPM)\n", rpm);  // print response to console
+	.loc 1 176 9
+	mov	eax, DWORD PTR -92[rbp]	# rpm.12_6, rpm
+	mov	esi, eax	#, rpm.12_6
+	lea	rax, .LC12[rip]	# tmp113,
+	mov	rdi, rax	#, tmp113
+	mov	eax, 0	#,
+	call	printw@PLT	#
+.L29:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:174:     while (fgets(buf, BUFSIZE, fp) != NULL) {
+	.loc 1 174 12
+	mov	rdx, QWORD PTR -88[rbp]	# tmp114, fp
+	lea	rax, -80[rbp]	# tmp115,
+	mov	esi, 64	#,
+	mov	rdi, rax	#, tmp115
+	call	fgets@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:174:     while (fgets(buf, BUFSIZE, fp) != NULL) {
+	.loc 1 174 31
+	test	rax, rax	# _7
+	jne	.L30	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:178:     if (pclose(fp)) {
+	.loc 1 178 9
+	mov	rax, QWORD PTR -88[rbp]	# tmp116, fp
+	mov	rdi, rax	#, tmp116
+	call	pclose@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:178:     if (pclose(fp)) {
+	.loc 1 178 8
+	test	eax, eax	# _8
 	je	.L31	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:197: }
-	.loc 1 197 1 is_stmt 0
-	call	__stack_chk_fail@PLT	#
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:179:         return -1;
+	.loc 1 179 16
+	mov	eax, -1	# _9,
+	jmp	.L32	#
 .L31:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:182:     return 0;
+	.loc 1 182 12
+	mov	eax, 0	# _9,
+.L32:
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:183: }
+	.loc 1 183 1 discriminator 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp119, D.6428
+	sub	rdx, QWORD PTR fs:40	# tmp119, MEM[(<address-space-1> long unsigned int *)40B]
+	je	.L33	#,
+# /home/jscha/dvp/cpumon/src/cpumonlib.c:183: }
+	.loc 1 183 1 is_stmt 0
+	call	__stack_chk_fail@PLT	#
+.L33:
 	leave	
 .LCFI17:
 	.cfi_def_cfa 7, 8
 	ret	
 	.cfi_endproc
 .LFE11:
-	.size	acc_cmdln, .-acc_cmdln
-	.section	.rodata
-	.align 8
-.LC14:
-	.string	"CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n"
-.LC15:
-	.string	"Avg Pwr %.2f W\n"
-	.text
-	.globl	moving_average
-	.type	moving_average, @function
-moving_average:
-.LFB12:
-	.loc 1 204 97 is_stmt 1
-	.cfi_startproc
-	endbr64	
-	push	rbp	#
-.LCFI18:
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	mov	rbp, rsp	#,
-.LCFI19:
-	.cfi_def_cfa_register 6
-	sub	rsp, 96	#,
-	mov	DWORD PTR -52[rbp], edi	# i, i
-	mov	QWORD PTR -64[rbp], rsi	# freq, freq
-	mov	QWORD PTR -72[rbp], rdx	# load, load
-	mov	QWORD PTR -80[rbp], rcx	# temp, temp
-	mov	QWORD PTR -88[rbp], r8	# voltage, voltage
-	mov	QWORD PTR -96[rbp], r9	# power, power
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:206:     i += 1;
-	.loc 1 206 7
-	add	DWORD PTR -52[rbp], 1	# i,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:207:     double freq_total = 0;
-	.loc 1 207 12
-	pxor	xmm0, xmm0	# tmp117
-	movsd	QWORD PTR -40[rbp], xmm0	# freq_total, tmp117
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:208:     long load_total = 0;
-	.loc 1 208 10
-	mov	QWORD PTR -32[rbp], 0	# load_total,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:209:     long temp_total = 0;
-	.loc 1 209 10
-	mov	QWORD PTR -24[rbp], 0	# temp_total,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:210:     double voltage_total = 0;
-	.loc 1 210 12
-	pxor	xmm0, xmm0	# tmp118
-	movsd	QWORD PTR -16[rbp], xmm0	# voltage_total, tmp118
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:211:     double power_total = 0;
-	.loc 1 211 12
-	pxor	xmm0, xmm0	# tmp119
-	movsd	QWORD PTR -8[rbp], xmm0	# power_total, tmp119
-.LBB2:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:214:     for (int j = 0; j < i; j++){
-	.loc 1 214 14
-	mov	DWORD PTR -44[rbp], 0	# j,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:214:     for (int j = 0; j < i; j++){
-	.loc 1 214 5
-	jmp	.L33	#
-.L34:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:215:         freq_total += (double)freq[j];
-	.loc 1 215 35 discriminator 3
-	mov	eax, DWORD PTR -44[rbp]	# tmp120, j
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _2,
-	mov	rax, QWORD PTR -64[rbp]	# tmp121, freq
-	add	rax, rdx	# _3, _2
-	movss	xmm0, DWORD PTR [rax]	# _4, *_3
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:215:         freq_total += (double)freq[j];
-	.loc 1 215 23 discriminator 3
-	cvtss2sd	xmm0, xmm0	# _5, _4
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:215:         freq_total += (double)freq[j];
-	.loc 1 215 20 discriminator 3
-	movsd	xmm1, QWORD PTR -40[rbp]	# tmp123, freq_total
-	addsd	xmm0, xmm1	# tmp122, tmp123
-	movsd	QWORD PTR -40[rbp], xmm0	# freq_total, tmp122
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:216:         load_total += (long)load[j];
-	.loc 1 216 33 discriminator 3
-	mov	eax, DWORD PTR -44[rbp]	# tmp124, j
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _7,
-	mov	rax, QWORD PTR -72[rbp]	# tmp125, load
-	add	rax, rdx	# _8, _7
-	movss	xmm0, DWORD PTR [rax]	# _9, *_8
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:216:         load_total += (long)load[j];
-	.loc 1 216 23 discriminator 3
-	cvttss2si	rax, xmm0	# _10, _9
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:216:         load_total += (long)load[j];
-	.loc 1 216 20 discriminator 3
-	add	QWORD PTR -32[rbp], rax	# load_total, _10
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:217:         temp_total += (long)temp[j];
-	.loc 1 217 33 discriminator 3
-	mov	eax, DWORD PTR -44[rbp]	# tmp126, j
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _12,
-	mov	rax, QWORD PTR -80[rbp]	# tmp127, temp
-	add	rax, rdx	# _13, _12
-	movss	xmm0, DWORD PTR [rax]	# _14, *_13
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:217:         temp_total += (long)temp[j];
-	.loc 1 217 23 discriminator 3
-	cvttss2si	rax, xmm0	# _15, _14
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:217:         temp_total += (long)temp[j];
-	.loc 1 217 20 discriminator 3
-	add	QWORD PTR -24[rbp], rax	# temp_total, _15
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:218:         voltage_total += (double)voltage[j];
-	.loc 1 218 41 discriminator 3
-	mov	eax, DWORD PTR -44[rbp]	# tmp128, j
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _17,
-	mov	rax, QWORD PTR -88[rbp]	# tmp129, voltage
-	add	rax, rdx	# _18, _17
-	movss	xmm0, DWORD PTR [rax]	# _19, *_18
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:218:         voltage_total += (double)voltage[j];
-	.loc 1 218 26 discriminator 3
-	cvtss2sd	xmm0, xmm0	# _20, _19
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:218:         voltage_total += (double)voltage[j];
-	.loc 1 218 23 discriminator 3
-	movsd	xmm1, QWORD PTR -16[rbp]	# tmp131, voltage_total
-	addsd	xmm0, xmm1	# tmp130, tmp131
-	movsd	QWORD PTR -16[rbp], xmm0	# voltage_total, tmp130
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:219:         power_total += (double)power[j];
-	.loc 1 219 37 discriminator 3
-	mov	eax, DWORD PTR -44[rbp]	# tmp132, j
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _22,
-	mov	rax, QWORD PTR -96[rbp]	# tmp133, power
-	add	rax, rdx	# _23, _22
-	movss	xmm0, DWORD PTR [rax]	# _24, *_23
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:219:         power_total += (double)power[j];
-	.loc 1 219 24 discriminator 3
-	cvtss2sd	xmm0, xmm0	# _25, _24
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:219:         power_total += (double)power[j];
-	.loc 1 219 21 discriminator 3
-	movsd	xmm1, QWORD PTR -8[rbp]	# tmp135, power_total
-	addsd	xmm0, xmm1	# tmp134, tmp135
-	movsd	QWORD PTR -8[rbp], xmm0	# power_total, tmp134
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:214:     for (int j = 0; j < i; j++){
-	.loc 1 214 29 discriminator 3
-	add	DWORD PTR -44[rbp], 1	# j,
-.L33:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:214:     for (int j = 0; j < i; j++){
-	.loc 1 214 23 discriminator 1
-	mov	eax, DWORD PTR -44[rbp]	# tmp136, j
-	cmp	eax, DWORD PTR -52[rbp]	# tmp136, i
-	jl	.L34	#,
-.LBE2:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:222:     if (i != 0){        // only divide is divisor is non zero
-	.loc 1 222 8
-	cmp	DWORD PTR -52[rbp], 0	# i,
-	je	.L36	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:223:         printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
-	.loc 1 223 9
-	pxor	xmm1, xmm1	# _26
-	cvtsi2sd	xmm1, DWORD PTR -52[rbp]	# _26, i
-	movsd	xmm0, QWORD PTR -16[rbp]	# tmp137, voltage_total
-	movapd	xmm2, xmm0	# tmp137, tmp137
-	divsd	xmm2, xmm1	# tmp137, _26
-	mov	eax, DWORD PTR -52[rbp]	# tmp138, i
-	movsx	rcx, eax	# _28, tmp138
-	mov	rax, QWORD PTR -24[rbp]	# tmp141, temp_total
-	cqo
-	idiv	rcx	# _28
-	mov	rsi, rax	# _29, tmp139
-	mov	eax, DWORD PTR -52[rbp]	# tmp142, i
-	movsx	rdi, eax	# _30, tmp142
-	mov	rax, QWORD PTR -32[rbp]	# tmp145, load_total
-	cqo
-	idiv	rdi	# _30
-	mov	rcx, rax	# _31, tmp143
-	pxor	xmm1, xmm1	# _32
-	cvtsi2sd	xmm1, DWORD PTR -52[rbp]	# _32, i
-	movsd	xmm0, QWORD PTR -40[rbp]	# tmp146, freq_total
-	divsd	xmm0, xmm1	# tmp146, _32
-	movq	rax, xmm0	# _33, tmp146
-	movapd	xmm1, xmm2	#, _27
-	mov	rdx, rsi	#, _29
-	mov	rsi, rcx	#, _31
-	movq	xmm0, rax	#, _33
-	lea	rax, .LC14[rip]	# tmp147,
-	mov	rdi, rax	#, tmp147
-	mov	eax, 2	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:224:         printf("Avg Pwr %.2f W\n", power_total/i);
-	.loc 1 224 9
-	pxor	xmm1, xmm1	# _34
-	cvtsi2sd	xmm1, DWORD PTR -52[rbp]	# _34, i
-	movsd	xmm0, QWORD PTR -8[rbp]	# tmp148, power_total
-	divsd	xmm0, xmm1	# tmp148, _34
-	movq	rax, xmm0	# _35, tmp148
-	movq	xmm0, rax	#, _35
-	lea	rax, .LC15[rip]	# tmp149,
-	mov	rdi, rax	#, tmp149
-	mov	eax, 1	#,
-	call	printf@PLT	#
-.L36:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:226: }
-	.loc 1 226 1
-	nop	
-	leave	
-.LCFI20:
-	.cfi_def_cfa 7, 8
-	ret	
-	.cfi_endproc
-.LFE12:
-	.size	moving_average, .-moving_average
-	.globl	runtime_avg
-	.type	runtime_avg, @function
-runtime_avg:
-.LFB13:
-	.loc 1 228 90
-	.cfi_startproc
-	endbr64	
-	push	rbp	#
-.LCFI21:
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	mov	rbp, rsp	#,
-.LCFI22:
-	.cfi_def_cfa_register 6
-	mov	QWORD PTR -24[rbp], rdi	# poll_cycle_counter, poll_cycle_counter
-	mov	QWORD PTR -32[rbp], rsi	# samples_cumulative, samples_cumulative
-	mov	QWORD PTR -40[rbp], rdx	# sample_next, sample_next
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:230:     float avg = 0;
-	.loc 1 230 11
-	pxor	xmm0, xmm0	# tmp89
-	movss	DWORD PTR -4[rbp], xmm0	# avg, tmp89
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:231:     *samples_cumulative += *sample_next;
-	.loc 1 231 25
-	mov	rax, QWORD PTR -32[rbp]	# tmp90, samples_cumulative
-	movss	xmm1, DWORD PTR [rax]	# _1, *samples_cumulative_9(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:231:     *samples_cumulative += *sample_next;
-	.loc 1 231 28
-	mov	rax, QWORD PTR -40[rbp]	# tmp91, sample_next
-	movss	xmm0, DWORD PTR [rax]	# _2, *sample_next_10(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:231:     *samples_cumulative += *sample_next;
-	.loc 1 231 25
-	addss	xmm0, xmm1	# _3, _1
-	mov	rax, QWORD PTR -32[rbp]	# tmp92, samples_cumulative
-	movss	DWORD PTR [rax], xmm0	# *samples_cumulative_9(D), _3
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:232:     if (poll_cycle_counter != 0) 
-	.loc 1 232 8
-	cmp	QWORD PTR -24[rbp], 0	# poll_cycle_counter,
-	je	.L38	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:234:         avg = *samples_cumulative / (float) poll_cycle_counter;
-	.loc 1 234 15
-	mov	rax, QWORD PTR -32[rbp]	# tmp93, samples_cumulative
-	movss	xmm0, DWORD PTR [rax]	# _4, *samples_cumulative_9(D)
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:234:         avg = *samples_cumulative / (float) poll_cycle_counter;
-	.loc 1 234 37
-	pxor	xmm1, xmm1	# _5
-	cvtsi2ss	xmm1, QWORD PTR -24[rbp]	# _5, poll_cycle_counter
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:234:         avg = *samples_cumulative / (float) poll_cycle_counter;
-	.loc 1 234 13
-	divss	xmm0, xmm1	# tmp94, _5
-	movss	DWORD PTR -4[rbp], xmm0	# avg, tmp94
-.L38:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:237:     return avg;
-	.loc 1 237 12
-	movss	xmm0, DWORD PTR -4[rbp]	# _14, avg
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:238: }
-	.loc 1 238 1
-	pop	rbp	#
-.LCFI23:
-	.cfi_def_cfa 7, 8
-	ret	
-	.cfi_endproc
-.LFE13:
-	.size	runtime_avg, .-runtime_avg
-	.globl	get_min_value
-	.type	get_min_value, @function
-get_min_value:
-.LFB14:
-	.loc 1 242 1
-	.cfi_startproc
-	endbr64	
-	push	rbp	#
-.LCFI24:
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	mov	rbp, rsp	#,
-.LCFI25:
-	.cfi_def_cfa_register 6
-	movss	DWORD PTR -20[rbp], xmm0	# previous_min_value, previous_min_value
-	mov	QWORD PTR -32[rbp], rdi	# sample_next, sample_next
-	mov	DWORD PTR -24[rbp], esi	# sample_count, sample_count
-.LBB3:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:243:     for (int i = 0; i < sample_count; i++)
-	.loc 1 243 14
-	mov	DWORD PTR -4[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:243:     for (int i = 0; i < sample_count; i++)
-	.loc 1 243 5
-	jmp	.L41	#
-.L44:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:245:         if (sample_next[i] < previous_min_value) 
-	.loc 1 245 24
-	mov	eax, DWORD PTR -4[rbp]	# tmp91, i
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _2,
-	mov	rax, QWORD PTR -32[rbp]	# tmp92, sample_next
-	add	rax, rdx	# _3, _2
-	movss	xmm1, DWORD PTR [rax]	# _4, *_3
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:245:         if (sample_next[i] < previous_min_value) 
-	.loc 1 245 12
-	movss	xmm0, DWORD PTR -20[rbp]	# tmp93, previous_min_value
-	comiss	xmm0, xmm1	# tmp93, _4
-	jbe	.L42	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:247:             previous_min_value = sample_next[i];
-	.loc 1 247 45
-	mov	eax, DWORD PTR -4[rbp]	# tmp94, i
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _6,
-	mov	rax, QWORD PTR -32[rbp]	# tmp95, sample_next
-	add	rax, rdx	# _7, _6
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:247:             previous_min_value = sample_next[i];
-	.loc 1 247 32
-	movss	xmm0, DWORD PTR [rax]	# tmp96, *_7
-	movss	DWORD PTR -20[rbp], xmm0	# previous_min_value, tmp96
-.L42:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:243:     for (int i = 0; i < sample_count; i++)
-	.loc 1 243 40 discriminator 2
-	add	DWORD PTR -4[rbp], 1	# i,
-.L41:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:243:     for (int i = 0; i < sample_count; i++)
-	.loc 1 243 23 discriminator 1
-	mov	eax, DWORD PTR -4[rbp]	# tmp97, i
-	cmp	eax, DWORD PTR -24[rbp]	# tmp97, sample_count
-	jl	.L44	#,
-.LBE3:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:250:     return previous_min_value;
-	.loc 1 250 12
-	movss	xmm0, DWORD PTR -20[rbp]	# _14, previous_min_value
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:251: }
-	.loc 1 251 1
-	pop	rbp	#
-.LCFI26:
-	.cfi_def_cfa 7, 8
-	ret	
-	.cfi_endproc
-.LFE14:
-	.size	get_min_value, .-get_min_value
-	.globl	get_max_value
-	.type	get_max_value, @function
-get_max_value:
-.LFB15:
-	.loc 1 254 1
-	.cfi_startproc
-	endbr64	
-	push	rbp	#
-.LCFI27:
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	mov	rbp, rsp	#,
-.LCFI28:
-	.cfi_def_cfa_register 6
-	movss	DWORD PTR -20[rbp], xmm0	# previous_max_value, previous_max_value
-	mov	QWORD PTR -32[rbp], rdi	# sample_next, sample_next
-	mov	DWORD PTR -24[rbp], esi	# sample_count, sample_count
-.LBB4:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:255:     for (int i = 0; i < sample_count; i++)
-	.loc 1 255 14
-	mov	DWORD PTR -4[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:255:     for (int i = 0; i < sample_count; i++)
-	.loc 1 255 5
-	jmp	.L48	#
-.L51:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:257:         if (sample_next[i] > previous_max_value) 
-	.loc 1 257 24
-	mov	eax, DWORD PTR -4[rbp]	# tmp91, i
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _2,
-	mov	rax, QWORD PTR -32[rbp]	# tmp92, sample_next
-	add	rax, rdx	# _3, _2
-	movss	xmm0, DWORD PTR [rax]	# _4, *_3
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:257:         if (sample_next[i] > previous_max_value) 
-	.loc 1 257 12
-	comiss	xmm0, DWORD PTR -20[rbp]	# _4, previous_max_value
-	jbe	.L49	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:259:             previous_max_value = sample_next[i];
-	.loc 1 259 45
-	mov	eax, DWORD PTR -4[rbp]	# tmp93, i
-	cdqe
-	lea	rdx, 0[0+rax*4]	# _6,
-	mov	rax, QWORD PTR -32[rbp]	# tmp94, sample_next
-	add	rax, rdx	# _7, _6
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:259:             previous_max_value = sample_next[i];
-	.loc 1 259 32
-	movss	xmm0, DWORD PTR [rax]	# tmp95, *_7
-	movss	DWORD PTR -20[rbp], xmm0	# previous_max_value, tmp95
-.L49:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:255:     for (int i = 0; i < sample_count; i++)
-	.loc 1 255 40 discriminator 2
-	add	DWORD PTR -4[rbp], 1	# i,
-.L48:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:255:     for (int i = 0; i < sample_count; i++)
-	.loc 1 255 23 discriminator 1
-	mov	eax, DWORD PTR -4[rbp]	# tmp96, i
-	cmp	eax, DWORD PTR -24[rbp]	# tmp96, sample_count
-	jl	.L51	#,
-.LBE4:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:262:     return previous_max_value;
-	.loc 1 262 12
-	movss	xmm0, DWORD PTR -20[rbp]	# _14, previous_max_value
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:263: }
-	.loc 1 263 1
-	pop	rbp	#
-.LCFI29:
-	.cfi_def_cfa 7, 8
-	ret	
-	.cfi_endproc
-.LFE15:
-	.size	get_max_value, .-get_max_value
-	.section	.rodata
-.LC17:
-	.string	"ectool pwmgetduty 0"
-	.align 8
-.LC18:
-	.string	"Error accessing the ectool. Error opening pipe\n"
-.LC19:
-	.string	"%*s%*s%*s%d"
-.LC20:
-	.string	"Fan speed %d %% "
-.LC21:
-	.string	"ectool pwmgetfanrpm"
-.LC22:
-	.string	"%*s%*d%*s%d"
-.LC23:
-	.string	"(%d RPM)\n"
-	.text
-	.globl	print_fanspeed
-	.type	print_fanspeed, @function
-print_fanspeed:
-.LFB16:
-	.loc 1 266 25
-	.cfi_startproc
-	endbr64	
-	push	rbp	#
-.LCFI30:
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	mov	rbp, rsp	#,
-.LCFI31:
-	.cfi_def_cfa_register 6
-	sub	rsp, 96	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:266: int print_fanspeed(void){  // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output
-	.loc 1 266 25
-	mov	rax, QWORD PTR fs:40	# tmp118, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.6516, tmp118
-	xor	eax, eax	# tmp118
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:270:     int duty = 0;
-	.loc 1 270 9
-	mov	DWORD PTR -96[rbp], 0	# duty,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:271:     if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
-	.loc 1 271 15
-	lea	rax, .LC0[rip]	# tmp92,
-	mov	rsi, rax	#, tmp92
-	lea	rax, .LC17[rip]	# tmp93,
-	mov	rdi, rax	#, tmp93
-	call	popen@PLT	#
-	mov	QWORD PTR -88[rbp], rax	# fp, tmp94
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:271:     if ((fp = popen("ectool pwmgetduty 0", "r")) == NULL) {
-	.loc 1 271 8
-	cmp	QWORD PTR -88[rbp], 0	# fp,
-	jne	.L57	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:272:         printw("Error accessing the ectool. Error opening pipe\n");
-	.loc 1 272 9
-	lea	rax, .LC18[rip]	# tmp95,
-	mov	rdi, rax	#, tmp95
-	mov	eax, 0	#,
-	call	printw@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:273:         return -1;
-	.loc 1 273 16
-	mov	eax, -1	# _9,
-	jmp	.L64	#
-.L58:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:276:         sscanf(buf, "%*s%*s%*s%d", &duty);
-	.loc 1 276 9
-	lea	rdx, -96[rbp]	# tmp96,
-	lea	rax, -80[rbp]	# tmp97,
-	lea	rcx, .LC19[rip]	# tmp98,
-	mov	rsi, rcx	#, tmp98
-	mov	rdi, rax	#, tmp97
-	mov	eax, 0	#,
-	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:277:         printw("Fan speed %d %% ", (100 * duty)/ 65536 );  // print response to console
-	.loc 1 277 41
-	mov	eax, DWORD PTR -96[rbp]	# duty.12_1, duty
-	imul	eax, eax, 100	# _2, duty.12_1,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:277:         printw("Fan speed %d %% ", (100 * duty)/ 65536 );  // print response to console
-	.loc 1 277 9
-	lea	edx, 65535[rax]	# tmp100,
-	test	eax, eax	# tmp99
-	cmovs	eax, edx	# tmp100,, tmp99
-	sar	eax, 16	# tmp101,
-	mov	esi, eax	#, _3
-	lea	rax, .LC20[rip]	# tmp102,
-	mov	rdi, rax	#, tmp102
-	mov	eax, 0	#,
-	call	printw@PLT	#
-.L57:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:275:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 275 12
-	mov	rdx, QWORD PTR -88[rbp]	# tmp103, fp
-	lea	rax, -80[rbp]	# tmp104,
-	mov	esi, 64	#,
-	mov	rdi, rax	#, tmp104
-	call	fgets@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:275:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 275 31
-	test	rax, rax	# _4
-	jne	.L58	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:279:     if (pclose(fp)) {   // error
-	.loc 1 279 9
-	mov	rax, QWORD PTR -88[rbp]	# tmp105, fp
-	mov	rdi, rax	#, tmp105
-	call	pclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:279:     if (pclose(fp)) {   // error
-	.loc 1 279 8
-	test	eax, eax	# _5
-	je	.L59	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:280:         return -1;
-	.loc 1 280 16
-	mov	eax, -1	# _9,
-	jmp	.L64	#
-.L59:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:283:     int rpm = 0;
-	.loc 1 283 9
-	mov	DWORD PTR -92[rbp], 0	# rpm,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:284:     if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
-	.loc 1 284 15
-	lea	rax, .LC0[rip]	# tmp106,
-	mov	rsi, rax	#, tmp106
-	lea	rax, .LC21[rip]	# tmp107,
-	mov	rdi, rax	#, tmp107
-	call	popen@PLT	#
-	mov	QWORD PTR -88[rbp], rax	# fp, tmp108
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:284:     if ((fp = popen("ectool pwmgetfanrpm", "r")) == NULL) {
-	.loc 1 284 8
-	cmp	QWORD PTR -88[rbp], 0	# fp,
-	jne	.L61	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:285:         printw("Error accessing the ectool. Error opening pipe\n");
-	.loc 1 285 9
-	lea	rax, .LC18[rip]	# tmp109,
-	mov	rdi, rax	#, tmp109
-	mov	eax, 0	#,
-	call	printw@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:286:         return -1;
-	.loc 1 286 16
-	mov	eax, -1	# _9,
-	jmp	.L64	#
-.L62:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:289:         sscanf(buf, "%*s%*d%*s%d", &rpm);
-	.loc 1 289 9
-	lea	rdx, -92[rbp]	# tmp110,
-	lea	rax, -80[rbp]	# tmp111,
-	lea	rcx, .LC22[rip]	# tmp112,
-	mov	rsi, rcx	#, tmp112
-	mov	rdi, rax	#, tmp111
-	mov	eax, 0	#,
-	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:290:         printw("(%d RPM)\n", rpm);  // print response to console
-	.loc 1 290 9
-	mov	eax, DWORD PTR -92[rbp]	# rpm.13_6, rpm
-	mov	esi, eax	#, rpm.13_6
-	lea	rax, .LC23[rip]	# tmp113,
-	mov	rdi, rax	#, tmp113
-	mov	eax, 0	#,
-	call	printw@PLT	#
-.L61:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:288:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 288 12
-	mov	rdx, QWORD PTR -88[rbp]	# tmp114, fp
-	lea	rax, -80[rbp]	# tmp115,
-	mov	esi, 64	#,
-	mov	rdi, rax	#, tmp115
-	call	fgets@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:288:     while (fgets(buf, BUFSIZE, fp) != NULL) {
-	.loc 1 288 31
-	test	rax, rax	# _7
-	jne	.L62	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:292:     if (pclose(fp)) {
-	.loc 1 292 9
-	mov	rax, QWORD PTR -88[rbp]	# tmp116, fp
-	mov	rdi, rax	#, tmp116
-	call	pclose@PLT	#
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:292:     if (pclose(fp)) {
-	.loc 1 292 8
-	test	eax, eax	# _8
-	je	.L63	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:293:         return -1;
-	.loc 1 293 16
-	mov	eax, -1	# _9,
-	jmp	.L64	#
-.L63:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:296:     return 0;
-	.loc 1 296 12
-	mov	eax, 0	# _9,
-.L64:
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:297: }
-	.loc 1 297 1 discriminator 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp119, D.6516
-	sub	rdx, QWORD PTR fs:40	# tmp119, MEM[(<address-space-1> long unsigned int *)40B]
-	je	.L65	#,
-# /home/jscha/dvp/cpumon/src/cpumonlib.c:297: }
-	.loc 1 297 1 is_stmt 0
-	call	__stack_chk_fail@PLT	#
-.L65:
-	leave	
-.LCFI32:
-	.cfi_def_cfa 7, 8
-	ret	
-	.cfi_endproc
-.LFE16:
 	.size	print_fanspeed, .-print_fanspeed
-	.local	file_buf.0
-	.comm	file_buf.0,64,32
+	.section	.rodata
+	.align 4
+.LC5:
+	.long	1148846080
+	.text
 .Letext0:
 	.file 2 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h"
 	.file 3 "/usr/include/x86_64-linux-gnu/bits/types.h"
@@ -1368,19 +748,21 @@ print_fanspeed:
 	.file 9 "/usr/include/curses.h"
 	.file 10 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h"
 	.file 11 "/home/jscha/dvp/cpumon/src/../include/sysfs.h"
-	.file 12 "/usr/include/unistd.h"
-	.file 13 "/usr/include/locale.h"
+	.file 12 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+	.file 13 "/usr/include/stdlib.h"
+	.file 14 "/usr/include/unistd.h"
+	.file 15 "/usr/include/locale.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0x117d
+	.long	0xeb4
 	.value	0x2
 	.long	.Ldebug_abbrev0
 	.byte	0x8
 	.uleb128 0x1
-	.long	.LASF2635
+	.long	.LASF2613
 	.byte	0xc
-	.long	.LASF2636
-	.long	.LASF2637
+	.long	.LASF2614
+	.long	.LASF2615
 	.quad	.Ltext0
 	.quad	.Letext0
 	.long	.Ldebug_line0
@@ -1728,7 +1110,7 @@ print_fanspeed:
 	.byte	0x19
 	.long	0xad
 	.uleb128 0xa
-	.long	.LASF2638
+	.long	.LASF2616
 	.byte	0x4
 	.byte	0x2b
 	.byte	0xe
@@ -2468,13 +1850,13 @@ print_fanspeed:
 	.long	.LASF2553
 	.byte	0x14
 	.byte	0x6
-	.byte	0x11
+	.byte	0xe
 	.byte	0x8
 	.long	0x8a8
 	.uleb128 0x9
 	.long	.LASF2554
 	.byte	0x6
-	.byte	0x13
+	.byte	0x10
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2483,7 +1865,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2555
 	.byte	0x6
-	.byte	0x14
+	.byte	0x11
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2492,7 +1874,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2556
 	.byte	0x6
-	.byte	0x15
+	.byte	0x12
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2501,7 +1883,7 @@ print_fanspeed:
 	.uleb128 0x11
 	.string	"min"
 	.byte	0x6
-	.byte	0x16
+	.byte	0x13
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2510,7 +1892,7 @@ print_fanspeed:
 	.uleb128 0x11
 	.string	"max"
 	.byte	0x6
-	.byte	0x17
+	.byte	0x14
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2519,7 +1901,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2557
 	.byte	0x6
-	.byte	0x18
+	.byte	0x15
 	.byte	0xb
 	.long	0x8a8
 	.byte	0x2
@@ -2535,20 +1917,20 @@ print_fanspeed:
 	.uleb128 0x2
 	.long	.LASF2553
 	.byte	0x6
-	.byte	0x1a
+	.byte	0x17
 	.byte	0x17
 	.long	0x840
 	.uleb128 0x8
 	.long	.LASF2558
 	.byte	0x20
 	.byte	0x6
-	.byte	0x1c
+	.byte	0x19
 	.byte	0x8
 	.long	0x958
 	.uleb128 0x9
 	.long	.LASF2559
 	.byte	0x6
-	.byte	0x1d
+	.byte	0x1a
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2557,7 +1939,7 @@ print_fanspeed:
 	.uleb128 0x11
 	.string	"gpu"
 	.byte	0x6
-	.byte	0x1e
+	.byte	0x1b
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2566,7 +1948,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2560
 	.byte	0x6
-	.byte	0x1f
+	.byte	0x1c
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2575,7 +1957,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2561
 	.byte	0x6
-	.byte	0x20
+	.byte	0x1d
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2584,7 +1966,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2562
 	.byte	0x6
-	.byte	0x21
+	.byte	0x1e
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2593,34 +1975,34 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2563
 	.byte	0x6
-	.byte	0x22
-	.byte	0x12
-	.long	0x44
+	.byte	0x1f
+	.byte	0xb
+	.long	0x82b
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x14
 	.uleb128 0x9
 	.long	.LASF2564
 	.byte	0x6
-	.byte	0x22
-	.byte	0x1d
-	.long	0x44
+	.byte	0x1f
+	.byte	0x16
+	.long	0x82b
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x18
 	.uleb128 0x9
 	.long	.LASF2565
 	.byte	0x6
-	.byte	0x22
-	.byte	0x2a
-	.long	0x44
+	.byte	0x1f
+	.byte	0x23
+	.long	0x82b
 	.byte	0x2
 	.byte	0x23
 	.uleb128 0x1c
 	.uleb128 0x9
 	.long	.LASF2557
 	.byte	0x6
-	.byte	0x23
+	.byte	0x20
 	.byte	0xb
 	.long	0x8a8
 	.byte	0x2
@@ -2630,20 +2012,20 @@ print_fanspeed:
 	.uleb128 0x2
 	.long	.LASF2558
 	.byte	0x6
-	.byte	0x25
+	.byte	0x22
 	.byte	0x16
 	.long	0x8c3
 	.uleb128 0x8
 	.long	.LASF2566
 	.byte	0x28
 	.byte	0x6
-	.byte	0x28
+	.byte	0x25
 	.byte	0x8
 	.long	0x9cc
 	.uleb128 0x9
 	.long	.LASF2567
 	.byte	0x6
-	.byte	0x29
+	.byte	0x26
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2652,7 +2034,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2568
 	.byte	0x6
-	.byte	0x2a
+	.byte	0x27
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2661,7 +2043,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2569
 	.byte	0x6
-	.byte	0x2b
+	.byte	0x28
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2670,7 +2052,7 @@ print_fanspeed:
 	.uleb128 0x11
 	.string	"min"
 	.byte	0x6
-	.byte	0x2c
+	.byte	0x29
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2679,7 +2061,7 @@ print_fanspeed:
 	.uleb128 0x11
 	.string	"max"
 	.byte	0x6
-	.byte	0x2d
+	.byte	0x2a
 	.byte	0xb
 	.long	0x82b
 	.byte	0x2
@@ -2688,7 +2070,7 @@ print_fanspeed:
 	.uleb128 0x9
 	.long	.LASF2570
 	.byte	0x6
-	.byte	0x2e
+	.byte	0x2b
 	.byte	0xa
 	.long	0x2ce
 	.byte	0x2
@@ -2698,15 +2080,15 @@ print_fanspeed:
 	.uleb128 0x2
 	.long	.LASF2566
 	.byte	0x6
-	.byte	0x30
-	.byte	0x18
+	.byte	0x2d
+	.byte	0x1a
 	.long	0x964
 	.uleb128 0xf
 	.byte	0x7
 	.byte	0x4
 	.long	0x44
 	.byte	0x6
-	.byte	0x32
+	.byte	0x2f
 	.byte	0xe
 	.long	0x9f3
 	.uleb128 0x10
@@ -2719,13 +2101,13 @@ print_fanspeed:
 	.uleb128 0x2
 	.long	.LASF2572
 	.byte	0x6
-	.byte	0x32
+	.byte	0x2f
 	.byte	0x1d
 	.long	0x9d8
 	.uleb128 0xe
 	.long	.LASF2574
 	.byte	0x1
-	.byte	0x12
+	.byte	0x13
 	.byte	0xd
 	.long	0x70
 	.byte	0x1
@@ -2733,7 +2115,7 @@ print_fanspeed:
 	.uleb128 0xe
 	.long	.LASF2575
 	.byte	0x1
-	.byte	0x13
+	.byte	0x14
 	.byte	0xd
 	.long	0x70
 	.byte	0x1
@@ -2741,7 +2123,7 @@ print_fanspeed:
 	.uleb128 0x14
 	.long	.LASF2576
 	.byte	0x1
-	.byte	0x17
+	.byte	0x18
 	.byte	0x5
 	.long	0x69
 	.byte	0x1
@@ -2751,7 +2133,7 @@ print_fanspeed:
 	.uleb128 0x14
 	.long	.LASF2577
 	.byte	0x1
-	.byte	0x18
+	.byte	0x19
 	.byte	0x6
 	.long	0x2ce
 	.byte	0x1
@@ -2761,7 +2143,7 @@ print_fanspeed:
 	.uleb128 0x14
 	.long	.LASF2578
 	.byte	0x1
-	.byte	0x19
+	.byte	0x1a
 	.byte	0x5
 	.long	0x839
 	.byte	0x1
@@ -2778,7 +2160,7 @@ print_fanspeed:
 	.uleb128 0xe
 	.long	.LASF2579
 	.byte	0x1
-	.byte	0x1b
+	.byte	0x1c
 	.byte	0xe
 	.long	0xa60
 	.byte	0x1
@@ -2786,65 +2168,34 @@ print_fanspeed:
 	.uleb128 0xe
 	.long	.LASF2580
 	.byte	0x1
-	.byte	0x1f
+	.byte	0x20
 	.byte	0xe
 	.long	0xa60
 	.byte	0x1
 	.byte	0x1
 	.uleb128 0x15
 	.byte	0x1
-	.long	.LASF2589
-	.byte	0x8
-	.value	0x1b7
-	.byte	0xc
-	.long	.LASF2591
-	.byte	0x1
-	.long	0x69
-	.byte	0x1
-	.long	0xab0
-	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x17
-	.byte	0
-	.uleb128 0x18
-	.byte	0x1
 	.long	.LASF2581
-	.byte	0x9
-	.value	0x2f9
-	.byte	0xc
-	.byte	0x1
-	.long	0x69
-	.byte	0x1
-	.long	0xacb
-	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x17
-	.byte	0
-	.uleb128 0x18
-	.byte	0x1
-	.long	.LASF2582
 	.byte	0x8
 	.value	0x337
 	.byte	0xc
 	.byte	0x1
 	.long	0x69
 	.byte	0x1
-	.long	0xae5
+	.long	0xaa6
 	.uleb128 0x16
 	.long	0x2de
 	.byte	0
-	.uleb128 0x18
+	.uleb128 0x15
 	.byte	0x1
-	.long	.LASF2583
+	.long	.LASF2582
 	.byte	0x8
 	.value	0x250
 	.byte	0xe
 	.byte	0x1
 	.long	0x9b
 	.byte	0x1
-	.long	0xb09
+	.long	0xaca
 	.uleb128 0x16
 	.long	0x9b
 	.uleb128 0x16
@@ -2852,11 +2203,42 @@ print_fanspeed:
 	.uleb128 0x16
 	.long	0x2de
 	.byte	0
+	.uleb128 0x17
+	.byte	0x1
+	.long	.LASF2611
+	.byte	0x8
+	.value	0x1b7
+	.byte	0xc
+	.long	.LASF2617
+	.byte	0x1
+	.long	0x69
+	.byte	0x1
+	.long	0xaee
+	.uleb128 0x16
+	.long	0x300
+	.uleb128 0x16
+	.long	0x300
+	.uleb128 0x18
+	.byte	0
+	.uleb128 0x15
+	.byte	0x1
+	.long	.LASF2583
+	.byte	0x9
+	.value	0x2f9
+	.byte	0xc
+	.byte	0x1
+	.long	0x69
+	.byte	0x1
+	.long	0xb09
+	.uleb128 0x16
+	.long	0x300
+	.uleb128 0x18
+	.byte	0
 	.uleb128 0x19
 	.byte	0x1
 	.long	.LASF2584
 	.byte	0xa
-	.byte	0x44
+	.byte	0x40
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -2867,10 +2249,10 @@ print_fanspeed:
 	.byte	0
 	.uleb128 0x6
 	.byte	0x8
-	.long	0x82b
+	.long	0x958
 	.uleb128 0x1a
 	.byte	0x1
-	.long	.LASF2587
+	.long	.LASF2589
 	.byte	0xb
 	.byte	0xa
 	.byte	0x6
@@ -2878,12 +2260,15 @@ print_fanspeed:
 	.byte	0x1
 	.long	0xb47
 	.uleb128 0x16
-	.long	0xb22
+	.long	0xb47
 	.uleb128 0x16
 	.long	0x9b
 	.uleb128 0x16
 	.long	0x9b
 	.byte	0
+	.uleb128 0x6
+	.byte	0x8
+	.long	0x82b
 	.uleb128 0x19
 	.byte	0x1
 	.long	.LASF2585
@@ -2893,7 +2278,7 @@ print_fanspeed:
 	.byte	0x1
 	.long	0x69
 	.byte	0x1
-	.long	0xb60
+	.long	0xb66
 	.uleb128 0x16
 	.long	0x9b
 	.byte	0
@@ -2906,123 +2291,118 @@ print_fanspeed:
 	.byte	0x1
 	.long	0x69
 	.byte	0x1
-	.long	0xb79
+	.long	0xb7f
 	.uleb128 0x16
-	.long	0xb22
+	.long	0xb47
+	.byte	0
+	.uleb128 0x19
+	.byte	0x1
+	.long	.LASF2555
+	.byte	0xc
+	.byte	0x9
+	.byte	0x7
+	.byte	0x1
+	.long	0x82b
+	.byte	0x1
+	.long	0xba2
+	.uleb128 0x16
+	.long	0x70
+	.uleb128 0x16
+	.long	0xb47
+	.uleb128 0x16
+	.long	0xb47
+	.byte	0
+	.uleb128 0x19
+	.byte	0x1
+	.long	.LASF2587
+	.byte	0xc
+	.byte	0xb
+	.byte	0x7
+	.byte	0x1
+	.long	0x82b
+	.byte	0x1
+	.long	0xbc5
+	.uleb128 0x16
+	.long	0x82b
+	.uleb128 0x16
+	.long	0xb47
+	.uleb128 0x16
+	.long	0x69
+	.byte	0
+	.uleb128 0x19
+	.byte	0x1
+	.long	.LASF2588
+	.byte	0xc
+	.byte	0xa
+	.byte	0x7
+	.byte	0x1
+	.long	0x82b
+	.byte	0x1
+	.long	0xbe8
+	.uleb128 0x16
+	.long	0x82b
+	.uleb128 0x16
+	.long	0xb47
+	.uleb128 0x16
+	.long	0x69
 	.byte	0
 	.uleb128 0x1a
 	.byte	0x1
-	.long	.LASF2588
+	.long	.LASF2590
 	.byte	0xb
 	.byte	0xc
 	.byte	0x6
 	.byte	0x1
 	.byte	0x1
-	.long	0xb98
+	.long	0xc07
 	.uleb128 0x16
-	.long	0xb22
+	.long	0xb47
 	.uleb128 0x16
-	.long	0xb22
+	.long	0xb47
 	.uleb128 0x16
 	.long	0x69
-	.byte	0
-	.uleb128 0x15
-	.byte	0x1
-	.long	.LASF2590
-	.byte	0x8
-	.value	0x1b2
-	.byte	0xc
-	.long	.LASF2592
-	.byte	0x1
-	.long	0x69
-	.byte	0x1
-	.long	0xbbc
-	.uleb128 0x16
-	.long	0x2de
-	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x17
 	.byte	0
 	.uleb128 0x19
 	.byte	0x1
-	.long	.LASF2593
-	.byte	0x8
-	.byte	0xb2
-	.byte	0xc
+	.long	.LASF2591
+	.byte	0xa
+	.byte	0x41
+	.byte	0x5
 	.byte	0x1
 	.long	0x69
 	.byte	0x1
-	.long	0xbd5
+	.long	0xc25
 	.uleb128 0x16
-	.long	0x2de
-	.byte	0
-	.uleb128 0x18
-	.byte	0x1
-	.long	.LASF2594
-	.byte	0x8
-	.value	0x201
-	.byte	0xc
-	.byte	0x1
-	.long	0x69
-	.byte	0x1
-	.long	0xbef
+	.long	0xb22
 	.uleb128 0x16
-	.long	0x2de
+	.long	0x9f3
 	.byte	0
-	.uleb128 0x1b
+	.uleb128 0x15
 	.byte	0x1
-	.long	.LASF2595
-	.byte	0x8
-	.value	0x324
+	.long	.LASF2592
 	.byte	0xd
-	.byte	0x1
-	.byte	0x1
-	.long	0xc05
-	.uleb128 0x16
-	.long	0x300
-	.byte	0
-	.uleb128 0x18
-	.byte	0x1
-	.long	.LASF2596
-	.byte	0x8
-	.value	0x102
+	.value	0x21c
 	.byte	0xe
 	.byte	0x1
-	.long	0x2de
-	.byte	0x1
-	.long	0xc24
-	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x16
-	.long	0x300
-	.byte	0
-	.uleb128 0x18
-	.byte	0x1
-	.long	.LASF2597
-	.byte	0x8
-	.value	0x164
-	.byte	0xc
-	.byte	0x1
-	.long	0x69
+	.long	0x4b
 	.byte	0x1
 	.long	0xc3f
 	.uleb128 0x16
-	.long	0x300
-	.uleb128 0x17
+	.long	0x31
 	.byte	0
-	.uleb128 0x1c
+	.uleb128 0x1b
 	.byte	0x1
-	.long	.LASF2639
-	.byte	0xc
+	.long	.LASF2618
+	.byte	0xe
 	.value	0x2bc
 	.byte	0x10
 	.byte	0x1
 	.long	0x77
 	.byte	0x1
-	.uleb128 0x18
+	.uleb128 0x15
 	.byte	0x1
-	.long	.LASF2598
-	.byte	0xc
+	.long	.LASF2593
+	.byte	0xe
 	.value	0x280
 	.byte	0x11
 	.byte	0x1
@@ -3034,8 +2414,8 @@ print_fanspeed:
 	.byte	0
 	.uleb128 0x19
 	.byte	0x1
-	.long	.LASF2599
-	.byte	0xd
+	.long	.LASF2594
+	.byte	0xf
 	.byte	0x7a
 	.byte	0xe
 	.byte	0x1
@@ -3047,9 +2427,9 @@ print_fanspeed:
 	.uleb128 0x16
 	.long	0x300
 	.byte	0
-	.uleb128 0x18
+	.uleb128 0x15
 	.byte	0x1
-	.long	.LASF2600
+	.long	.LASF2595
 	.byte	0x8
 	.value	0x33d
 	.byte	0xe
@@ -3062,50 +2442,50 @@ print_fanspeed:
 	.uleb128 0x16
 	.long	0x300
 	.byte	0
-	.uleb128 0x1d
+	.uleb128 0x1c
 	.byte	0x1
-	.long	.LASF2602
+	.long	.LASF2606
 	.byte	0x1
-	.value	0x10a
+	.byte	0x98
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
-	.quad	.LFB16
-	.quad	.LFE16
-	.long	.LLST10
+	.quad	.LFB11
+	.quad	.LFE11
+	.long	.LLST5
 	.byte	0x1
-	.long	0xd12
-	.uleb128 0x1e
+	.long	0xd0d
+	.uleb128 0x1d
 	.string	"buf"
 	.byte	0x1
-	.value	0x10b
+	.byte	0x99
 	.byte	0xa
-	.long	0xd12
+	.long	0xd0d
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -96
-	.uleb128 0x1e
+	.uleb128 0x1d
 	.string	"fp"
 	.byte	0x1
-	.value	0x10c
+	.byte	0x9a
 	.byte	0xb
 	.long	0x2de
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -104
-	.uleb128 0x1f
-	.long	.LASF2601
+	.uleb128 0x1e
+	.long	.LASF2596
 	.byte	0x1
-	.value	0x10e
+	.byte	0x9c
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
 	.byte	0x91
 	.sleb128 -112
-	.uleb128 0x1e
+	.uleb128 0x1d
 	.string	"rpm"
 	.byte	0x1
-	.value	0x11b
+	.byte	0xa9
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -3114,407 +2494,83 @@ print_fanspeed:
 	.byte	0
 	.uleb128 0xc
 	.long	0xa1
-	.long	0xd22
+	.long	0xd1d
 	.uleb128 0xd
 	.long	0x3d
 	.byte	0x3f
 	.byte	0
-	.uleb128 0x20
+	.uleb128 0x1f
 	.byte	0x1
-	.long	.LASF2603
-	.byte	0x1
-	.byte	0xfd
-	.byte	0x7
-	.byte	0x1
-	.long	0x82b
-	.quad	.LFB15
-	.quad	.LFE15
-	.long	.LLST9
-	.byte	0x1
-	.long	0xd96
-	.uleb128 0x21
 	.long	.LASF2604
 	.byte	0x1
-	.byte	0xfd
-	.byte	0x1b
-	.long	0x82b
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -36
-	.uleb128 0x21
-	.long	.LASF2605
-	.byte	0x1
-	.byte	0xfd
-	.byte	0x36
-	.long	0xb22
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -48
-	.uleb128 0x21
-	.long	.LASF2606
-	.byte	0x1
-	.byte	0xfd
-	.byte	0x47
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x22
-	.quad	.LBB4
-	.quad	.LBE4
-	.uleb128 0x23
-	.string	"i"
-	.byte	0x1
-	.byte	0xff
-	.byte	0xe
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -20
-	.byte	0
-	.byte	0
-	.uleb128 0x20
-	.byte	0x1
-	.long	.LASF2607
-	.byte	0x1
-	.byte	0xf1
-	.byte	0x7
-	.byte	0x1
-	.long	0x82b
-	.quad	.LFB14
-	.quad	.LFE14
-	.long	.LLST8
-	.byte	0x1
-	.long	0xe0a
-	.uleb128 0x21
-	.long	.LASF2608
-	.byte	0x1
-	.byte	0xf1
-	.byte	0x1b
-	.long	0x82b
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -36
-	.uleb128 0x21
-	.long	.LASF2605
-	.byte	0x1
-	.byte	0xf1
-	.byte	0x36
-	.long	0xb22
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -48
-	.uleb128 0x21
-	.long	.LASF2606
-	.byte	0x1
-	.byte	0xf1
-	.byte	0x47
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x22
-	.quad	.LBB3
-	.quad	.LBE3
-	.uleb128 0x23
-	.string	"i"
-	.byte	0x1
-	.byte	0xf3
-	.byte	0xe
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -20
-	.byte	0
-	.byte	0
-	.uleb128 0x20
-	.byte	0x1
-	.long	.LASF2555
-	.byte	0x1
-	.byte	0xe4
-	.byte	0x7
-	.byte	0x1
-	.long	0x82b
-	.quad	.LFB13
-	.quad	.LFE13
-	.long	.LLST7
-	.byte	0x1
-	.long	0xe6e
-	.uleb128 0x21
-	.long	.LASF2575
-	.byte	0x1
-	.byte	0xe4
-	.byte	0x18
-	.long	0x70
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x21
-	.long	.LASF2609
-	.byte	0x1
-	.byte	0xe4
-	.byte	0x33
-	.long	0xb22
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -48
-	.uleb128 0x21
-	.long	.LASF2605
-	.byte	0x1
-	.byte	0xe4
-	.byte	0x4e
-	.long	0xb22
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -56
-	.uleb128 0x23
-	.string	"avg"
-	.byte	0x1
-	.byte	0xe6
-	.byte	0xb
-	.long	0x82b
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -20
-	.byte	0
-	.uleb128 0x24
-	.byte	0x1
-	.long	.LASF2620
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x6
-	.byte	0x1
-	.quad	.LFB12
-	.quad	.LFE12
-	.long	.LLST6
-	.byte	0x1
-	.long	0xf5a
-	.uleb128 0x25
-	.string	"i"
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x19
-	.long	0x69
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -68
-	.uleb128 0x21
-	.long	.LASF2610
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x24
-	.long	0xb22
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -80
-	.uleb128 0x21
-	.long	.LASF2611
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x31
-	.long	0xb22
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -88
-	.uleb128 0x21
-	.long	.LASF2612
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x3e
-	.long	0xb22
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -96
-	.uleb128 0x21
-	.long	.LASF2613
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x4b
-	.long	0xb22
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -104
-	.uleb128 0x21
-	.long	.LASF2558
-	.byte	0x1
-	.byte	0xcc
-	.byte	0x5b
-	.long	0xb22
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -112
-	.uleb128 0x26
-	.long	.LASF2614
-	.byte	0x1
-	.byte	0xcf
-	.byte	0xc
-	.long	0x832
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -56
-	.uleb128 0x26
-	.long	.LASF2615
-	.byte	0x1
-	.byte	0xd0
-	.byte	0xa
-	.long	0x70
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -48
-	.uleb128 0x26
-	.long	.LASF2616
-	.byte	0x1
-	.byte	0xd1
-	.byte	0xa
-	.long	0x70
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x26
-	.long	.LASF2617
-	.byte	0x1
-	.byte	0xd2
-	.byte	0xc
-	.long	0x832
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -32
-	.uleb128 0x26
-	.long	.LASF2618
-	.byte	0x1
-	.byte	0xd3
-	.byte	0xc
-	.long	0x832
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -24
-	.uleb128 0x22
-	.quad	.LBB2
-	.quad	.LBE2
-	.uleb128 0x23
-	.string	"j"
-	.byte	0x1
-	.byte	0xd6
-	.byte	0xe
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -60
-	.byte	0
-	.byte	0
-	.uleb128 0x27
-	.byte	0x1
-	.long	.LASF2619
-	.byte	0x1
-	.byte	0xb1
-	.byte	0x5
-	.byte	0x1
-	.long	0x69
-	.quad	.LFB11
-	.quad	.LFE11
-	.long	.LLST5
-	.byte	0x1
-	.long	0xfb1
-	.uleb128 0x25
-	.string	"cmd"
-	.byte	0x1
-	.byte	0xb1
-	.byte	0x15
-	.long	0x9b
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -120
-	.uleb128 0x23
-	.string	"buf"
-	.byte	0x1
-	.byte	0xb2
-	.byte	0xa
-	.long	0xd12
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -96
-	.uleb128 0x23
-	.string	"fp"
-	.byte	0x1
-	.byte	0xb3
-	.byte	0xb
-	.long	0x2de
-	.byte	0x3
-	.byte	0x91
-	.sleb128 -104
-	.byte	0
-	.uleb128 0x24
-	.byte	0x1
-	.long	.LASF2621
-	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB10
 	.quad	.LFE10
 	.long	.LLST4
 	.byte	0x1
-	.long	0x103e
-	.uleb128 0x21
-	.long	.LASF2610
+	.long	0xdaa
+	.uleb128 0x20
+	.long	.LASF2597
 	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x21
-	.long	0x103e
+	.long	0xdaa
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -24
-	.uleb128 0x21
-	.long	.LASF2611
+	.uleb128 0x20
+	.long	.LASF2598
 	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x2f
-	.long	0x103e
+	.long	0xdaa
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x21
-	.long	.LASF2622
+	.uleb128 0x20
+	.long	.LASF2599
 	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x3d
-	.long	0x103e
+	.long	0xdaa
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x21
-	.long	.LASF2613
+	.uleb128 0x20
+	.long	.LASF2600
 	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x52
-	.long	0x103e
+	.long	0xdaa
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x21
-	.long	.LASF2623
+	.uleb128 0x20
+	.long	.LASF2601
 	.byte	0x1
-	.byte	0x79
 	.byte	0x62
-	.long	0xb22
+	.byte	0x62
+	.long	0xb47
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x21
-	.long	.LASF2624
+	.uleb128 0x20
+	.long	.LASF2602
 	.byte	0x1
-	.byte	0x79
+	.byte	0x62
 	.byte	0x7b
-	.long	0x1044
+	.long	0xb22
 	.byte	0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0x21
-	.long	.LASF2625
+	.uleb128 0x20
+	.long	.LASF2603
 	.byte	0x1
-	.byte	0x79
-	.byte	0x8e
-	.long	0x104a
+	.byte	0x62
+	.byte	0x90
+	.long	0xdb0
 	.byte	0x2
 	.byte	0x91
 	.sleb128 0
@@ -3524,148 +2580,117 @@ print_fanspeed:
 	.long	0x8b7
 	.uleb128 0x6
 	.byte	0x8
-	.long	0x958
-	.uleb128 0x6
-	.byte	0x8
 	.long	0x9cc
-	.uleb128 0x27
+	.uleb128 0x21
 	.byte	0x1
-	.long	.LASF2626
+	.long	.LASF2605
 	.byte	0x1
-	.byte	0x5d
-	.byte	0x5
-	.byte	0x1
-	.long	0x69
+	.byte	0x58
+	.byte	0x7
+	.long	0x4b
 	.quad	.LFB9
 	.quad	.LFE9
 	.long	.LLST3
 	.byte	0x1
-	.long	0x10a4
-	.uleb128 0x21
-	.long	.LASF2627
+	.long	0xded
+	.uleb128 0x1e
+	.long	.LASF2603
 	.byte	0x1
-	.byte	0x5d
-	.byte	0x15
-	.long	0x9b
-	.byte	0x2
+	.byte	0x5a
+	.byte	0x10
+	.long	0xdb0
+	.byte	0x3
 	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x21
-	.long	.LASF2628
-	.byte	0x1
-	.byte	0x5d
-	.byte	0x30
-	.long	0x300
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -48
-	.uleb128 0x23
-	.string	"fp"
-	.byte	0x1
-	.byte	0x62
-	.byte	0xb
-	.long	0x2de
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -24
+	.sleb128 -72
 	.byte	0
-	.uleb128 0x27
+	.uleb128 0x1c
 	.byte	0x1
-	.long	.LASF2629
+	.long	.LASF2607
 	.byte	0x1
-	.byte	0x3f
+	.byte	0x50
 	.byte	0x7
 	.byte	0x1
-	.long	0x9b
+	.long	0x4b
 	.quad	.LFB8
 	.quad	.LFE8
 	.long	.LLST2
 	.byte	0x1
-	.long	0x111b
-	.uleb128 0x21
-	.long	.LASF2628
-	.byte	0x1
-	.byte	0x3f
-	.byte	0x1f
-	.long	0x300
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -40
-	.uleb128 0x23
-	.string	"fp"
-	.byte	0x1
-	.byte	0x44
-	.byte	0xb
-	.long	0x2de
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -24
-	.uleb128 0x26
-	.long	.LASF2630
-	.byte	0x1
-	.byte	0x45
-	.byte	0x11
-	.long	0xd12
-	.byte	0x9
-	.byte	0x3
-	.quad	file_buf.0
-	.uleb128 0x23
-	.string	"i"
-	.byte	0x1
-	.byte	0x46
-	.byte	0x9
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -32
-	.uleb128 0x26
-	.long	.LASF2631
-	.byte	0x1
-	.byte	0x47
-	.byte	0x9
-	.long	0x69
-	.byte	0x2
-	.byte	0x91
-	.sleb128 -28
-	.byte	0
+	.long	0xe34
 	.uleb128 0x20
+	.long	.LASF2576
 	.byte	0x1
-	.long	.LASF2632
-	.byte	0x1
-	.byte	0x39
-	.byte	0x5
-	.byte	0x1
+	.byte	0x50
+	.byte	0x17
 	.long	0x69
+	.byte	0x3
+	.byte	0x91
+	.sleb128 -68
+	.uleb128 0x1e
+	.long	.LASF2608
+	.byte	0x1
+	.byte	0x52
+	.byte	0xd
+	.long	0xdaa
+	.byte	0x2
+	.byte	0x91
+	.sleb128 -56
+	.byte	0
+	.uleb128 0x1c
+	.byte	0x1
+	.long	.LASF2609
+	.byte	0x1
+	.byte	0x3a
+	.byte	0x7
+	.byte	0x1
+	.long	0x4b
 	.quad	.LFB7
 	.quad	.LFE7
 	.long	.LLST1
 	.byte	0x1
-	.long	0x1152
-	.uleb128 0x21
-	.long	.LASF2633
+	.long	0xe89
+	.uleb128 0x20
+	.long	.LASF2610
 	.byte	0x1
-	.byte	0x39
-	.byte	0x21
+	.byte	0x3a
+	.byte	0x28
 	.long	0x9f3
 	.byte	0x2
 	.byte	0x91
-	.sleb128 -20
+	.sleb128 -36
+	.uleb128 0x20
+	.long	.LASF2576
+	.byte	0x1
+	.byte	0x3a
+	.byte	0x3a
+	.long	0x69
+	.byte	0x2
+	.byte	0x91
+	.sleb128 -40
+	.uleb128 0x1e
+	.long	.LASF2602
+	.byte	0x1
+	.byte	0x3d
+	.byte	0xc
+	.long	0xb22
+	.byte	0x2
+	.byte	0x91
+	.sleb128 -24
 	.byte	0
-	.uleb128 0x28
+	.uleb128 0x22
 	.byte	0x1
-	.long	.LASF2634
+	.long	.LASF2612
 	.byte	0x1
-	.byte	0x22
+	.byte	0x23
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB6
 	.quad	.LFE6
 	.long	.LLST0
 	.byte	0x1
-	.uleb128 0x23
+	.uleb128 0x1d
 	.string	"fp"
 	.byte	0x1
-	.byte	0x24
+	.byte	0x25
 	.byte	0xb
 	.long	0x2de
 	.byte	0x2
@@ -3942,8 +2967,6 @@ print_fanspeed:
 	.uleb128 0x5
 	.uleb128 0x39
 	.uleb128 0xb
-	.uleb128 0x2007
-	.uleb128 0xe
 	.uleb128 0x27
 	.uleb128 0xc
 	.uleb128 0x49
@@ -3962,11 +2985,6 @@ print_fanspeed:
 	.byte	0
 	.byte	0
 	.uleb128 0x17
-	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.byte	0
-	.uleb128 0x18
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -3979,6 +2997,8 @@ print_fanspeed:
 	.uleb128 0x5
 	.uleb128 0x39
 	.uleb128 0xb
+	.uleb128 0x2007
+	.uleb128 0xe
 	.uleb128 0x27
 	.uleb128 0xc
 	.uleb128 0x49
@@ -3987,6 +3007,11 @@ print_fanspeed:
 	.uleb128 0xc
 	.uleb128 0x1
 	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x18
+	.uleb128 0x18
+	.byte	0
 	.byte	0
 	.byte	0
 	.uleb128 0x19
@@ -4035,27 +3060,6 @@ print_fanspeed:
 	.byte	0
 	.uleb128 0x1b
 	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0xc
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0x5
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0xc
-	.uleb128 0x3c
-	.uleb128 0xc
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x1c
-	.uleb128 0x2e
 	.byte	0
 	.uleb128 0x3f
 	.uleb128 0xc
@@ -4075,7 +3079,7 @@ print_fanspeed:
 	.uleb128 0xc
 	.byte	0
 	.byte	0
-	.uleb128 0x1d
+	.uleb128 0x1c
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4085,7 +3089,7 @@ print_fanspeed:
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
-	.uleb128 0x5
+	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
 	.uleb128 0x27
@@ -4104,7 +3108,7 @@ print_fanspeed:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1e
+	.uleb128 0x1d
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -4112,7 +3116,24 @@ print_fanspeed:
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
-	.uleb128 0x5
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0xa
+	.byte	0
+	.byte	0
+	.uleb128 0x1e
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
 	.uleb128 0x49
@@ -4122,27 +3143,35 @@ print_fanspeed:
 	.byte	0
 	.byte	0
 	.uleb128 0x1f
-	.uleb128 0x34
-	.byte	0
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0xc
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
-	.uleb128 0x5
+	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
-	.uleb128 0x49
+	.uleb128 0x27
+	.uleb128 0xc
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x1
+	.uleb128 0x40
+	.uleb128 0x6
+	.uleb128 0x2116
+	.uleb128 0xc
+	.uleb128 0x1
 	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0xa
 	.byte	0
 	.byte	0
 	.uleb128 0x20
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0xc
+	.uleb128 0x5
+	.byte	0
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
@@ -4151,25 +3180,17 @@ print_fanspeed:
 	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0xc
 	.uleb128 0x49
 	.uleb128 0x13
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x1
-	.uleb128 0x40
-	.uleb128 0x6
-	.uleb128 0x2117
-	.uleb128 0xc
-	.uleb128 0x1
-	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0xa
 	.byte	0
 	.byte	0
 	.uleb128 0x21
-	.uleb128 0x5
-	.byte	0
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0xc
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
@@ -4180,127 +3201,19 @@ print_fanspeed:
 	.uleb128 0xb
 	.uleb128 0x49
 	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0xa
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x1
+	.uleb128 0x40
+	.uleb128 0x6
+	.uleb128 0x2116
+	.uleb128 0xc
+	.uleb128 0x1
+	.uleb128 0x13
 	.byte	0
 	.byte	0
 	.uleb128 0x22
-	.uleb128 0xb
-	.byte	0x1
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x1
-	.byte	0
-	.byte	0
-	.uleb128 0x23
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0xa
-	.byte	0
-	.byte	0
-	.uleb128 0x24
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0xc
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0xc
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x1
-	.uleb128 0x40
-	.uleb128 0x6
-	.uleb128 0x2116
-	.uleb128 0xc
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x25
-	.uleb128 0x5
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0xa
-	.byte	0
-	.byte	0
-	.uleb128 0x26
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0xa
-	.byte	0
-	.byte	0
-	.uleb128 0x27
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0xc
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0xc
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x1
-	.uleb128 0x40
-	.uleb128 0x6
-	.uleb128 0x2116
-	.uleb128 0xc
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x28
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4328,121 +3241,6 @@ print_fanspeed:
 	.byte	0
 	.section	.debug_loc,"",@progbits
 .Ldebug_loc0:
-.LLST10:
-	.quad	.LFB16-.Ltext0
-	.quad	.LCFI30-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	.LCFI30-.Ltext0
-	.quad	.LCFI31-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 16
-	.quad	.LCFI31-.Ltext0
-	.quad	.LCFI32-.Ltext0
-	.value	0x2
-	.byte	0x76
-	.sleb128 16
-	.quad	.LCFI32-.Ltext0
-	.quad	.LFE16-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	0
-	.quad	0
-.LLST9:
-	.quad	.LFB15-.Ltext0
-	.quad	.LCFI27-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	.LCFI27-.Ltext0
-	.quad	.LCFI28-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 16
-	.quad	.LCFI28-.Ltext0
-	.quad	.LCFI29-.Ltext0
-	.value	0x2
-	.byte	0x76
-	.sleb128 16
-	.quad	.LCFI29-.Ltext0
-	.quad	.LFE15-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	0
-	.quad	0
-.LLST8:
-	.quad	.LFB14-.Ltext0
-	.quad	.LCFI24-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	.LCFI24-.Ltext0
-	.quad	.LCFI25-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 16
-	.quad	.LCFI25-.Ltext0
-	.quad	.LCFI26-.Ltext0
-	.value	0x2
-	.byte	0x76
-	.sleb128 16
-	.quad	.LCFI26-.Ltext0
-	.quad	.LFE14-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	0
-	.quad	0
-.LLST7:
-	.quad	.LFB13-.Ltext0
-	.quad	.LCFI21-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	.LCFI21-.Ltext0
-	.quad	.LCFI22-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 16
-	.quad	.LCFI22-.Ltext0
-	.quad	.LCFI23-.Ltext0
-	.value	0x2
-	.byte	0x76
-	.sleb128 16
-	.quad	.LCFI23-.Ltext0
-	.quad	.LFE13-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	0
-	.quad	0
-.LLST6:
-	.quad	.LFB12-.Ltext0
-	.quad	.LCFI18-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	.LCFI18-.Ltext0
-	.quad	.LCFI19-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 16
-	.quad	.LCFI19-.Ltext0
-	.quad	.LCFI20-.Ltext0
-	.value	0x2
-	.byte	0x76
-	.sleb128 16
-	.quad	.LCFI20-.Ltext0
-	.quad	.LFE12-.Ltext0
-	.value	0x2
-	.byte	0x77
-	.sleb128 8
-	.quad	0
-	.quad	0
 .LLST5:
 	.quad	.LFB11-.Ltext0
 	.quad	.LCFI15-.Ltext0
@@ -5684,10 +4482,10 @@ print_fanspeed:
 	.byte	0x5
 	.uleb128 0
 	.long	.LASF360
-	.file 14 "/usr/include/stdc-predef.h"
+	.file 16 "/usr/include/stdc-predef.h"
 	.byte	0x3
 	.uleb128 0
-	.uleb128 0xe
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro2
 	.byte	0x4
@@ -5696,37 +4494,37 @@ print_fanspeed:
 	.uleb128 0x8
 	.byte	0x7
 	.long	.Ldebug_macro3
-	.file 15 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h"
+	.file 17 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h"
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0xf
+	.uleb128 0x11
 	.byte	0x6
 	.uleb128 0x1f
 	.long	.LASF369
-	.file 16 "/usr/include/features.h"
+	.file 18 "/usr/include/features.h"
 	.byte	0x3
 	.uleb128 0x21
-	.uleb128 0x10
+	.uleb128 0x12
 	.byte	0x7
 	.long	.Ldebug_macro4
-	.file 17 "/usr/include/features-time64.h"
+	.file 19 "/usr/include/features-time64.h"
 	.byte	0x3
 	.uleb128 0x188
-	.uleb128 0x11
-	.file 18 "/usr/include/x86_64-linux-gnu/bits/wordsize.h"
+	.uleb128 0x13
+	.file 20 "/usr/include/x86_64-linux-gnu/bits/wordsize.h"
 	.byte	0x3
 	.uleb128 0x14
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 19 "/usr/include/x86_64-linux-gnu/bits/timesize.h"
+	.file 21 "/usr/include/x86_64-linux-gnu/bits/timesize.h"
 	.byte	0x3
 	.uleb128 0x15
-	.uleb128 0x13
+	.uleb128 0x15
 	.byte	0x3
 	.uleb128 0x13
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
@@ -5737,22 +4535,22 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro6
-	.file 20 "/usr/include/x86_64-linux-gnu/sys/cdefs.h"
+	.file 22 "/usr/include/x86_64-linux-gnu/sys/cdefs.h"
 	.byte	0x3
 	.uleb128 0x1e6
-	.uleb128 0x14
+	.uleb128 0x16
 	.byte	0x7
 	.long	.Ldebug_macro7
 	.byte	0x3
 	.uleb128 0x22f
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 21 "/usr/include/x86_64-linux-gnu/bits/long-double.h"
+	.file 23 "/usr/include/x86_64-linux-gnu/bits/long-double.h"
 	.byte	0x3
 	.uleb128 0x230
-	.uleb128 0x15
+	.uleb128 0x17
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF503
@@ -5760,14 +4558,14 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro8
 	.byte	0x4
-	.file 22 "/usr/include/x86_64-linux-gnu/gnu/stubs.h"
+	.file 24 "/usr/include/x86_64-linux-gnu/gnu/stubs.h"
 	.byte	0x3
 	.uleb128 0x1fe
-	.uleb128 0x16
-	.file 23 "/usr/include/x86_64-linux-gnu/gnu/stubs-64.h"
+	.uleb128 0x18
+	.file 25 "/usr/include/x86_64-linux-gnu/gnu/stubs-64.h"
 	.byte	0x3
 	.uleb128 0xa
-	.uleb128 0x17
+	.uleb128 0x19
 	.byte	0x7
 	.long	.Ldebug_macro9
 	.byte	0x4
@@ -5787,10 +4585,10 @@ print_fanspeed:
 	.byte	0x5
 	.uleb128 0x23
 	.long	.LASF566
-	.file 24 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h"
+	.file 26 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h"
 	.byte	0x3
 	.uleb128 0x24
-	.uleb128 0x18
+	.uleb128 0x1a
 	.byte	0x7
 	.long	.Ldebug_macro13
 	.byte	0x4
@@ -5802,16 +4600,16 @@ print_fanspeed:
 	.long	.LASF569
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x1c
-	.uleb128 0x13
+	.uleb128 0x15
 	.byte	0x3
 	.uleb128 0x13
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
@@ -5821,17 +4619,17 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro14
-	.file 25 "/usr/include/x86_64-linux-gnu/bits/typesizes.h"
+	.file 27 "/usr/include/x86_64-linux-gnu/bits/typesizes.h"
 	.byte	0x3
 	.uleb128 0x8d
-	.uleb128 0x19
+	.uleb128 0x1b
 	.byte	0x7
 	.long	.Ldebug_macro15
 	.byte	0x4
-	.file 26 "/usr/include/x86_64-linux-gnu/bits/time64.h"
+	.file 28 "/usr/include/x86_64-linux-gnu/bits/time64.h"
 	.byte	0x3
 	.uleb128 0x8e
-	.uleb128 0x1a
+	.uleb128 0x1c
 	.byte	0x7
 	.long	.Ldebug_macro16
 	.byte	0x4
@@ -5839,34 +4637,34 @@ print_fanspeed:
 	.uleb128 0xe2
 	.long	.LASF629
 	.byte	0x4
-	.file 27 "/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h"
+	.file 29 "/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h"
 	.byte	0x3
 	.uleb128 0x27
-	.uleb128 0x1b
+	.uleb128 0x1d
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF630
-	.file 28 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
+	.file 30 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x1c
+	.uleb128 0x1e
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF631
 	.byte	0x4
 	.byte	0x4
-	.file 29 "/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h"
+	.file 31 "/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h"
 	.byte	0x3
 	.uleb128 0x28
-	.uleb128 0x1d
+	.uleb128 0x1f
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF632
 	.byte	0x4
-	.file 30 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
+	.file 32 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
 	.byte	0x3
 	.uleb128 0x29
-	.uleb128 0x1e
+	.uleb128 0x20
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF633
@@ -5886,31 +4684,31 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro18
-	.file 31 "/usr/include/x86_64-linux-gnu/bits/stdio_lim.h"
+	.file 33 "/usr/include/x86_64-linux-gnu/bits/stdio_lim.h"
 	.byte	0x3
 	.uleb128 0x85
-	.uleb128 0x1f
+	.uleb128 0x21
 	.byte	0x7
 	.long	.Ldebug_macro19
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro20
-	.file 32 "/usr/include/x86_64-linux-gnu/bits/floatn.h"
+	.file 34 "/usr/include/x86_64-linux-gnu/bits/floatn.h"
 	.byte	0x3
 	.uleb128 0x1ae
-	.uleb128 0x20
+	.uleb128 0x22
 	.byte	0x7
 	.long	.Ldebug_macro21
-	.file 33 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h"
+	.file 35 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h"
 	.byte	0x3
 	.uleb128 0x77
-	.uleb128 0x21
+	.uleb128 0x23
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF674
 	.byte	0x3
 	.uleb128 0x18
-	.uleb128 0x15
+	.uleb128 0x17
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF503
@@ -5920,16 +4718,15 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x4
 	.byte	0x4
-	.file 34 "/usr/include/stdlib.h"
 	.byte	0x3
 	.uleb128 0x6
-	.uleb128 0x22
+	.uleb128 0xd
 	.byte	0x5
 	.uleb128 0x19
 	.long	.LASF368
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xf
+	.uleb128 0x11
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
@@ -5944,56 +4741,56 @@ print_fanspeed:
 	.byte	0x5
 	.uleb128 0x24
 	.long	.LASF714
-	.file 35 "/usr/include/x86_64-linux-gnu/bits/waitflags.h"
+	.file 36 "/usr/include/x86_64-linux-gnu/bits/waitflags.h"
 	.byte	0x3
 	.uleb128 0x28
-	.uleb128 0x23
+	.uleb128 0x24
 	.byte	0x7
 	.long	.Ldebug_macro26
 	.byte	0x4
-	.file 36 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h"
+	.file 37 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h"
 	.byte	0x3
 	.uleb128 0x29
-	.uleb128 0x24
+	.uleb128 0x25
 	.byte	0x7
 	.long	.Ldebug_macro27
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro28
-	.file 37 "/usr/include/x86_64-linux-gnu/sys/types.h"
+	.file 38 "/usr/include/x86_64-linux-gnu/sys/types.h"
 	.byte	0x3
 	.uleb128 0x18b
-	.uleb128 0x25
+	.uleb128 0x26
 	.byte	0x7
 	.long	.Ldebug_macro29
-	.file 38 "/usr/include/x86_64-linux-gnu/bits/types/clock_t.h"
+	.file 39 "/usr/include/x86_64-linux-gnu/bits/types/clock_t.h"
 	.byte	0x3
 	.uleb128 0x7e
-	.uleb128 0x26
+	.uleb128 0x27
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF761
 	.byte	0x4
-	.file 39 "/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h"
+	.file 40 "/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h"
 	.byte	0x3
 	.uleb128 0x80
-	.uleb128 0x27
+	.uleb128 0x28
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF762
 	.byte	0x4
-	.file 40 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h"
+	.file 41 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h"
 	.byte	0x3
 	.uleb128 0x81
-	.uleb128 0x28
+	.uleb128 0x29
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF763
 	.byte	0x4
-	.file 41 "/usr/include/x86_64-linux-gnu/bits/types/timer_t.h"
+	.file 42 "/usr/include/x86_64-linux-gnu/bits/types/timer_t.h"
 	.byte	0x3
 	.uleb128 0x82
-	.uleb128 0x29
+	.uleb128 0x2a
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF764
@@ -6007,10 +4804,10 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro30
 	.byte	0x4
-	.file 42 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h"
+	.file 43 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h"
 	.byte	0x3
 	.uleb128 0x9b
-	.uleb128 0x2a
+	.uleb128 0x2b
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF765
@@ -6018,23 +4815,23 @@ print_fanspeed:
 	.byte	0x5
 	.uleb128 0xab
 	.long	.LASF766
-	.file 43 "/usr/include/endian.h"
+	.file 44 "/usr/include/endian.h"
 	.byte	0x3
 	.uleb128 0xb0
-	.uleb128 0x2b
+	.uleb128 0x2c
 	.byte	0x5
 	.uleb128 0x13
 	.long	.LASF767
-	.file 44 "/usr/include/x86_64-linux-gnu/bits/endian.h"
+	.file 45 "/usr/include/x86_64-linux-gnu/bits/endian.h"
 	.byte	0x3
 	.uleb128 0x18
-	.uleb128 0x2c
+	.uleb128 0x2d
 	.byte	0x7
 	.long	.Ldebug_macro31
-	.file 45 "/usr/include/x86_64-linux-gnu/bits/endianness.h"
+	.file 46 "/usr/include/x86_64-linux-gnu/bits/endianness.h"
 	.byte	0x3
 	.uleb128 0x23
-	.uleb128 0x2d
+	.uleb128 0x2e
 	.byte	0x7
 	.long	.Ldebug_macro32
 	.byte	0x4
@@ -6043,17 +4840,17 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro34
-	.file 46 "/usr/include/x86_64-linux-gnu/bits/byteswap.h"
+	.file 47 "/usr/include/x86_64-linux-gnu/bits/byteswap.h"
 	.byte	0x3
 	.uleb128 0x23
-	.uleb128 0x2e
+	.uleb128 0x2f
 	.byte	0x7
 	.long	.Ldebug_macro35
 	.byte	0x4
-	.file 47 "/usr/include/x86_64-linux-gnu/bits/uintn-identity.h"
+	.file 48 "/usr/include/x86_64-linux-gnu/bits/uintn-identity.h"
 	.byte	0x3
 	.uleb128 0x24
-	.uleb128 0x2f
+	.uleb128 0x30
 	.byte	0x5
 	.uleb128 0x18
 	.long	.LASF784
@@ -6061,47 +4858,47 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro36
 	.byte	0x4
-	.file 48 "/usr/include/x86_64-linux-gnu/sys/select.h"
+	.file 49 "/usr/include/x86_64-linux-gnu/sys/select.h"
 	.byte	0x3
 	.uleb128 0xb3
-	.uleb128 0x30
+	.uleb128 0x31
 	.byte	0x5
 	.uleb128 0x16
 	.long	.LASF797
-	.file 49 "/usr/include/x86_64-linux-gnu/bits/select.h"
+	.file 50 "/usr/include/x86_64-linux-gnu/bits/select.h"
 	.byte	0x3
 	.uleb128 0x1e
-	.uleb128 0x31
+	.uleb128 0x32
 	.byte	0x7
 	.long	.Ldebug_macro37
 	.byte	0x4
-	.file 50 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h"
+	.file 51 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h"
 	.byte	0x3
 	.uleb128 0x21
-	.uleb128 0x32
+	.uleb128 0x33
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF802
-	.file 51 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h"
+	.file 52 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h"
 	.byte	0x3
 	.uleb128 0x4
-	.uleb128 0x33
+	.uleb128 0x34
 	.byte	0x7
 	.long	.Ldebug_macro38
 	.byte	0x4
 	.byte	0x4
-	.file 52 "/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h"
+	.file 53 "/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h"
 	.byte	0x3
 	.uleb128 0x25
-	.uleb128 0x34
+	.uleb128 0x35
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF805
 	.byte	0x4
-	.file 53 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h"
+	.file 54 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h"
 	.byte	0x3
 	.uleb128 0x27
-	.uleb128 0x35
+	.uleb128 0x36
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF806
@@ -6111,55 +4908,55 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro40
-	.file 54 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h"
+	.file 55 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h"
 	.byte	0x3
 	.uleb128 0xe3
-	.uleb128 0x36
-	.byte	0x5
-	.uleb128 0x14
-	.long	.LASF823
-	.file 55 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h"
-	.byte	0x3
-	.uleb128 0x17
 	.uleb128 0x37
 	.byte	0x5
 	.uleb128 0x14
+	.long	.LASF823
+	.file 56 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h"
+	.byte	0x3
+	.uleb128 0x17
+	.uleb128 0x38
+	.byte	0x5
+	.uleb128 0x14
 	.long	.LASF824
-	.file 56 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h"
+	.file 57 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h"
 	.byte	0x3
 	.uleb128 0x2c
-	.uleb128 0x38
+	.uleb128 0x39
 	.byte	0x5
 	.uleb128 0x13
 	.long	.LASF825
 	.byte	0x3
 	.uleb128 0x15
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro41
 	.byte	0x4
-	.file 57 "/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h"
+	.file 58 "/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h"
 	.byte	0x3
 	.uleb128 0x2e
-	.uleb128 0x39
+	.uleb128 0x3a
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF837
 	.byte	0x4
-	.file 58 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h"
+	.file 59 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h"
 	.byte	0x3
 	.uleb128 0x4c
-	.uleb128 0x3a
+	.uleb128 0x3b
 	.byte	0x7
 	.long	.Ldebug_macro42
 	.byte	0x4
-	.file 59 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h"
+	.file 60 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h"
 	.byte	0x3
 	.uleb128 0x59
-	.uleb128 0x3b
+	.uleb128 0x3c
 	.byte	0x7
 	.long	.Ldebug_macro43
 	.byte	0x4
@@ -6172,10 +4969,10 @@ print_fanspeed:
 	.long	.LASF845
 	.byte	0x4
 	.byte	0x4
-	.file 60 "/usr/include/alloca.h"
+	.file 61 "/usr/include/alloca.h"
 	.byte	0x3
 	.uleb128 0x23e
-	.uleb128 0x3c
+	.uleb128 0x3d
 	.byte	0x7
 	.long	.Ldebug_macro44
 	.byte	0x3
@@ -6190,21 +4987,21 @@ print_fanspeed:
 	.byte	0x5
 	.uleb128 0x32f
 	.long	.LASF849
-	.file 61 "/usr/include/x86_64-linux-gnu/bits/stdlib-float.h"
+	.file 62 "/usr/include/x86_64-linux-gnu/bits/stdlib-float.h"
 	.byte	0x3
 	.uleb128 0x3ff
-	.uleb128 0x3d
+	.uleb128 0x3e
 	.byte	0x4
 	.byte	0x4
-	.file 62 "/usr/include/string.h"
+	.file 63 "/usr/include/string.h"
 	.byte	0x3
 	.uleb128 0x7
-	.uleb128 0x3e
+	.uleb128 0x3f
 	.byte	0x7
 	.long	.Ldebug_macro46
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xf
+	.uleb128 0x11
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
@@ -6216,26 +5013,26 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro48
 	.byte	0x4
-	.file 63 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h"
+	.file 64 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h"
 	.byte	0x3
 	.uleb128 0xac
-	.uleb128 0x3f
+	.uleb128 0x40
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF851
-	.file 64 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h"
+	.file 65 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h"
 	.byte	0x3
 	.uleb128 0x16
-	.uleb128 0x40
+	.uleb128 0x41
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF852
 	.byte	0x4
 	.byte	0x4
-	.file 65 "/usr/include/strings.h"
+	.file 66 "/usr/include/strings.h"
 	.byte	0x3
 	.uleb128 0x1ce
-	.uleb128 0x41
+	.uleb128 0x42
 	.byte	0x7
 	.long	.Ldebug_macro49
 	.byte	0x3
@@ -6246,39 +5043,39 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x4
 	.byte	0x4
-	.file 66 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h"
+	.file 67 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h"
 	.byte	0x3
 	.uleb128 0x8
-	.uleb128 0x42
-	.file 67 "/usr/include/stdint.h"
+	.uleb128 0x43
+	.file 68 "/usr/include/stdint.h"
 	.byte	0x3
 	.uleb128 0x9
-	.uleb128 0x43
+	.uleb128 0x44
 	.byte	0x7
 	.long	.Ldebug_macro50
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xf
+	.uleb128 0x11
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
-	.file 68 "/usr/include/x86_64-linux-gnu/bits/wchar.h"
+	.file 69 "/usr/include/x86_64-linux-gnu/bits/wchar.h"
 	.byte	0x3
 	.uleb128 0x1c
-	.uleb128 0x44
+	.uleb128 0x45
 	.byte	0x7
 	.long	.Ldebug_macro51
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x1d
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 69 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
+	.file 70 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
 	.byte	0x3
 	.uleb128 0x25
-	.uleb128 0x45
+	.uleb128 0x46
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF858
@@ -6292,7 +5089,7 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x9
-	.uleb128 0xd
+	.uleb128 0xf
 	.byte	0x7
 	.long	.Ldebug_macro53
 	.byte	0x3
@@ -6301,10 +5098,10 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro54
 	.byte	0x4
-	.file 70 "/usr/include/x86_64-linux-gnu/bits/locale.h"
+	.file 71 "/usr/include/x86_64-linux-gnu/bits/locale.h"
 	.byte	0x3
 	.uleb128 0x1d
-	.uleb128 0x46
+	.uleb128 0x47
 	.byte	0x7
 	.long	.Ldebug_macro55
 	.byte	0x4
@@ -6313,23 +5110,23 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0xa
-	.uleb128 0xc
+	.uleb128 0xe
 	.byte	0x7
 	.long	.Ldebug_macro57
-	.file 71 "/usr/include/x86_64-linux-gnu/bits/posix_opt.h"
+	.file 72 "/usr/include/x86_64-linux-gnu/bits/posix_opt.h"
 	.byte	0x3
 	.uleb128 0xca
-	.uleb128 0x47
+	.uleb128 0x48
 	.byte	0x7
 	.long	.Ldebug_macro58
 	.byte	0x4
-	.file 72 "/usr/include/x86_64-linux-gnu/bits/environments.h"
+	.file 73 "/usr/include/x86_64-linux-gnu/bits/environments.h"
 	.byte	0x3
 	.uleb128 0xce
-	.uleb128 0x48
+	.uleb128 0x49
 	.byte	0x3
 	.uleb128 0x16
-	.uleb128 0x12
+	.uleb128 0x14
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
@@ -6352,17 +5149,17 @@ print_fanspeed:
 	.byte	0x7
 	.long	.Ldebug_macro62
 	.byte	0x4
-	.file 73 "/usr/include/x86_64-linux-gnu/bits/getopt_posix.h"
+	.file 74 "/usr/include/x86_64-linux-gnu/bits/getopt_posix.h"
 	.byte	0x3
 	.uleb128 0x387
-	.uleb128 0x49
+	.uleb128 0x4a
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF1373
-	.file 74 "/usr/include/x86_64-linux-gnu/bits/getopt_core.h"
+	.file 75 "/usr/include/x86_64-linux-gnu/bits/getopt_core.h"
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0x4a
+	.uleb128 0x4b
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF1374
@@ -6370,97 +5167,97 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro63
-	.file 75 "/usr/include/x86_64-linux-gnu/bits/unistd_ext.h"
+	.file 76 "/usr/include/x86_64-linux-gnu/bits/unistd_ext.h"
 	.byte	0x3
 	.uleb128 0x4c2
-	.uleb128 0x4b
+	.uleb128 0x4c
 	.byte	0x4
 	.byte	0x4
-	.file 76 "/usr/include/math.h"
+	.file 77 "/usr/include/math.h"
 	.byte	0x3
 	.uleb128 0xb
-	.uleb128 0x4c
+	.uleb128 0x4d
 	.byte	0x7
 	.long	.Ldebug_macro64
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0xf
+	.uleb128 0x11
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
-	.file 77 "/usr/include/x86_64-linux-gnu/bits/math-vector.h"
+	.file 78 "/usr/include/x86_64-linux-gnu/bits/math-vector.h"
 	.byte	0x3
 	.uleb128 0x28
-	.uleb128 0x4d
-	.file 78 "/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h"
+	.uleb128 0x4e
+	.file 79 "/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h"
 	.byte	0x3
 	.uleb128 0x19
-	.uleb128 0x4e
+	.uleb128 0x4f
 	.byte	0x7
 	.long	.Ldebug_macro65
 	.byte	0x4
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro66
-	.file 79 "/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h"
+	.file 80 "/usr/include/x86_64-linux-gnu/bits/flt-eval-method.h"
 	.byte	0x3
 	.uleb128 0x98
-	.uleb128 0x4f
+	.uleb128 0x50
 	.byte	0x5
 	.uleb128 0x1b
 	.long	.LASF1656
 	.byte	0x4
-	.file 80 "/usr/include/x86_64-linux-gnu/bits/fp-logb.h"
+	.file 81 "/usr/include/x86_64-linux-gnu/bits/fp-logb.h"
 	.byte	0x3
 	.uleb128 0xcc
-	.uleb128 0x50
+	.uleb128 0x51
 	.byte	0x7
 	.long	.Ldebug_macro67
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro68
-	.file 81 "/usr/include/x86_64-linux-gnu/bits/fp-fast.h"
+	.file 82 "/usr/include/x86_64-linux-gnu/bits/fp-fast.h"
 	.byte	0x3
 	.uleb128 0xf7
-	.uleb128 0x51
+	.uleb128 0x52
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro69
-	.file 82 "/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h"
+	.file 83 "/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h"
 	.byte	0x3
 	.uleb128 0x138
-	.uleb128 0x52
+	.uleb128 0x53
 	.byte	0x4
-	.file 83 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h"
+	.file 84 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h"
 	.byte	0x3
 	.uleb128 0x139
-	.uleb128 0x53
+	.uleb128 0x54
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro70
 	.byte	0x3
 	.uleb128 0x149
-	.uleb128 0x52
+	.uleb128 0x53
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x14a
-	.uleb128 0x53
+	.uleb128 0x54
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro71
 	.byte	0x3
 	.uleb128 0x18e
-	.uleb128 0x52
+	.uleb128 0x53
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x18f
-	.uleb128 0x53
+	.uleb128 0x54
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro72
 	.byte	0x3
 	.uleb128 0x1e1
-	.uleb128 0x52
+	.uleb128 0x53
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro73
@@ -6470,10 +5267,10 @@ print_fanspeed:
 	.uleb128 0x9
 	.byte	0x7
 	.long	.Ldebug_macro74
-	.file 84 "/usr/include/ncurses_dll.h"
+	.file 85 "/usr/include/ncurses_dll.h"
 	.byte	0x3
 	.uleb128 0x59
-	.uleb128 0x54
+	.uleb128 0x55
 	.byte	0x7
 	.long	.Ldebug_macro75
 	.byte	0x4
@@ -6481,25 +5278,25 @@ print_fanspeed:
 	.long	.Ldebug_macro76
 	.byte	0x3
 	.uleb128 0xf9
-	.uleb128 0x18
+	.uleb128 0x1a
 	.byte	0x7
 	.long	.Ldebug_macro77
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro78
-	.file 85 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h"
+	.file 86 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h"
 	.byte	0x3
 	.uleb128 0x11a
-	.uleb128 0x55
+	.uleb128 0x56
 	.byte	0x7
 	.long	.Ldebug_macro79
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro80
-	.file 86 "/usr/include/unctrl.h"
+	.file 87 "/usr/include/unctrl.h"
 	.byte	0x3
 	.uleb128 0x830
-	.uleb128 0x56
+	.uleb128 0x57
 	.byte	0x7
 	.long	.Ldebug_macro81
 	.byte	0x3
@@ -6513,18 +5310,25 @@ print_fanspeed:
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0xd
+	.uleb128 0xc
+	.byte	0x5
+	.uleb128 0x2
+	.long	.LASF2245
+	.byte	0x4
+	.byte	0x3
+	.uleb128 0xe
 	.uleb128 0x6
 	.byte	0x7
 	.long	.Ldebug_macro82
 	.byte	0x4
 	.byte	0x3
-	.uleb128 0xe
+	.uleb128 0xf
 	.uleb128 0xa
 	.byte	0x7
 	.long	.Ldebug_macro83
 	.byte	0x4
 	.byte	0x3
-	.uleb128 0xf
+	.uleb128 0x10
 	.uleb128 0xb
 	.byte	0x5
 	.uleb128 0x2
@@ -12740,30 +11544,27 @@ print_fanspeed:
 	.uleb128 0x31
 	.long	.LASF1757
 	.byte	0
-	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.53a80dcb972256ad710bb0611da875ed,comdat
+	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.02eaf6afe85a1ee5acd07b0e880f112e,comdat
 .Ldebug_macro82:
 	.value	0x4
 	.byte	0
 	.byte	0x5
 	.uleb128 0x3
-	.long	.LASF2245
-	.byte	0x5
-	.uleb128 0x6
 	.long	.LASF2246
 	.byte	0x5
-	.uleb128 0x7
+	.uleb128 0x6
 	.long	.LASF2247
 	.byte	0x5
-	.uleb128 0x8
+	.uleb128 0x7
 	.long	.LASF2248
 	.byte	0x5
-	.uleb128 0x9
+	.uleb128 0x8
 	.long	.LASF2249
 	.byte	0x5
-	.uleb128 0xa
+	.uleb128 0x9
 	.long	.LASF2250
 	.byte	0x5
-	.uleb128 0xc
+	.uleb128 0xa
 	.long	.LASF2251
 	.byte	0
 	.section	.debug_macro,"G",@progbits,wm4.machine_specific_registers.h.3.d2e1d0b1ada7d991f2dcf44fe45b2999,comdat
@@ -12778,7 +11579,7 @@ print_fanspeed:
 	.long	.LASF2253
 	.byte	0x5
 	.uleb128 0x6
-	.long	.LASF2250
+	.long	.LASF2251
 	.byte	0x5
 	.uleb128 0xa
 	.long	.LASF2254
@@ -12885,7 +11686,7 @@ print_fanspeed:
 	.string	"MSR_PERF_STATUS 0x198"
 .LASF997:
 	.string	"_POSIX_THREADS 200809L"
-.LASF2246:
+.LASF2247:
 	.string	"AVG_WINDOW 60"
 .LASF1412:
 	.string	"__DECL_SIMD_logf "
@@ -12913,8 +11714,6 @@ print_fanspeed:
 	.string	"__SIZEOF_PTHREAD_CONDATTR_T 4"
 .LASF1049:
 	.string	"__ILP32_OFF32_CFLAGS \"-m32\""
-.LASF1763:
-	.string	"NCURSES_EXPORT(type) NCURSES_IMPEXP type NCURSES_API"
 .LASF1812:
 	.string	"FALSE 0"
 .LASF2325:
@@ -12923,7 +11722,7 @@ print_fanspeed:
 	.string	"_CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS _CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS"
 .LASF2343:
 	.string	"_SC_TIMERS"
-.LASF2599:
+.LASF2594:
 	.string	"setlocale"
 .LASF1628:
 	.string	"__DECL_SIMD_asinhf32x "
@@ -12951,8 +11750,8 @@ print_fanspeed:
 	.string	"_SC_SHELL"
 .LASF1965:
 	.string	"scroll(win) wscrl(win,1)"
-.LASF2628:
-	.string	"filepath"
+.LASF1293:
+	.string	"_SC_V7_ILP32_OFFBIG _SC_V7_ILP32_OFFBIG"
 .LASF2351:
 	.string	"_SC_MEMORY_PROTECTION"
 .LASF470:
@@ -13105,8 +11904,6 @@ print_fanspeed:
 	.string	"instr(s) winstr(stdscr,(s))"
 .LASF1120:
 	.string	"_SC_RTSIG_MAX _SC_RTSIG_MAX"
-.LASF2604:
-	.string	"previous_max_value"
 .LASF2052:
 	.string	"mvgetch(y,x) mvwgetch(stdscr,(y),(x))"
 .LASF1798:
@@ -13149,7 +11946,7 @@ print_fanspeed:
 	.string	"_STDLIB_H 1"
 .LASF1253:
 	.string	"_SC_SYSTEM_DATABASE_R _SC_SYSTEM_DATABASE_R"
-.LASF2635:
+.LASF2613:
 	.string	"GNU C17 11.4.0 -masm=intel -mtune=generic -march=x86-64 -g -g -ggdb3 -gdwarf-2 -O0 -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
 .LASF567:
 	.string	"__need___va_list"
@@ -13243,8 +12040,8 @@ print_fanspeed:
 	.string	"PROCHOT 1"
 .LASF2474:
 	.string	"_SC_DEVICE_SPECIFIC"
-.LASF2620:
-	.string	"moving_average"
+.LASF2133:
+	.string	"KEY_MOVE 0556"
 .LASF2297:
 	.string	"_flags"
 .LASF2409:
@@ -13263,14 +12060,16 @@ print_fanspeed:
 	.string	"KEY_SREDO 0620"
 .LASF834:
 	.string	"__SIZEOF_PTHREAD_BARRIERATTR_T 4"
-.LASF2201:
-	.string	"BUTTON3_TRIPLE_CLICKED NCURSES_MOUSE_MASK(3, NCURSES_TRIPLE_CLICKED)"
+.LASF555:
+	.string	"_SIZE_T_DEFINED "
 .LASF1724:
 	.string	"isfinite(x) __builtin_isfinite (x)"
 .LASF1248:
 	.string	"_SC_SIGNALS _SC_SIGNALS"
 .LASF2099:
 	.string	"KEY_DC 0512"
+.LASF2607:
+	.string	"init_sensor"
 .LASF1702:
 	.string	"__MATHCALL_NARROW_ARGS_1 (_Marg_ __x)"
 .LASF2116:
@@ -13289,8 +12088,6 @@ print_fanspeed:
 	.string	"_IO_USER_LOCK 0x8000"
 .LASF1395:
 	.string	"__DECL_SIMD_sinf32 "
-.LASF2627:
-	.string	"return_string"
 .LASF1369:
 	.string	"_CS_POSIX_V7_LPBIG_OFFBIG_LIBS _CS_POSIX_V7_LPBIG_OFFBIG_LIBS"
 .LASF2196:
@@ -13313,8 +12110,8 @@ print_fanspeed:
 	.string	"_SC_JOB_CONTROL"
 .LASF651:
 	.string	"SEEK_SET 0"
-.LASF1173:
-	.string	"_SC_NPROCESSORS_CONF _SC_NPROCESSORS_CONF"
+.LASF2282:
+	.string	"AMD_ENERGY_UNIT_MASK 0x1F00"
 .LASF1632:
 	.string	"__DECL_SIMD_erfcf "
 .LASF389:
@@ -13363,7 +12160,7 @@ print_fanspeed:
 	.string	"__USE_XOPEN_EXTENDED"
 .LASF915:
 	.string	"UINT8_C(c) c"
-.LASF2603:
+.LASF2587:
 	.string	"get_max_value"
 .LASF1044:
 	.string	"_POSIX_V6_LPBIG_OFFBIG -1"
@@ -13456,7 +12253,7 @@ print_fanspeed:
 	.string	"__INT_FAST16_WIDTH__ 64"
 .LASF1387:
 	.string	"__DECL_SIMD_cosf128 "
-.LASF2587:
+.LASF2589:
 	.string	"reset_if_status_change"
 .LASF892:
 	.string	"UINT_FAST8_MAX (255)"
@@ -13512,12 +12309,14 @@ print_fanspeed:
 	.string	"__HAVE_SPECULATION_SAFE_VALUE 1"
 .LASF1064:
 	.string	"L_SET SEEK_SET"
-.LASF371:
-	.string	"__USE_ISOC11"
+.LASF1163:
+	.string	"_SC_THREAD_DESTRUCTOR_ITERATIONS _SC_THREAD_DESTRUCTOR_ITERATIONS"
 .LASF2538:
 	.string	"_SC_V7_LPBIG_OFFBIG"
 .LASF1801:
 	.string	"va_end(v) __builtin_va_end(v)"
+.LASF1945:
+	.string	"setterm(term) setupterm(term, 1, (int *)0)"
 .LASF74:
 	.string	"__UINTPTR_TYPE__ long unsigned int"
 .LASF1277:
@@ -13586,21 +12385,17 @@ print_fanspeed:
 	.string	"WA_TOP A_TOP"
 .LASF192:
 	.string	"__LDBL_DECIMAL_DIG__ 21"
-.LASF1557:
-	.string	"__DECL_SIMD_log10f128 "
 .LASF1781:
 	.string	"NCURSES_OPAQUE_PANEL 0"
 .LASF1157:
 	.string	"_SC_THREADS _SC_THREADS"
 .LASF1687:
 	.string	"__MATH_PRECNAME(name,r) name ##f32 ##r"
-.LASF1133:
-	.string	"_SC_RE_DUP_MAX _SC_RE_DUP_MAX"
 .LASF2481:
 	.string	"_SC_FILE_SYSTEM"
 .LASF1709:
 	.string	"__MATHCALL_NARROW_ARGS_2"
-.LASF2607:
+.LASF2588:
 	.string	"get_min_value"
 .LASF2303:
 	.string	"_IO_write_end"
@@ -13618,8 +12413,8 @@ print_fanspeed:
 	.string	"_NEWINDEX -1"
 .LASF884:
 	.string	"INT_FAST8_MIN (-128)"
-.LASF1004:
-	.string	"_POSIX_THREAD_PRIO_PROTECT 200809L"
+.LASF2550:
+	.string	"double"
 .LASF1823:
 	.string	"WA_STANDOUT A_STANDOUT"
 .LASF1162:
@@ -13628,16 +12423,16 @@ print_fanspeed:
 	.string	"_CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS _CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS"
 .LASF603:
 	.string	"__FSBLKCNT_T_TYPE __SYSCALL_ULONG_TYPE"
-.LASF1208:
-	.string	"_SC_USHRT_MAX _SC_USHRT_MAX"
+.LASF362:
+	.string	"__STDC_IEC_559__ 1"
 .LASF784:
 	.string	"_BITS_UINTN_IDENTITY_H 1"
 .LASF472:
 	.string	"__attribute_malloc__ __attribute__ ((__malloc__))"
 .LASF579:
 	.string	"__UWORD_TYPE unsigned long int"
-.LASF549:
-	.string	"_T_SIZE_ "
+.LASF1078:
+	.string	"_PC_PRIO_IO _PC_PRIO_IO"
 .LASF2132:
 	.string	"KEY_MESSAGE 0555"
 .LASF1295:
@@ -13670,6 +12465,8 @@ print_fanspeed:
 	.string	"__UINT64_MAX__ 0xffffffffffffffffUL"
 .LASF2378:
 	.string	"_SC_2_VERSION"
+.LASF46:
+	.string	"__CHAR16_TYPE__ short unsigned int"
 .LASF522:
 	.string	"__stub_chflags "
 .LASF2508:
@@ -13680,7 +12477,7 @@ print_fanspeed:
 	.string	"PKG_CRITICAL_TEMPERATURE_STATUS 16"
 .LASF2199:
 	.string	"BUTTON3_CLICKED NCURSES_MOUSE_MASK(3, NCURSES_BUTTON_CLICKED)"
-.LASF2610:
+.LASF2597:
 	.string	"freq"
 .LASF2207:
 	.string	"BUTTON5_RELEASED NCURSES_MOUSE_MASK(5, NCURSES_BUTTON_RELEASED)"
@@ -13764,8 +12561,6 @@ print_fanspeed:
 	.string	"_XBS5_LPBIG_OFFBIG -1"
 .LASF985:
 	.string	"_POSIX_SYNCHRONIZED_IO 200809L"
-.LASF2122:
-	.string	"KEY_CANCEL 0543"
 .LASF1707:
 	.string	"__MATHCALL_NARROW(func,redir,nargs) __MATHCALL_NARROW_NORMAL (func, nargs)"
 .LASF1985:
@@ -13788,8 +12583,8 @@ print_fanspeed:
 	.string	"_SC_LEVEL1_ICACHE_ASSOC"
 .LASF2206:
 	.string	"BUTTON4_TRIPLE_CLICKED NCURSES_MOUSE_MASK(4, NCURSES_TRIPLE_CLICKED)"
-.LASF2594:
-	.string	"fgetc"
+.LASF2086:
+	.string	"KEY_BREAK 0401"
 .LASF1255:
 	.string	"_SC_TYPED_MEMORY_OBJECTS _SC_TYPED_MEMORY_OBJECTS"
 .LASF1610:
@@ -13808,7 +12603,7 @@ print_fanspeed:
 	.string	"getattrs(win) NCURSES_CAST(int, NCURSES_OK_ADDR(win) ? (win)->_attrs : A_NORMAL)"
 .LASF304:
 	.string	"__USER_LABEL_PREFIX__ "
-.LASF2583:
+.LASF2582:
 	.string	"fgets"
 .LASF501:
 	.string	"__attribute_copy__"
@@ -13828,16 +12623,14 @@ print_fanspeed:
 	.string	"INT16_MIN (-32767-1)"
 .LASF1344:
 	.string	"_CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS"
-.LASF2245:
+.LASF2246:
 	.string	"CPUMONLIB "
 .LASF1981:
 	.string	"addch(ch) waddch(stdscr,(ch))"
-.LASF2588:
+.LASF2590:
 	.string	"sysfs_freq_ghz"
 .LASF654:
 	.string	"P_tmpdir \"/tmp\""
-.LASF1454:
-	.string	"__DECL_SIMD_atanf16 "
 .LASF2029:
 	.string	"mvwaddstr(win,y,x,str) (wmove((win),(y),(x)) == ERR ? ERR : waddnstr((win),(str),-1))"
 .LASF572:
@@ -13908,8 +12701,8 @@ print_fanspeed:
 	.string	"__FLT32X_DENORM_MIN__ 4.94065645841246544176568792868221372e-324F32x"
 .LASF893:
 	.string	"UINT_FAST16_MAX (18446744073709551615UL)"
-.LASF2293:
-	.string	"__uid_t"
+.LASF549:
+	.string	"_T_SIZE_ "
 .LASF156:
 	.string	"__FLT_MIN_10_EXP__ (-37)"
 .LASF2361:
@@ -13974,14 +12767,14 @@ print_fanspeed:
 	.string	"NCURSES_TPARM_VARARGS"
 .LASF1879:
 	.string	"ACS_STERLING NCURSES_ACS('}')"
-.LASF2621:
+.LASF2604:
 	.string	"update_sensor_data"
 .LASF144:
 	.string	"__INTPTR_MAX__ 0x7fffffffffffffffL"
 .LASF1649:
 	.string	"__DECL_SIMD_tanf64x "
-.LASF2612:
-	.string	"temp"
+.LASF1454:
+	.string	"__DECL_SIMD_atanf16 "
 .LASF1231:
 	.string	"_SC_DEVICE_SPECIFIC _SC_DEVICE_SPECIFIC"
 .LASF513:
@@ -14070,8 +12863,8 @@ print_fanspeed:
 	.string	"_SC_SHRT_MIN _SC_SHRT_MIN"
 .LASF1495:
 	.string	"__DECL_SIMD_exp10f32 "
-.LASF1697:
-	.string	"__MATHDECL_1_IMPL"
+.LASF2609:
+	.string	"init_sensor_power"
 .LASF2155:
 	.string	"KEY_SEXIT 0604"
 .LASF1189:
@@ -14110,12 +12903,12 @@ print_fanspeed:
 	.string	"INT_LEAST64_MIN (-__INT64_C(9223372036854775807)-1)"
 .LASF330:
 	.string	"__amd64 1"
+.LASF2592:
+	.string	"malloc"
 .LASF2056:
 	.string	"mvinch(y,x) mvwinch(stdscr,(y),(x))"
 .LASF2179:
 	.string	"_XOPEN_CURSES 1"
-.LASF2629:
-	.string	"read_string"
 .LASF2287:
 	.string	"unsigned char"
 .LASF858:
@@ -14158,6 +12951,8 @@ print_fanspeed:
 	.string	"KEY_SPREVIOUS 0616"
 .LASF154:
 	.string	"__FLT_DIG__ 6"
+.LASF76:
+	.string	"__SCHAR_MAX__ 0x7f"
 .LASF763:
 	.string	"__time_t_defined 1"
 .LASF461:
@@ -14188,6 +12983,8 @@ print_fanspeed:
 	.string	"__UINT_LEAST16_MAX__ 0xffff"
 .LASF1073:
 	.string	"_PC_CHOWN_RESTRICTED _PC_CHOWN_RESTRICTED"
+.LASF2245:
+	.string	"UTILS "
 .LASF912:
 	.string	"INT16_C(c) c"
 .LASF2195:
@@ -14210,13 +13007,15 @@ print_fanspeed:
 	.string	"__SIZEOF_SIZE_T__ 8"
 .LASF300:
 	.string	"__DEC128_MAX__ 9.999999999999999999999999999999999E6144DL"
+.LASF2608:
+	.string	"my_sensor"
 .LASF2337:
 	.string	"_SC_STREAM_MAX"
 .LASF2344:
 	.string	"_SC_ASYNCHRONOUS_IO"
 .LASF765:
 	.string	"_BITS_STDINT_INTN_H 1"
-.LASF2639:
+.LASF2618:
 	.string	"geteuid"
 .LASF333:
 	.string	"__x86_64__ 1"
@@ -14296,8 +13095,6 @@ print_fanspeed:
 	.string	"echochar(c) wechochar(stdscr,(c))"
 .LASF488:
 	.string	"__wur "
-.LASF845:
-	.string	"__have_pthread_attr_t 1"
 .LASF175:
 	.string	"__DBL_DECIMAL_DIG__ 17"
 .LASF24:
@@ -14322,8 +13119,6 @@ print_fanspeed:
 	.string	"_SC_TIMERS _SC_TIMERS"
 .LASF710:
 	.string	"_GCC_WCHAR_T "
-.LASF2086:
-	.string	"KEY_BREAK 0401"
 .LASF1019:
 	.string	"_POSIX_THREAD_CPUTIME 0"
 .LASF1909:
@@ -14352,8 +13147,8 @@ print_fanspeed:
 	.string	"ACS_PI NCURSES_ACS('{')"
 .LASF2242:
 	.string	"TRACE_MAXIMUM ((1 << TRACE_SHIFT) - 1)"
-.LASF43:
-	.string	"__WINT_TYPE__ unsigned int"
+.LASF1133:
+	.string	"_SC_RE_DUP_MAX _SC_RE_DUP_MAX"
 .LASF2391:
 	.string	"_SC_SELECT"
 .LASF239:
@@ -14420,6 +13215,8 @@ print_fanspeed:
 	.string	"KEY_SPRINT 0617"
 .LASF2145:
 	.string	"KEY_SBEG 0572"
+.LASF2293:
+	.string	"__uid_t"
 .LASF1403:
 	.string	"__DECL_SIMD_sincosl "
 .LASF1634:
@@ -14448,8 +13245,6 @@ print_fanspeed:
 	.string	"UINT_FAST64_MAX (__UINT64_C(18446744073709551615))"
 .LASF2054:
 	.string	"mvgetstr(y,x,str) mvwgetstr(stdscr,(y),(x),(str))"
-.LASF2507:
-	.string	"_SC_STREAMS"
 .LASF95:
 	.string	"__SIZE_WIDTH__ 64"
 .LASF566:
@@ -14520,7 +13315,7 @@ print_fanspeed:
 	.string	"_SC_XOPEN_XPG4 _SC_XOPEN_XPG4"
 .LASF1926:
 	.string	"A_BOLD NCURSES_BITS(1U,13)"
-.LASF2602:
+.LASF2606:
 	.string	"print_fanspeed"
 .LASF2098:
 	.string	"KEY_IL 0511"
@@ -14548,8 +13343,8 @@ print_fanspeed:
 	.string	"INT64_C(c) c ## L"
 .LASF1381:
 	.string	"__DECL_SIMD_cos "
-.LASF1873:
-	.string	"ACS_S3 NCURSES_ACS('p')"
+.LASF2122:
+	.string	"KEY_CANCEL 0543"
 .LASF1834:
 	.string	"WA_LOW A_LOW"
 .LASF1259:
@@ -14578,7 +13373,7 @@ print_fanspeed:
 	.string	"__UINT_FAST8_TYPE__ unsigned char"
 .LASF2267:
 	.string	"RUNNING_AVERAGE_THERMAL_LIMIT_STATUS 32"
-.LASF2591:
+.LASF2617:
 	.string	"__isoc99_sscanf"
 .LASF47:
 	.string	"__CHAR32_TYPE__ unsigned int"
@@ -14586,11 +13381,11 @@ print_fanspeed:
 	.string	"__DECL_SIMD_cbrtf128x "
 .LASF1666:
 	.string	"__MATHCALLX(function,suffix,args,attrib) __MATHDECLX (_Mdouble_,function,suffix, args, attrib)"
-.LASF2619:
-	.string	"acc_cmdln"
+.LASF607:
+	.string	"__ID_T_TYPE __U32_TYPE"
 .LASF89:
 	.string	"__INT_WIDTH__ 32"
-.LASF2566:
+.LASF2603:
 	.string	"battery"
 .LASF474:
 	.string	"__attribute_alloc_align__(param) __attribute__ ((__alloc_align__ param))"
@@ -14700,8 +13495,6 @@ print_fanspeed:
 	.string	"__UINT_LEAST32_TYPE__ unsigned int"
 .LASF1741:
 	.string	"M_2_SQRTPI 1.12837916709551257390"
-.LASF2251:
-	.string	"DEBUG_ENABLE 1"
 .LASF554:
 	.string	"_SIZE_T_DEFINED_ "
 .LASF1738:
@@ -14716,8 +13509,6 @@ print_fanspeed:
 	.string	"_CS_POSIX_V6_LP64_OFF64_LDFLAGS _CS_POSIX_V6_LP64_OFF64_LDFLAGS"
 .LASF1307:
 	.string	"_CS_V6_WIDTH_RESTRICTED_ENVS _CS_V6_WIDTH_RESTRICTED_ENVS"
-.LASF2133:
-	.string	"KEY_MOVE 0556"
 .LASF1695:
 	.string	"_Mdouble_ _Float64x"
 .LASF2497:
@@ -14748,7 +13539,7 @@ print_fanspeed:
 	.string	"L_ctermid 9"
 .LASF2154:
 	.string	"KEY_SEOL 0603"
-.LASF2624:
+.LASF2602:
 	.string	"my_power"
 .LASF575:
 	.string	"__ULONGWORD_TYPE unsigned long int"
@@ -14762,7 +13553,7 @@ print_fanspeed:
 	.string	"__MATH_DECLARING_DOUBLE"
 .LASF2101:
 	.string	"KEY_EIC 0514"
-.LASF2250:
+.LASF2251:
 	.string	"POLL_INTERVAL_S 1"
 .LASF837:
 	.string	"_BITS_ATOMIC_WIDE_COUNTER_H "
@@ -14786,16 +13577,14 @@ print_fanspeed:
 	.string	"_SC_GETGR_R_SIZE_MAX"
 .LASF402:
 	.string	"_DEFAULT_SOURCE"
-.LASF2595:
-	.string	"perror"
 .LASF401:
 	.string	"__GLIBC_USE(F) __GLIBC_USE_ ## F"
 .LASF2455:
 	.string	"_SC_NL_NMAX"
 .LASF1639:
 	.string	"__DECL_SIMD_erfcf64x "
-.LASF2631:
-	.string	"single_character"
+.LASF1601:
+	.string	"__DECL_SIMD_erf "
 .LASF1513:
 	.string	"__DECL_SIMD_expm1l "
 .LASF1637:
@@ -14830,8 +13619,8 @@ print_fanspeed:
 	.string	"innstr(s,n) winnstr(stdscr,(s),(n))"
 .LASF2388:
 	.string	"_SC_PII_INTERNET"
-.LASF2606:
-	.string	"sample_count"
+.LASF2177:
+	.string	"KEY_RESIZE 0632"
 .LASF588:
 	.string	"__DEV_T_TYPE __UQUAD_TYPE"
 .LASF735:
@@ -14878,10 +13667,10 @@ print_fanspeed:
 	.string	"__clockid_t_defined 1"
 .LASF712:
 	.string	"_BSD_WCHAR_T_"
-.LASF1163:
-	.string	"_SC_THREAD_DESTRUCTOR_ITERATIONS _SC_THREAD_DESTRUCTOR_ITERATIONS"
-.LASF76:
-	.string	"__SCHAR_MAX__ 0x7f"
+.LASF1404:
+	.string	"__DECL_SIMD_sincosf16 "
+.LASF1173:
+	.string	"_SC_NPROCESSORS_CONF _SC_NPROCESSORS_CONF"
 .LASF323:
 	.string	"__GCC_HAVE_DWARF2_CFI_ASM 1"
 .LASF673:
@@ -14890,6 +13679,8 @@ print_fanspeed:
 	.string	"ACS_GEQUAL NCURSES_ACS('z')"
 .LASF508:
 	.string	"__LDBL_REDIR2_DECL(name) "
+.LASF1995:
+	.string	"chgat(n,a,c,o) wchgat(stdscr,(n),(a),(c),(o))"
 .LASF552:
 	.string	"_SIZE_T_ "
 .LASF943:
@@ -14914,8 +13705,8 @@ print_fanspeed:
 	.string	"__need_size_t"
 .LASF2553:
 	.string	"sensor"
-.LASF270:
-	.string	"__FLT64X_MAX_EXP__ 16384"
+.LASF1308:
+	.string	"_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS _CS_V6_WIDTH_RESTRICTED_ENVS"
 .LASF1263:
 	.string	"_SC_SYMLOOP_MAX _SC_SYMLOOP_MAX"
 .LASF781:
@@ -14926,7 +13717,7 @@ print_fanspeed:
 	.string	"__INT16_MAX__ 0x7fff"
 .LASF1653:
 	.string	"HUGE_VALL (__builtin_huge_vall ())"
-.LASF2589:
+.LASF2611:
 	.string	"sscanf"
 .LASF1331:
 	.string	"_CS_XBS5_LP64_OFF64_CFLAGS _CS_XBS5_LP64_OFF64_CFLAGS"
@@ -14954,6 +13745,8 @@ print_fanspeed:
 	.string	"__INT64_TYPE__ long int"
 .LASF949:
 	.string	"LC_IDENTIFICATION __LC_IDENTIFICATION"
+.LASF1004:
+	.string	"_POSIX_THREAD_PRIO_PROTECT 200809L"
 .LASF2563:
 	.string	"time_unit"
 .LASF289:
@@ -15004,8 +13797,8 @@ print_fanspeed:
 	.string	"WSTOPSIG(status) __WSTOPSIG (status)"
 .LASF1900:
 	.string	"_NOCHANGE -1"
-.LASF2616:
-	.string	"temp_total"
+.LASF213:
+	.string	"__FLT32_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F32"
 .LASF2399:
 	.string	"_SC_T_IOV_MAX"
 .LASF87:
@@ -15038,7 +13831,7 @@ print_fanspeed:
 	.string	"_SC_HOST_NAME_MAX _SC_HOST_NAME_MAX"
 .LASF2230:
 	.string	"TRACE_MOVE 0x0008"
-.LASF2249:
+.LASF2250:
 	.string	"BUFSIZE 64"
 .LASF1625:
 	.string	"__DECL_SIMD_asinhf32 "
@@ -15060,6 +13853,8 @@ print_fanspeed:
 	.string	"_SC_NGROUPS_MAX _SC_NGROUPS_MAX"
 .LASF872:
 	.string	"INT_LEAST8_MIN (-128)"
+.LASF1516:
+	.string	"__DECL_SIMD_expm1f64 "
 .LASF2073:
 	.string	"is_leaveok(win) (NCURSES_OK_ADDR(win) ? (win)->_leaveok : FALSE)"
 .LASF623:
@@ -15126,8 +13921,8 @@ print_fanspeed:
 	.string	"_CS_POSIX_V6_ILP32_OFFBIG_CFLAGS _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS"
 .LASF1113:
 	.string	"_SC_AIO_PRIO_DELTA_MAX _SC_AIO_PRIO_DELTA_MAX"
-.LASF1178:
-	.string	"_SC_PASS_MAX _SC_PASS_MAX"
+.LASF1763:
+	.string	"NCURSES_EXPORT(type) NCURSES_IMPEXP type NCURSES_API"
 .LASF1546:
 	.string	"__DECL_SIMD_atan2f64 "
 .LASF1751:
@@ -15138,8 +13933,6 @@ print_fanspeed:
 	.string	"__SIZEOF_PTHREAD_COND_T 48"
 .LASF9:
 	.string	"__ATOMIC_RELAXED 0"
-.LASF1601:
-	.string	"__DECL_SIMD_erf "
 .LASF1839:
 	.string	"COLOR_BLACK 0"
 .LASF98:
@@ -15152,8 +13945,8 @@ print_fanspeed:
 	.string	"__STDC_IEC_60559_COMPLEX__ 201404L"
 .LASF978:
 	.string	"_XOPEN_UNIX 1"
-.LASF1887:
-	.string	"ACS_BSSS ACS_TTEE"
+.LASF412:
+	.string	"_POSIX_C_SOURCE 200809L"
 .LASF925:
 	.string	"__LC_NUMERIC 1"
 .LASF1936:
@@ -15226,8 +14019,10 @@ print_fanspeed:
 	.string	"__MATH_DECLARING_DOUBLE 1"
 .LASF2215:
 	.string	"REPORT_MOUSE_POSITION NCURSES_MOUSE_MASK(6, 0010L)"
-.LASF2593:
-	.string	"fclose"
+.LASF1208:
+	.string	"_SC_USHRT_MAX _SC_USHRT_MAX"
+.LASF845:
+	.string	"__have_pthread_attr_t 1"
 .LASF1838:
 	.string	"WA_ITALIC A_ITALIC"
 .LASF718:
@@ -15252,18 +14047,16 @@ print_fanspeed:
 	.string	"_WCHAR_T_DECLARED "
 .LASF923:
 	.string	"_BITS_LOCALE_H 1"
-.LASF2550:
-	.string	"double"
+.LASF12:
+	.string	"__ATOMIC_RELEASE 3"
 .LASF107:
 	.string	"__INT64_MAX__ 0x7fffffffffffffffL"
-.LASF1883:
-	.string	"ACS_SBBS ACS_LRCORNER"
 .LASF835:
 	.string	"__LOCK_ALIGNMENT "
 .LASF346:
 	.string	"__SSE_MATH__ 1"
-.LASF1860:
-	.string	"ACS_S9 NCURSES_ACS('s')"
+.LASF2201:
+	.string	"BUTTON3_TRIPLE_CLICKED NCURSES_MOUSE_MASK(3, NCURSES_TRIPLE_CLICKED)"
 .LASF5:
 	.string	"__GNUC__ 11"
 .LASF1845:
@@ -15336,10 +14129,10 @@ print_fanspeed:
 	.string	"AMD_CPUID 0x80000007"
 .LASF1880:
 	.string	"ACS_BSSB ACS_ULCORNER"
+.LASF246:
+	.string	"__FLT128_HAS_DENORM__ 1"
 .LASF670:
 	.string	"__HAVE_FLOAT64X 1"
-.LASF2367:
-	.string	"_SC_TIMER_MAX"
 .LASF2400:
 	.string	"_SC_THREADS"
 .LASF2078:
@@ -15362,8 +14155,8 @@ print_fanspeed:
 	.string	"__va_arg_pack() __builtin_va_arg_pack ()"
 .LASF1194:
 	.string	"_SC_INT_MAX _SC_INT_MAX"
-.LASF1452:
-	.string	"__DECL_SIMD_atanf "
+.LASF1860:
+	.string	"ACS_S9 NCURSES_ACS('s')"
 .LASF1790:
 	.string	"NCURSES_TPARM_VARARGS 1"
 .LASF1278:
@@ -15400,8 +14193,8 @@ print_fanspeed:
 	.string	"__SIZEOF_WCHAR_T__ 4"
 .LASF2058:
 	.string	"mvinchstr(y,x,s) mvwinchstr(stdscr,(y),(x),(s))"
-.LASF246:
-	.string	"__FLT128_HAS_DENORM__ 1"
+.LASF1778:
+	.string	"NCURSES_OPAQUE 0"
 .LASF149:
 	.string	"__FLT_EVAL_METHOD__ 0"
 .LASF899:
@@ -15466,8 +14259,6 @@ print_fanspeed:
 	.string	"_SYS_SIZE_T_H "
 .LASF599:
 	.string	"__RLIM_T_TYPE __SYSCALL_ULONG_TYPE"
-.LASF2282:
-	.string	"AMD_ENERGY_UNIT_MASK 0x1F00"
 .LASF1058:
 	.string	"__useconds_t_defined "
 .LASF1691:
@@ -15516,14 +14307,12 @@ print_fanspeed:
 	.string	"_SC_CHILD_MAX"
 .LASF2258:
 	.string	"MSR_TEMPERATURE_TARGET 0x1A2"
-.LASF1516:
-	.string	"__DECL_SIMD_expm1f64 "
+.LASF371:
+	.string	"__USE_ISOC11"
 .LASF2308:
 	.string	"_IO_save_end"
 .LASF807:
 	.string	"__suseconds_t_defined "
-.LASF2177:
-	.string	"KEY_RESIZE 0632"
 .LASF610:
 	.string	"__USECONDS_T_TYPE __U32_TYPE"
 .LASF864:
@@ -15556,8 +14345,8 @@ print_fanspeed:
 	.string	"__DECL_SIMD_sincosf32 "
 .LASF611:
 	.string	"__SUSECONDS_T_TYPE __SYSCALL_SLONG_TYPE"
-.LASF565:
-	.string	"__need_NULL"
+.LASF1178:
+	.string	"_SC_PASS_MAX _SC_PASS_MAX"
 .LASF1578:
 	.string	"__DECL_SIMD_log1pf32x "
 .LASF1095:
@@ -15566,8 +14355,6 @@ print_fanspeed:
 	.string	"__MATHCALL_NARROW_REDIR"
 .LASF397:
 	.string	"__GLIBC_USE_DEPRECATED_SCANF"
-.LASF1192:
-	.string	"_SC_CHAR_MAX _SC_CHAR_MAX"
 .LASF1114:
 	.string	"_SC_DELAYTIMER_MAX _SC_DELAYTIMER_MAX"
 .LASF1527:
@@ -15642,8 +14429,6 @@ print_fanspeed:
 	.string	"__END_DECLS "
 .LASF2397:
 	.string	"_SC_PII_OSI_CLTS"
-.LASF2608:
-	.string	"previous_min_value"
 .LASF2121:
 	.string	"KEY_BEG 0542"
 .LASF932:
@@ -15656,6 +14441,8 @@ print_fanspeed:
 	.string	"FILENAME_MAX 4096"
 .LASF1468:
 	.string	"__DECL_SIMD_asinf32x "
+.LASF565:
+	.string	"__need_NULL"
 .LASF1210:
 	.string	"_SC_NL_LANGMAX _SC_NL_LANGMAX"
 .LASF2118:
@@ -15684,8 +14471,6 @@ print_fanspeed:
 	.string	"crmode() cbreak()"
 .LASF1191:
 	.string	"_SC_CHAR_BIT _SC_CHAR_BIT"
-.LASF2419:
-	.string	"_SC_AVPHYS_PAGES"
 .LASF1731:
 	.string	"M_E 2.7182818284590452354"
 .LASF2072:
@@ -15742,12 +14527,12 @@ print_fanspeed:
 	.string	"__USE_XOPEN2K 1"
 .LASF574:
 	.string	"__SLONGWORD_TYPE long int"
-.LASF2630:
-	.string	"file_buf"
+.LASF2507:
+	.string	"_SC_STREAMS"
 .LASF1960:
 	.string	"getpary(win) (NCURSES_OK_ADDR(win) ? (win)->_pary : ERR)"
-.LASF1995:
-	.string	"chgat(n,a,c,o) wchgat(stdscr,(n),(a),(c),(o))"
+.LASF2367:
+	.string	"_SC_TIMER_MAX"
 .LASF1520:
 	.string	"__DECL_SIMD_expm1f128x "
 .LASF2585:
@@ -15922,8 +14707,6 @@ print_fanspeed:
 	.string	"WA_REVERSE A_REVERSE"
 .LASF424:
 	.string	"__TIMESIZE __WORDSIZE"
-.LASF2626:
-	.string	"read_line"
 .LASF1615:
 	.string	"__DECL_SIMD_tanhf32 "
 .LASF440:
@@ -15946,7 +14729,7 @@ print_fanspeed:
 	.string	"__UINT32_C(c) c ## U"
 .LASF222:
 	.string	"__FLT64_MAX_EXP__ 1024"
-.LASF2248:
+.LASF2249:
 	.string	"POWER_LIMIT_COUNT 2"
 .LASF2146:
 	.string	"KEY_SCANCEL 0573"
@@ -15958,8 +14741,8 @@ print_fanspeed:
 	.string	"LC_MESSAGES __LC_MESSAGES"
 .LASF1749:
 	.string	"isunordered(x,y) __builtin_isunordered(x, y)"
-.LASF303:
-	.string	"__REGISTER_PREFIX__ "
+.LASF2584:
+	.string	"get_amd_pkg_power_w"
 .LASF1737:
 	.string	"M_PI_2 1.57079632679489661923"
 .LASF2256:
@@ -15998,8 +14781,8 @@ print_fanspeed:
 	.string	"__DECL_SIMD_log2f128 "
 .LASF1411:
 	.string	"__DECL_SIMD_log "
-.LASF2584:
-	.string	"get_amd_pck_power_w"
+.LASF688:
+	.string	"__f32(x) x ##f32"
 .LASF1066:
 	.string	"L_XTND SEEK_END"
 .LASF1609:
@@ -16008,7 +14791,7 @@ print_fanspeed:
 	.string	"__INO_T_TYPE __SYSCALL_ULONG_TYPE"
 .LASF1146:
 	.string	"_SC_PII_OSI _SC_PII_OSI"
-.LASF2636:
+.LASF2614:
 	.string	"/home/jscha/dvp/cpumon/src/cpumonlib.c"
 .LASF1719:
 	.string	"FP_ZERO 2"
@@ -16036,6 +14819,8 @@ print_fanspeed:
 	.string	"__DECL_SIMD_expf16 "
 .LASF2576:
 	.string	"core_count"
+.LASF303:
+	.string	"__REGISTER_PREFIX__ "
 .LASF2026:
 	.string	"mvwaddchnstr(win,y,x,str,n) (wmove((win),(y),(x)) == ERR ? ERR : waddchnstr((win),(str),(n)))"
 .LASF1288:
@@ -16076,8 +14861,6 @@ print_fanspeed:
 	.string	"__INT_FAST32_TYPE__ long int"
 .LASF870:
 	.string	"UINT32_MAX (4294967295U)"
-.LASF829:
-	.string	"__SIZEOF_PTHREAD_BARRIER_T 32"
 .LASF340:
 	.string	"__k8__ 1"
 .LASF2499:
@@ -16132,7 +14915,7 @@ print_fanspeed:
 	.string	"_SC_USHRT_MAX"
 .LASF400:
 	.string	"__glibc_clang_prereq(maj,min) 0"
-.LASF2582:
+.LASF2581:
 	.string	"pclose"
 .LASF1181:
 	.string	"_SC_XOPEN_UNIX _SC_XOPEN_UNIX"
@@ -16222,8 +15005,8 @@ print_fanspeed:
 	.string	"__FLT32_HAS_DENORM__ 1"
 .LASF1294:
 	.string	"_SC_V7_LP64_OFF64 _SC_V7_LP64_OFF64"
-.LASF2605:
-	.string	"sample_next"
+.LASF2493:
+	.string	"_SC_SPORADIC_SERVER"
 .LASF453:
 	.string	"__bos(ptr) __builtin_object_size (ptr, __USE_FORTIFY_LEVEL > 1)"
 .LASF2276:
@@ -16292,8 +15075,6 @@ print_fanspeed:
 	.string	"__BLKSIZE_T_TYPE __SYSCALL_SLONG_TYPE"
 .LASF37:
 	.string	"__SIZEOF_POINTER__ 8"
-.LASF2413:
-	.string	"_SC_THREAD_PRIO_INHERIT"
 .LASF1797:
 	.string	"NCURSES_WIDECHAR 0"
 .LASF1941:
@@ -16316,8 +15097,8 @@ print_fanspeed:
 	.string	"__FLT64X_MANT_DIG__ 64"
 .LASF693:
 	.string	"__CFLOAT64 _Complex _Float64"
-.LASF998:
-	.string	"_POSIX_REENTRANT_FUNCTIONS 1"
+.LASF810:
+	.string	"__FD_ELT(d) ((d) / __NFDBITS)"
 .LASF2532:
 	.string	"_SC_LEVEL4_CACHE_LINESIZE"
 .LASF1590:
@@ -16330,8 +15111,6 @@ print_fanspeed:
 	.string	"__DECL_SIMD_tanhf64x "
 .LASF2231:
 	.string	"TRACE_CHARPUT 0x0010"
-.LASF1492:
-	.string	"__DECL_SIMD_exp10f "
 .LASF1999:
 	.string	"color_set(c,o) wcolor_set(stdscr,(c),(o))"
 .LASF1201:
@@ -16374,8 +15153,8 @@ print_fanspeed:
 	.string	"__GLIBC_USE_IEC_60559_BFP_EXT_C2X 0"
 .LASF804:
 	.string	"_SIGSET_NWORDS (1024 / (8 * sizeof (unsigned long int)))"
-.LASF2617:
-	.string	"voltage_total"
+.LASF270:
+	.string	"__FLT64X_MAX_EXP__ 16384"
 .LASF2460:
 	.string	"_SC_XBS5_LP64_OFF64"
 .LASF2492:
@@ -16386,8 +15165,6 @@ print_fanspeed:
 	.string	"__GNUC_WIDE_EXECUTION_CHARSET_NAME \"UTF-32LE\""
 .LASF2232:
 	.string	"TRACE_ORDINARY 0x001F"
-.LASF1308:
-	.string	"_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS _CS_V6_WIDTH_RESTRICTED_ENVS"
 .LASF874:
 	.string	"INT_LEAST32_MIN (-2147483647-1)"
 .LASF2398:
@@ -16400,8 +15177,6 @@ print_fanspeed:
 	.string	"__DECL_SIMD_sinf128x "
 .LASF1170:
 	.string	"_SC_THREAD_PRIO_INHERIT _SC_THREAD_PRIO_INHERIT"
-.LASF2493:
-	.string	"_SC_SPORADIC_SERVER"
 .LASF1555:
 	.string	"__DECL_SIMD_log10f32 "
 .LASF745:
@@ -16422,6 +15197,8 @@ print_fanspeed:
 	.string	"_SC_SCHAR_MIN _SC_SCHAR_MIN"
 .LASF319:
 	.string	"__GCC_ATOMIC_LLONG_LOCK_FREE 2"
+.LASF1887:
+	.string	"ACS_BSSS ACS_TTEE"
 .LASF1332:
 	.string	"_CS_XBS5_LP64_OFF64_LDFLAGS _CS_XBS5_LP64_OFF64_LDFLAGS"
 .LASF2022:
@@ -16456,8 +15233,8 @@ print_fanspeed:
 	.string	"_SC_SEM_VALUE_MAX _SC_SEM_VALUE_MAX"
 .LASF2296:
 	.string	"char"
-.LASF2625:
-	.string	"my_battery"
+.LASF829:
+	.string	"__SIZEOF_PTHREAD_BARRIER_T 32"
 .LASF1303:
 	.string	"_SC_THREAD_ROBUST_PRIO_PROTECT _SC_THREAD_ROBUST_PRIO_PROTECT"
 .LASF2502:
@@ -16484,8 +15261,8 @@ print_fanspeed:
 	.string	"winsertln(win) winsdelln(win,1)"
 .LASF2466:
 	.string	"_SC_BARRIERS"
-.LASF2590:
-	.string	"fscanf"
+.LASF2356:
+	.string	"_SC_AIO_MAX"
 .LASF535:
 	.string	"__GLIBC_USE_IEC_60559_EXT"
 .LASF62:
@@ -16506,8 +15283,8 @@ print_fanspeed:
 	.string	"__S16_TYPE short int"
 .LASF1471:
 	.string	"__DECL_SIMD_hypot "
-.LASF2356:
-	.string	"_SC_AIO_MAX"
+.LASF1192:
+	.string	"_SC_CHAR_MAX _SC_CHAR_MAX"
 .LASF1658:
 	.string	"__FP_LOGBNAN_IS_MIN 1"
 .LASF306:
@@ -16524,8 +15301,8 @@ print_fanspeed:
 	.string	"_XOPEN_XCU_VERSION 4"
 .LASF794:
 	.string	"htole64(x) __uint64_identity (x)"
-.LASF412:
-	.string	"_POSIX_C_SOURCE 200809L"
+.LASF2610:
+	.string	"cpu_designer"
 .LASF484:
 	.string	"__attribute_nonnull__(params) __attribute__ ((__nonnull__ params))"
 .LASF2295:
@@ -16536,7 +15313,7 @@ print_fanspeed:
 	.string	"__DECL_SIMD_log10f32x "
 .LASF1450:
 	.string	"__DECL_SIMD_acosf128x "
-.LASF2611:
+.LASF2598:
 	.string	"load"
 .LASF1544:
 	.string	"__DECL_SIMD_atan2f16 "
@@ -16578,8 +15355,8 @@ print_fanspeed:
 	.string	"__DECL_SIMD_acosf "
 .LASF604:
 	.string	"__FSBLKCNT64_T_TYPE __UQUAD_TYPE"
-.LASF555:
-	.string	"_SIZE_T_DEFINED "
+.LASF2605:
+	.string	"init_sensor_battery"
 .LASF196:
 	.string	"__LDBL_EPSILON__ 1.08420217248550443400745280086994171e-19L"
 .LASF2047:
@@ -16590,8 +15367,6 @@ print_fanspeed:
 	.string	"__FLT128_MAX__ 1.18973149535723176508575932662800702e+4932F128"
 .LASF2175:
 	.string	"KEY_UNDO 0630"
-.LASF1293:
-	.string	"_SC_V7_ILP32_OFFBIG _SC_V7_ILP32_OFFBIG"
 .LASF1428:
 	.string	"__DECL_SIMD_expf32x "
 .LASF2450:
@@ -16672,12 +15447,10 @@ print_fanspeed:
 	.string	"__DECL_SIMD_asinhf "
 .LASF352:
 	.string	"__gnu_linux__ 1"
-.LASF2637:
+.LASF2615:
 	.string	"/home/jscha/dvp/cpumon/build"
 .LASF1225:
 	.string	"_SC_C_LANG_SUPPORT _SC_C_LANG_SUPPORT"
-.LASF1945:
-	.string	"setterm(term) setupterm(term, 1, (int *)0)"
 .LASF843:
 	.string	"__PTHREAD_RWLOCK_INITIALIZER(__flags) 0, 0, 0, 0, 0, 0, 0, 0, __PTHREAD_RWLOCK_ELISION_EXTRA, 0, __flags"
 .LASF2257:
@@ -16718,14 +15491,12 @@ print_fanspeed:
 	.string	"WCHAR_MAX __WCHAR_MAX"
 .LASF802:
 	.string	"__sigset_t_defined 1"
-.LASF213:
-	.string	"__FLT32_DENORM_MIN__ 1.40129846432481707092372958328991613e-45F32"
 .LASF57:
 	.string	"__INT_LEAST8_TYPE__ signed char"
 .LASF1327:
 	.string	"_CS_XBS5_ILP32_OFFBIG_CFLAGS _CS_XBS5_ILP32_OFFBIG_CFLAGS"
-.LASF1404:
-	.string	"__DECL_SIMD_sincosf16 "
+.LASF1492:
+	.string	"__DECL_SIMD_exp10f "
 .LASF507:
 	.string	"__LDBL_REDIR_NTH(name,proto) name proto __THROW"
 .LASF2223:
@@ -16744,15 +15515,13 @@ print_fanspeed:
 	.string	"__FLT_DECIMAL_DIG__ 9"
 .LASF897:
 	.string	"INTPTR_MAX (9223372036854775807L)"
-.LASF2615:
-	.string	"load_total"
 .LASF1547:
 	.string	"__DECL_SIMD_atan2f128 "
 .LASF2447:
 	.string	"_SC_SHRT_MIN"
 .LASF1917:
 	.string	"A_NORMAL (1U - 1U)"
-.LASF2601:
+.LASF2596:
 	.string	"duty"
 .LASF644:
 	.string	"__off_t_defined "
@@ -16944,8 +15713,6 @@ print_fanspeed:
 	.string	"is_pad(win) (NCURSES_OK_ADDR(win) ? ((win)->_flags & _ISPAD) != 0 : FALSE)"
 .LASF1110:
 	.string	"_SC_SHARED_MEMORY_OBJECTS _SC_SHARED_MEMORY_OBJECTS"
-.LASF2592:
-	.string	"__isoc99_fscanf"
 .LASF1232:
 	.string	"_SC_DEVICE_SPECIFIC_R _SC_DEVICE_SPECIFIC_R"
 .LASF1165:
@@ -17050,12 +15817,10 @@ print_fanspeed:
 	.string	"FP_ILOGB0 (-2147483647 - 1)"
 .LASF641:
 	.string	"__ferror_unlocked_body(_fp) (((_fp)->_flags & _IO_ERR_SEEN) != 0)"
-.LASF2633:
-	.string	"designer"
 .LASF1762:
 	.string	"NCURSES_WRAPPED_VAR(type,name) extern NCURSES_IMPEXP type NCURSES_PUBLIC_VAR(name)(void)"
-.LASF2597:
-	.string	"printf"
+.LASF1452:
+	.string	"__DECL_SIMD_atanf "
 .LASF392:
 	.string	"__USE_GNU"
 .LASF226:
@@ -17066,7 +15831,7 @@ print_fanspeed:
 	.string	"__WIFSTOPPED(status) (((status) & 0xff) == 0x7f)"
 .LASF376:
 	.string	"__USE_POSIX2"
-.LASF2623:
+.LASF2601:
 	.string	"power_per_domain"
 .LASF1705:
 	.string	"__MATHCALL_NARROW_NORMAL(func,nargs) extern _Mret_ func __MATHCALL_NARROW_ARGS_ ## nargs __THROW"
@@ -17080,7 +15845,7 @@ print_fanspeed:
 	.string	"ACS_CKBOARD NCURSES_ACS('a')"
 .LASF2555:
 	.string	"runtime_avg"
-.LASF2581:
+.LASF2583:
 	.string	"printw"
 .LASF1692:
 	.string	"__MATH_PRECNAME(name,r) name ##f128 ##r"
@@ -17098,8 +15863,8 @@ print_fanspeed:
 	.string	"ACS_DEGREE NCURSES_ACS('f')"
 .LASF1490:
 	.string	"__DECL_SIMD_exp2f128x "
-.LASF2596:
-	.string	"fopen"
+.LASF2413:
+	.string	"_SC_THREAD_PRIO_INHERIT"
 .LASF1291:
 	.string	"_SC_RAW_SOCKETS _SC_RAW_SOCKETS"
 .LASF1227:
@@ -17188,7 +15953,7 @@ print_fanspeed:
 	.string	"__FLT64_MIN_EXP__ (-1021)"
 .LASF1701:
 	.string	"__MATHCALL"
-.LASF2598:
+.LASF2593:
 	.string	"sysconf"
 .LASF2152:
 	.string	"KEY_SELECT 0601"
@@ -17234,8 +15999,8 @@ print_fanspeed:
 	.string	"__USE_POSIX199309"
 .LASF904:
 	.string	"SIG_ATOMIC_MIN (-2147483647-1)"
-.LASF2609:
-	.string	"samples_cumulative"
+.LASF2512:
+	.string	"_SC_V6_LPBIG_OFFBIG"
 .LASF208:
 	.string	"__FLT32_DECIMAL_DIG__ 9"
 .LASF1493:
@@ -17256,8 +16021,6 @@ print_fanspeed:
 	.string	"__FLT32X_MIN_EXP__ (-1021)"
 .LASF1357:
 	.string	"_CS_POSIX_V7_ILP32_OFF32_LIBS _CS_POSIX_V7_ILP32_OFF32_LIBS"
-.LASF688:
-	.string	"__f32(x) x ##f32"
 .LASF702:
 	.string	"__WCHAR_T "
 .LASF1070:
@@ -17272,8 +16035,8 @@ print_fanspeed:
 	.string	"KEY_SHOME 0607"
 .LASF2233:
 	.string	"TRACE_CALLS 0x0020"
-.LASF362:
-	.string	"__STDC_IEC_559__ 1"
+.LASF998:
+	.string	"_POSIX_REENTRANT_FUNCTIONS 1"
 .LASF2322:
 	.string	"_freeres_buf"
 .LASF1472:
@@ -17282,7 +16045,7 @@ print_fanspeed:
 	.string	"__ATOMIC_HLE_ACQUIRE 65536"
 .LASF1646:
 	.string	"__DECL_SIMD_tanf64 "
-.LASF2622:
+.LASF2599:
 	.string	"temperature"
 .LASF1406:
 	.string	"__DECL_SIMD_sincosf64 "
@@ -17290,6 +16053,8 @@ print_fanspeed:
 	.string	"__INT16_C(c) c"
 .LASF811:
 	.string	"__FD_MASK(d) ((__fd_mask) (1UL << ((d) % __NFDBITS)))"
+.LASF43:
+	.string	"__WINT_TYPE__ unsigned int"
 .LASF2188:
 	.string	"BUTTON1_PRESSED NCURSES_MOUSE_MASK(1, NCURSES_BUTTON_PRESSED)"
 .LASF1457:
@@ -17390,6 +16155,8 @@ print_fanspeed:
 	.string	"_STDINT_H 1"
 .LASF1742:
 	.string	"M_SQRT2 1.41421356237309504880"
+.LASF2591:
+	.string	"get_msr_core_units"
 .LASF285:
 	.string	"__DEC32_MIN__ 1E-95DF"
 .LASF675:
@@ -17436,6 +16203,8 @@ print_fanspeed:
 	.string	"__glibc_unlikely(cond) __builtin_expect ((cond), 0)"
 .LASF1372:
 	.string	"_CS_V7_ENV _CS_V7_ENV"
+.LASF1697:
+	.string	"__MATHDECL_1_IMPL"
 .LASF1237:
 	.string	"_SC_FILE_LOCKING _SC_FILE_LOCKING"
 .LASF725:
@@ -17482,8 +16251,6 @@ print_fanspeed:
 	.string	"__SIZEOF_PTRDIFF_T__ 8"
 .LASF1491:
 	.string	"__DECL_SIMD_exp10 "
-.LASF1078:
-	.string	"_PC_PRIO_IO _PC_PRIO_IO"
 .LASF1020:
 	.string	"_POSIX_REGEXP 1"
 .LASF742:
@@ -17510,7 +16277,7 @@ print_fanspeed:
 	.string	"__GNUC_EXECUTION_CHARSET_NAME \"UTF-8\""
 .LASF419:
 	.string	"_ATFILE_SOURCE"
-.LASF2247:
+.LASF2248:
 	.string	"BATTERY_STATUS_BUF_SIZE 20"
 .LASF1612:
 	.string	"__DECL_SIMD_tanhf "
@@ -17582,8 +16349,8 @@ print_fanspeed:
 	.string	"_POSIX_ADVISORY_INFO 200809L"
 .LASF848:
 	.string	"alloca(size) __builtin_alloca (size)"
-.LASF2374:
-	.string	"_SC_EXPR_NEST_MAX"
+.LASF1873:
+	.string	"ACS_S3 NCURSES_ACS('p')"
 .LASF286:
 	.string	"__DEC32_MAX__ 9.999999E96DF"
 .LASF2411:
@@ -17606,7 +16373,7 @@ print_fanspeed:
 	.string	"__FLT128_HAS_QUIET_NAN__ 1"
 .LASF1551:
 	.string	"__DECL_SIMD_log10 "
-.LASF2613:
+.LASF2600:
 	.string	"voltage"
 .LASF500:
 	.string	"__attribute_nonstring__ __attribute__ ((__nonstring__))"
@@ -17620,10 +16387,8 @@ print_fanspeed:
 	.string	"__DECL_SIMD_erff128 "
 .LASF2546:
 	.string	"_SC_THREAD_ROBUST_PRIO_PROTECT"
-.LASF607:
-	.string	"__ID_T_TYPE __U32_TYPE"
-.LASF1778:
-	.string	"NCURSES_OPAQUE 0"
+.LASF1557:
+	.string	"__DECL_SIMD_log10f128 "
 .LASF1955:
 	.string	"getbegx(win) (NCURSES_OK_ADDR(win) ? (win)->_begx : ERR)"
 .LASF1392:
@@ -17650,12 +16415,12 @@ print_fanspeed:
 	.string	"__FLT32_HAS_QUIET_NAN__ 1"
 .LASF1532:
 	.string	"__DECL_SIMD_cbrtf "
-.LASF12:
-	.string	"__ATOMIC_RELEASE 3"
+.LASF1883:
+	.string	"ACS_SBBS ACS_LRCORNER"
 .LASF2149:
 	.string	"KEY_SCREATE 0576"
-.LASF2632:
-	.string	"init_sensors"
+.LASF2374:
+	.string	"_SC_EXPR_NEST_MAX"
 .LASF1433:
 	.string	"__DECL_SIMD_powl "
 .LASF431:
@@ -17684,8 +16449,6 @@ print_fanspeed:
 	.string	"_CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS _CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS"
 .LASF799:
 	.string	"__FD_SET(d,s) ((void) (__FDS_BITS (s)[__FD_ELT(d)] |= __FD_MASK(d)))"
-.LASF2512:
-	.string	"_SC_V6_LPBIG_OFFBIG"
 .LASF736:
 	.string	"WEXITSTATUS(status) __WEXITSTATUS (status)"
 .LASF2218:
@@ -17738,8 +16501,8 @@ print_fanspeed:
 	.string	"_WRAPPED 0x40"
 .LASF1195:
 	.string	"_SC_INT_MIN _SC_INT_MIN"
-.LASF810:
-	.string	"__FD_ELT(d) ((d) / __NFDBITS)"
+.LASF2419:
+	.string	"_SC_AVPHYS_PAGES"
 .LASF481:
 	.string	"__attribute_deprecated_msg__(msg) __attribute__ ((__deprecated__ (msg)))"
 .LASF2441:
@@ -17750,13 +16513,11 @@ print_fanspeed:
 	.string	"__DEC64_MIN__ 1E-383DD"
 .LASF436:
 	.string	"__PMT"
-.LASF2618:
-	.string	"power_total"
 .LASF2377:
 	.string	"_SC_CHARCLASS_NAME_MAX"
 .LASF343:
 	.string	"__SSE__ 1"
-.LASF2634:
+.LASF2612:
 	.string	"init_environment"
 .LASF2332:
 	.string	"_SC_ARG_MAX"
@@ -17926,8 +16687,6 @@ print_fanspeed:
 	.string	"BUTTON4_DOUBLE_CLICKED NCURSES_MOUSE_MASK(4, NCURSES_DOUBLE_CLICKED)"
 .LASF1317:
 	.string	"_CS_LFS_LIBS _CS_LFS_LIBS"
-.LASF2614:
-	.string	"freq_total"
 .LASF301:
 	.string	"__DEC128_EPSILON__ 1E-33DL"
 .LASF546:
@@ -17970,8 +16729,8 @@ print_fanspeed:
 	.string	"SEEK_CUR 1"
 .LASF1964:
 	.string	"wattroff(win,at) wattr_off(win, NCURSES_CAST(attr_t, at), NULL)"
-.LASF46:
-	.string	"__CHAR16_TYPE__ short unsigned int"
+.LASF2566:
+	.string	"battery_s"
 .LASF1893:
 	.string	"_SUBWIN 0x01"
 .LASF2456:
@@ -18112,9 +16871,9 @@ print_fanspeed:
 	.string	"__MATHDECL_1"
 .LASF138:
 	.string	"__INT_FAST64_MAX__ 0x7fffffffffffffffL"
-.LASF2638:
+.LASF2616:
 	.string	"_IO_lock_t"
-.LASF2600:
+.LASF2595:
 	.string	"popen"
 .LASF2114:
 	.string	"KEY_LL 0533"

@@ -11,6 +11,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/cpumon.dir/src/main.c.o.d"
   "CMakeFiles/cpumon.dir/src/sysfs.c.o"
   "CMakeFiles/cpumon.dir/src/sysfs.c.o.d"
+  "CMakeFiles/cpumon.dir/src/utils.c.o"
+  "CMakeFiles/cpumon.dir/src/utils.c.o.d"
 )
 
 # Per-language clean rules from dependency scanning.

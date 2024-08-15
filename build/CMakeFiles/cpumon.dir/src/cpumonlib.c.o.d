@@ -69,6 +69,7 @@ CMakeFiles/cpumon.dir/src/cpumonlib.c.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h /usr/include/curses.h \
  /usr/include/ncurses_dll.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/unctrl.h \
- /usr/include/curses.h /home/jscha/dvp/cpumon/src/../include/cpumonlib.h \
+ /usr/include/curses.h /home/jscha/dvp/cpumon/src/../include/utils.h \
+ /home/jscha/dvp/cpumon/src/../include/cpumonlib.h \
  /home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h \
  /home/jscha/dvp/cpumon/src/../include/sysfs.h

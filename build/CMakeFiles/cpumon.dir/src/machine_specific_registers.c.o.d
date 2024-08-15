@@ -74,9 +74,9 @@ CMakeFiles/cpumon.dir/src/machine_specific_registers.c.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h /usr/include/curses.h \
  /usr/include/ncurses_dll.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/unctrl.h \
- /usr/include/curses.h \
- /home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h \
+ /usr/include/curses.h /home/jscha/dvp/cpumon/src/../include/utils.h \
  /home/jscha/dvp/cpumon/src/../include/cpumonlib.h \
+ /home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h \
  /usr/include/x86_64-linux-gnu/sys/syscall.h \
  /usr/include/x86_64-linux-gnu/asm/unistd.h \
  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \

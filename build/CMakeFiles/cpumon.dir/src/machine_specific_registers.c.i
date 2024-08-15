@@ -9446,6 +9446,80 @@ extern void exit_curses (int);
  const char * unctrl_sp (SCREEN*, chtype);
 # 2097 "/usr/include/curses.h" 2 3 4
 # 14 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
+# 1 "/home/jscha/dvp/cpumon/src/../include/utils.h" 1
+
+#define UTILS 
+
+
+
+# 5 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+char *read_string(const char *filepath);
+int read_line(char *return_string, const char *filepath);
+int acc_cmdln(char *cmd);
+void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
+float get_min_value(float previous_min_value, float *sample_next, int sample_count);
+float get_max_value(float previous_min_value, float *sample_next, int sample_count);
+# 15 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
+# 1 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h" 1
+
+
+#define CPUMONLIB 
+
+
+#define AVG_WINDOW 60
+#define BATTERY_STATUS_BUF_SIZE 20
+#define POWER_LIMIT_COUNT 2
+#define BUFSIZE 64
+#define POLL_INTERVAL_S 1
+
+
+
+struct sensor {
+
+    float cpu_avg;
+    float runtime_avg;
+    float cumulative;
+    float min;
+    float max;
+    float per_core[];
+};
+typedef struct sensor sensor;
+
+struct power {
+    float cores;
+    float gpu;
+    float pkg_now;
+    float pkg_cumulative;
+    float pkg_runtime_avg;
+    float time_unit, energy_unit, power_unit;
+    float per_core[];
+};
+typedef struct power power;
+
+
+struct battery_s {
+    float power_now;
+    float power_cumulative;
+    float power_runtime_avg;
+    float min;
+    float max;
+    char status[20];
+};
+typedef struct battery_s battery_s;
+
+typedef enum { INTEL, AMD } cpu_designer_e;
+
+
+void init_environment(void);
+void *init_sensor(int core_count);
+void *init_sensor_battery();
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
+
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
+
+int print_fanspeed(void);
+# 16 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h" 1
 
 
@@ -9500,12 +9574,6 @@ extern void exit_curses (int);
 
 
 
-
-
-
-
-
-# 58 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h"
 int open_msr(int core);
 long long read_msr(int fd, unsigned int offset);
 
@@ -9516,75 +9584,9 @@ void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
-int get_amd_pck_power_w(float *power_w);
-# 15 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
-# 1 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h" 1
-
-
-#define CPUMONLIB 
-
-
-#define AVG_WINDOW 60
-#define BATTERY_STATUS_BUF_SIZE 20
-#define POWER_LIMIT_COUNT 2
-#define BUFSIZE 64
-#define POLL_INTERVAL_S 1
-
-#define DEBUG_ENABLE 1
-
-
-
-
-struct sensor {
-
-    float cpu_avg;
-    float runtime_avg;
-    float cumulative;
-    float min;
-    float max;
-    float per_core[];
-};
-typedef struct sensor sensor;
-
-struct power {
-    float cores;
-    float gpu;
-    float pkg_now;
-    float pkg_cumulative;
-    float pkg_runtime_avg;
-    unsigned int time_unit, energy_unit, power_unit;
-    float per_core[];
-};
-typedef struct power power;
-
-
-struct battery {
-    float power_now;
-    float power_cumulative;
-    float power_runtime_avg;
-    float min;
-    float max;
-    char status[20];
-};
-typedef struct battery battery;
-
-typedef enum { INTEL, AMD } cpu_designer_e;
-
-
-void init_environment(void);
-char *read_string(const char *filepath);
-int read_line(char *return_string, const char *filepath);
-int acc_cmdln(char *cmd);
-
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
-
-
-void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float *sample_next, int sample_count);
-float get_max_value(float previous_min_value, float *sample_next, int sample_count);
-int print_fanspeed(void);
-# 16 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
+int get_amd_pkg_power_w(power *my_power);
+int get_msr_core_units(power *my_power, cpu_designer_e designer);
+# 17 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
 
 
 # 1 "/usr/include/x86_64-linux-gnu/sys/syscall.h" 1 3 4
@@ -11657,7 +11659,7 @@ int print_fanspeed(void);
 
 #define SYS_writev __NR_writev
 # 30 "/usr/include/x86_64-linux-gnu/sys/syscall.h" 2 3 4
-# 19 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
+# 20 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
 # 1 "/usr/include/linux/perf_event.h" 1 3 4
 # 16 "/usr/include/linux/perf_event.h" 3 4
 #define _LINUX_PERF_EVENT_H 
@@ -13159,71 +13161,71 @@ union perf_sample_weight {
  };
 # 1460 "/usr/include/linux/perf_event.h" 3 4
 };
-# 20 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
+# 21 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 2
 
 
 
 
-# 23 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 24 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
 int open_msr(int core)
 {
  char msr_filename[
-# 25 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 26 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
                   8192
-# 25 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 26 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                         ];
  int fd;
 
  sprintf(msr_filename, "/dev/cpu/%d/msr", core);
  fd = open(msr_filename, 
-# 29 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 30 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
                         00
-# 29 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 30 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                                 );
  if ( fd < 0 ) {
   if ( 
-# 31 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
       (*__errno_location ()) 
-# 31 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
             == 
-# 31 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
                6 
-# 31 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                      ) {
    fprintf(
-# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 33 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
           stderr
-# 32 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 33 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                 , "rdmsr: No CPU %d\n", core);
    exit(2);
   } else if ( 
-# 34 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
              (*__errno_location ()) 
-# 34 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                    == 
-# 34 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
                       5 
-# 34 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                           ) {
    fprintf(
-# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 36 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
           stderr
-# 35 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 36 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                 , "rdmsr: CPU %d doesn't support MSRs\n",
      core);
    exit(3);
   } else {
    perror("rdmsr: open");
    fprintf(
-# 40 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 41 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
           stderr
-# 40 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 41 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                 ,"Trying to open %s\n",msr_filename);
    exit(127);
   }
  }
 
-    printf("Opened MSR and got fd = %x\n", fd);
+
 
  return fd;
 }
@@ -13235,7 +13237,7 @@ long long read_msr(int fd, unsigned int offset)
  if ( pread(fd, &register_val, sizeof register_val, offset) != sizeof register_val )
     {
 
-        printf("fd = %x\n has register_val = %ld", fd, register_val);
+
 
         perror("rdmsr: pread");
   exit(127);
@@ -13360,22 +13362,22 @@ void get_intel_msr_power_w(float * power_w)
     for (int i = 0; i < 3; i++) {
         fp = fopen(power_domains[i],"r");
     if (fp==
-# 181 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 182 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
            ((void *)0)
-# 181 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 182 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                ) {
      fprintf(
-# 182 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 183 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
             stderr
-# 182 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 183 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                   ,"\tError opening %s", power_domains[i]);
                     perror("");
     }
     else {
      if (fscanf(fp,"%lld",&energy_uj_after[i]) == 
-# 186 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
+# 187 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c" 3 4
                                                  (-1)
-# 186 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 187 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
                                                     )
                     {
                         printf("couldnt read from energy counter form %s \n", power_domains[i]);
@@ -13392,24 +13394,22 @@ void get_intel_msr_power_w(float * power_w)
     }
 }
 
-int get_amd_pck_power_w(float *my_power)
+int get_amd_pkg_power_w(power *my_power)
 {
 
-    printf("Entered rapl_msr_amd_core\n");
+
 
     static float package_before = 0;
     float package_after = 0;
-    float energy_unit = 1.52588e-05;
 
-    int fp = open_msr(1);
+    int fp = open_msr(0);
 
-    printf("Reading from AMD_MSR_PWR_UNIT\n");
+    printf("Reading from AMD_MSR_PACKAGE_ENERGY\n");
     long long package_raw = read_msr(fp, 0xC001029B);
     printf("Received raw energy Reading = %lld\n", package_raw);
 
-    package_after = package_raw * energy_unit;
-    *my_power = (float) (package_after - package_before);
-
+    package_after = (float)package_raw * my_power->energy_unit;
+    my_power->pkg_now = package_after - package_before;
     package_before = package_after;
 
  return 0;
@@ -13425,9 +13425,9 @@ int get_msr_core_units(power *my_power, cpu_designer_e designer)
             unsigned int time_unit_raw = (core_energy_units & 0xF0000) >> 16;
          unsigned int energy_unit_raw = (core_energy_units & 0x1F00) >> 8;
          unsigned int power_unit_raw = (core_energy_units & 0xF);
-            my_power->time_unit = pow(0.5,(double)(time_unit_raw));
-         my_power->energy_unit = pow(0.5,(double)(energy_unit_raw));
-         my_power->power_unit = pow(0.5,(double)(power_unit_raw));
+            my_power->time_unit = pow(0.5,(float)(time_unit_raw));
+         my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
+         my_power->power_unit = pow(0.5,(float)(power_unit_raw));
             break;
         default:
             break;
@@ -13435,7 +13435,7 @@ int get_msr_core_units(power *my_power, cpu_designer_e designer)
     }
     return 0;
 }
-# 322 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
+# 321 "/home/jscha/dvp/cpumon/src/machine_specific_registers.c"
 void get_msr_power_limits_w(int core_count){
     int fd;
     uint64_t result = 0;

@@ -7504,6 +7504,21 @@ extern void exit_curses (int);
  const char * unctrl_sp (SCREEN*, chtype);
 # 2097 "/usr/include/curses.h" 2 3 4
 # 27 "/home/jscha/dvp/cpumon/src/main.c" 2
+# 1 "/home/jscha/dvp/cpumon/src/../include/utils.h" 1
+
+#define UTILS 
+
+
+
+# 5 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+char *read_string(const char *filepath);
+int read_line(char *return_string, const char *filepath);
+int acc_cmdln(char *cmd);
+void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
+float get_min_value(float previous_min_value, float *sample_next, int sample_count);
+float get_max_value(float previous_min_value, float *sample_next, int sample_count);
+# 28 "/home/jscha/dvp/cpumon/src/main.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h" 1
 
 
@@ -7516,13 +7531,8 @@ extern void exit_curses (int);
 #define BUFSIZE 64
 #define POLL_INTERVAL_S 1
 
-#define DEBUG_ENABLE 1
 
 
-
-
-
-# 17 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h"
 struct sensor {
 
     float cpu_avg;
@@ -7540,13 +7550,13 @@ struct power {
     float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg;
-    unsigned int time_unit, energy_unit, power_unit;
+    float time_unit, energy_unit, power_unit;
     float per_core[];
 };
 typedef struct power power;
 
 
-struct battery {
+struct battery_s {
     float power_now;
     float power_cumulative;
     float power_runtime_avg;
@@ -7554,25 +7564,20 @@ struct battery {
     float max;
     char status[20];
 };
-typedef struct battery battery;
+typedef struct battery_s battery_s;
 
 typedef enum { INTEL, AMD } cpu_designer_e;
 
 
 void init_environment(void);
-char *read_string(const char *filepath);
-int read_line(char *return_string, const char *filepath);
-int acc_cmdln(char *cmd);
+void *init_sensor(int core_count);
+void *init_sensor_battery();
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
 
-
-void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float *sample_next, int sample_count);
-float get_max_value(float previous_min_value, float *sample_next, int sample_count);
 int print_fanspeed(void);
-# 28 "/home/jscha/dvp/cpumon/src/main.c" 2
+# 29 "/home/jscha/dvp/cpumon/src/main.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/guilib.h" 1
 
 #define GUILIB 
@@ -7585,7 +7590,7 @@ int print_fanspeed(void);
 void init_gui(void);
 int kbhit(void);
 void draw_power(float * value, float pkg_avg);
-# 29 "/home/jscha/dvp/cpumon/src/main.c" 2
+# 30 "/home/jscha/dvp/cpumon/src/main.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h" 1
 
 
@@ -7640,10 +7645,6 @@ void draw_power(float * value, float pkg_avg);
 
 
 
-
-
-
-
 int open_msr(int core);
 long long read_msr(int fd, unsigned int offset);
 
@@ -7654,8 +7655,9 @@ void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
-int get_amd_pck_power_w(float *power_w);
-# 30 "/home/jscha/dvp/cpumon/src/main.c" 2
+int get_amd_pkg_power_w(power *my_power);
+int get_msr_core_units(power *my_power, cpu_designer_e designer);
+# 31 "/home/jscha/dvp/cpumon/src/main.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/sysfs.h" 1
 
 #define SYSFS 
@@ -7675,29 +7677,31 @@ void reset_if_status_change(float *cumulative, char *status, char *status_before
 void sysfs_freq_ghz(float *, float *, int core_count);
 void cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
 int gpu(void);
-# 31 "/home/jscha/dvp/cpumon/src/main.c" 2
+# 32 "/home/jscha/dvp/cpumon/src/main.c" 2
 
+
+#define DEBUG_ENABLE 0
 
 
 long period_counter = 0;
 long poll_cycle_counter = 0;
 
-# 36 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 39 "/home/jscha/dvp/cpumon/src/main.c" 3 4
 _Bool 
-# 36 "/home/jscha/dvp/cpumon/src/main.c"
+# 39 "/home/jscha/dvp/cpumon/src/main.c"
     display_power_config_flag = 1;
 
-# 37 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 40 "/home/jscha/dvp/cpumon/src/main.c" 3 4
 _Bool 
-# 37 "/home/jscha/dvp/cpumon/src/main.c"
+# 40 "/home/jscha/dvp/cpumon/src/main.c"
     display_moving_average_flag = 0;
 cpu_designer_e cpu_designer = AMD;
 
 extern int core_count;
 extern 
-# 41 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 44 "/home/jscha/dvp/cpumon/src/main.c" 3 4
       _Bool 
-# 41 "/home/jscha/dvp/cpumon/src/main.c"
+# 44 "/home/jscha/dvp/cpumon/src/main.c"
            running_with_privileges;
 
 float freq_his[60];
@@ -7712,40 +7716,25 @@ int main (int argc, char **argv)
 {
     init_environment();
 
-
+    int gpu_freq;
 
     float power_per_domain[3];
 
-    sensor *freq = malloc( sizeof(sensor) + core_count * sizeof(freq->per_core[0]) );
-    *freq = (sensor) {.min = 1000, .max = 0};
-    sensor *load = malloc( sizeof(sensor) + core_count * sizeof(load->per_core[0]) );
-    *load = (sensor) {.min = 1000, .max = 0};
-    sensor *temperature = malloc( sizeof(sensor) + core_count * sizeof(temperature->per_core[0]) );
-    *temperature = (sensor) {.min = 1000, .max = 0};
-    sensor *voltage = malloc( sizeof(sensor) + core_count * sizeof(voltage->per_core[0]) );
-    *voltage = (sensor) {.min = 1000, .max = 0};
-    battery *my_battery = malloc(sizeof(battery));
-    *my_battery = (battery) {.min = 1000, .max = 0};
+    sensor *freq = init_sensor(core_count);
+    sensor *load = init_sensor(core_count);
+    sensor *temperature = init_sensor(core_count);
+    sensor *voltage = init_sensor(core_count);
 
-    power *my_power;
-    switch (cpu_designer)
-    {
-        case INTEL:
-            my_power = malloc(sizeof(power));
-            break;
-        case AMD :
-            my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
-            break;
-        default:
-            my_power = malloc(sizeof(power));
-            break;
-    }
+
+    battery_s *test_battery = malloc(sizeof(test_battery));
+    *test_battery = (battery_s) {.min = 1000, .max = 0};
+
+    power *my_power = init_sensor_power(AMD, core_count);
 
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
     char *cpu_model = identifiy_cpu();
-
 
     int command;
 
@@ -7760,24 +7749,25 @@ int main (int argc, char **argv)
                 printf("\t-p    : displays performance and power configurations\n");
        printf("\t-h    : displays this help\n");
        exit(
-# 102 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 90 "/home/jscha/dvp/cpumon/src/main.c" 3 4
            0
-# 102 "/home/jscha/dvp/cpumon/src/main.c"
+# 90 "/home/jscha/dvp/cpumon/src/main.c"
                        );
             default:
        fprintf(
-# 104 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 92 "/home/jscha/dvp/cpumon/src/main.c" 3 4
               stderr
-# 104 "/home/jscha/dvp/cpumon/src/main.c"
+# 92 "/home/jscha/dvp/cpumon/src/main.c"
                     ,"Unknown option %c\n",command); exit(
-# 104 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 92 "/home/jscha/dvp/cpumon/src/main.c" 3 4
                                                           1
-# 104 "/home/jscha/dvp/cpumon/src/main.c"
+# 92 "/home/jscha/dvp/cpumon/src/main.c"
                                                                       );
         }
     }
 
     init_gui();
+
 
 
     while (1) {
@@ -7790,13 +7780,13 @@ int main (int argc, char **argv)
                 sleep(1);
         }
 
-        update_sensor_data(freq, load, temperature, voltage, power_per_domain, my_power, my_battery);
+        update_sensor_data(freq, load, temperature, voltage, power_per_domain, my_power, test_battery);
 
         cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
         load_his[period_counter] = load->cpu_avg;
 
-
+        gpu_freq = gpu();
 
         if (period_counter < 60/1)
         {
@@ -7811,34 +7801,38 @@ int main (int argc, char **argv)
 
 
         
-# 141 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 130 "/home/jscha/dvp/cpumon/src/main.c" 3 4
        wclear(stdscr)
-# 141 "/home/jscha/dvp/cpumon/src/main.c"
+# 130 "/home/jscha/dvp/cpumon/src/main.c"
               ;
 
+
+
+
+
         
-# 143 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 136 "/home/jscha/dvp/cpumon/src/main.c" 3 4
        wattr_on(stdscr, (attr_t)((((chtype)((1U)) << ((13) + 8)))), ((void *)0))
-# 143 "/home/jscha/dvp/cpumon/src/main.c"
+# 136 "/home/jscha/dvp/cpumon/src/main.c"
                      ;
         printw("\n\t\t%s\n\n", cpu_model);
         
-# 145 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 138 "/home/jscha/dvp/cpumon/src/main.c" 3 4
        wattr_off(stdscr, (attr_t)((((chtype)((1U)) << ((13) + 8)))), ((void *)0))
-# 145 "/home/jscha/dvp/cpumon/src/main.c"
+# 138 "/home/jscha/dvp/cpumon/src/main.c"
                       ;
 
         if (running_with_privileges == 
-# 147 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 140 "/home/jscha/dvp/cpumon/src/main.c" 3 4
                                       1
-# 147 "/home/jscha/dvp/cpumon/src/main.c"
+# 140 "/home/jscha/dvp/cpumon/src/main.c"
                                           )
         {
-            printw("       f/GHz \tC0%%   Temp/°C\tU/V\n");
+            printw("Core    f/GHz \tC0%%   Temp/°C\tU/V\n");
             printw("-------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {
-                printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
+                printw("%d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
             }
             printw("\n");
 
@@ -7846,17 +7840,18 @@ int main (int argc, char **argv)
             printw("min\t%.2f\t%.2f\t%.0f\t%.2f\n", freq->min, load->min, temperature->min, voltage->min);
             printw("max\t%.2f\t%.2f\t%.0f\t%.2f\n", freq->max, load->max, temperature->max, voltage->max);
             if (display_moving_average_flag == 
-# 160 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 153 "/home/jscha/dvp/cpumon/src/main.c" 3 4
                                               1
-# 160 "/home/jscha/dvp/cpumon/src/main.c"
+# 153 "/home/jscha/dvp/cpumon/src/main.c"
                                                   )
             {
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);
             }
             printw("\n");
-            draw_power(power_per_domain, my_power->pkg_runtime_avg);
-            printw("\n");
+            printw("Pwr Pkg = %.2f W\n", my_power->pkg_now);
 
+            printw("\n");
+            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
             printw("\n");
 
 
@@ -7879,17 +7874,14 @@ int main (int argc, char **argv)
         }
 
         printw("\n");
-
-        printw("\n");
-        printw("\n");
-        printw("---------- Battery (%s) ----------\n", my_battery->status);
+        printw("---------- Battery (%s) ----------\n", test_battery->status);
         printw("    now      avg      min      max\n");
-        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", my_battery->power_now, my_battery->power_runtime_avg, my_battery->min, my_battery->max);
+        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", test_battery->power_now, test_battery->power_runtime_avg, test_battery->min, test_battery->max);
         printw("\n");
         if (display_power_config_flag == 
-# 197 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 188 "/home/jscha/dvp/cpumon/src/main.c" 3 4
                                         1
-# 197 "/home/jscha/dvp/cpumon/src/main.c"
+# 188 "/home/jscha/dvp/cpumon/src/main.c"
                                             )
         {
             power_config(running_with_privileges, cpu_designer);
@@ -7903,9 +7895,9 @@ int main (int argc, char **argv)
 
     }
     return (
-# 209 "/home/jscha/dvp/cpumon/src/main.c" 3 4
+# 200 "/home/jscha/dvp/cpumon/src/main.c" 3 4
            0
-# 209 "/home/jscha/dvp/cpumon/src/main.c"
+# 200 "/home/jscha/dvp/cpumon/src/main.c"
                        );
 
 }

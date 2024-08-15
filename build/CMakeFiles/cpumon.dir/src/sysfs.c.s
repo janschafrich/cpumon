@@ -25,7 +25,7 @@
 identifiy_cpu:
 .LFB6:
 	.file 1 "/home/jscha/dvp/cpumon/src/sysfs.c"
-	.loc 1 14 1
+	.loc 1 15 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -40,65 +40,65 @@ identifiy_cpu:
 	sub	rsp, 4096	#,
 	or	QWORD PTR [rsp], 0	#,
 	sub	rsp, 48	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:14: {
-	.loc 1 14 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:15: {
+	.loc 1 15 1
 	mov	rax, QWORD PTR fs:40	# tmp100, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.4786, tmp100
+	mov	QWORD PTR -8[rbp], rax	# D.4792, tmp100
 	xor	eax, eax	# tmp100
-# /home/jscha/dvp/cpumon/src/sysfs.c:15:     FILE *fp = fopen("/proc/cpuinfo", "r");
-	.loc 1 15 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:16:     FILE *fp = fopen("/proc/cpuinfo", "r");
+	.loc 1 16 16
 	lea	rax, .LC0[rip]	# tmp85,
 	mov	rsi, rax	#, tmp85
 	lea	rax, .LC1[rip]	# tmp86,
 	mov	rdi, rax	#, tmp86
 	call	fopen@PLT	#
 	mov	QWORD PTR -8232[rbp], rax	# fp, tmp87
-# /home/jscha/dvp/cpumon/src/sysfs.c:16:     if (fp == NULL) {
-	.loc 1 16 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:17:     if (fp == NULL) {
+	.loc 1 17 8
 	cmp	QWORD PTR -8232[rbp], 0	# fp,
 	jne	.L2	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:17:         perror("Error opening file /proc/cpuinfo");
-	.loc 1 17 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:18:         perror("Error opening file /proc/cpuinfo");
+	.loc 1 18 9
 	lea	rax, .LC2[rip]	# tmp88,
 	mov	rdi, rax	#, tmp88
 	call	perror@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:18:         return (NULL);
-	.loc 1 18 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:19:         return (NULL);
+	.loc 1 19 16
 	mov	eax, 0	# _2,
 	jmp	.L8	#
 .L2:
-# /home/jscha/dvp/cpumon/src/sysfs.c:22:     char *model = malloc ((sizeof *model) * 15);
-	.loc 1 22 19
+# /home/jscha/dvp/cpumon/src/sysfs.c:23:     char *model = malloc ((sizeof *model) * 15);
+	.loc 1 23 19
 	mov	edi, 15	#,
 	call	malloc@PLT	#
 	mov	QWORD PTR -8224[rbp], rax	# model, tmp89
 .L7:
-# /home/jscha/dvp/cpumon/src/sysfs.c:27:         line = fgets(file_buf, BUFSIZ, fp);
-	.loc 1 27 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:28:         line = fgets(file_buf, BUFSIZ, fp);
+	.loc 1 28 16
 	mov	rdx, QWORD PTR -8232[rbp]	# tmp90, fp
 	lea	rax, -8208[rbp]	# tmp91,
 	mov	esi, 8192	#,
 	mov	rdi, rax	#, tmp91
 	call	fgets@PLT	#
 	mov	QWORD PTR -8216[rbp], rax	# line, tmp92
-# /home/jscha/dvp/cpumon/src/sysfs.c:28:         if (line == NULL) break;
-	.loc 1 28 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:29:         if (line == NULL) break;
+	.loc 1 29 12
 	cmp	QWORD PTR -8216[rbp], 0	# line,
 	je	.L10	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:30:         if(!strncmp(line, "model name", 10)) {
-	.loc 1 30 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:31:         if(!strncmp(line, "model name", 10)) {
+	.loc 1 31 13
 	mov	rax, QWORD PTR -8216[rbp]	# tmp93, line
 	mov	edx, 10	#,
 	lea	rcx, .LC3[rip]	# tmp94,
 	mov	rsi, rcx	#, tmp94
 	mov	rdi, rax	#, tmp93
 	call	strncmp@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:30:         if(!strncmp(line, "model name", 10)) {
-	.loc 1 30 11
+# /home/jscha/dvp/cpumon/src/sysfs.c:31:         if(!strncmp(line, "model name", 10)) {
+	.loc 1 31 11
 	test	eax, eax	# _1
 	jne	.L7	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:31:             sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
-	.loc 1 31 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:32:             sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
+	.loc 1 32 13
 	mov	rdx, QWORD PTR -8224[rbp]	# tmp95, model
 	mov	rax, QWORD PTR -8216[rbp]	# tmp96, line
 	lea	rcx, .LC4[rip]	# tmp97,
@@ -106,30 +106,30 @@ identifiy_cpu:
 	mov	rdi, rax	#, tmp96
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:32:             break;
-	.loc 1 32 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:33:             break;
+	.loc 1 33 13
 	jmp	.L5	#
 .L10:
-# /home/jscha/dvp/cpumon/src/sysfs.c:28:         if (line == NULL) break;
-	.loc 1 28 26
+# /home/jscha/dvp/cpumon/src/sysfs.c:29:         if (line == NULL) break;
+	.loc 1 29 26
 	nop	
 .L5:
-# /home/jscha/dvp/cpumon/src/sysfs.c:38:     fclose(fp);
-	.loc 1 38 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:39:     fclose(fp);
+	.loc 1 39 5
 	mov	rax, QWORD PTR -8232[rbp]	# tmp98, fp
 	mov	rdi, rax	#, tmp98
 	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:39:     return model;
-	.loc 1 39 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:40:     return model;
+	.loc 1 40 12
 	mov	rax, QWORD PTR -8224[rbp]	# _2, model
 .L8:
-# /home/jscha/dvp/cpumon/src/sysfs.c:40: }
-	.loc 1 40 1 discriminator 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp101, D.4786
+# /home/jscha/dvp/cpumon/src/sysfs.c:41: }
+	.loc 1 41 1 discriminator 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp101, D.4792
 	sub	rdx, QWORD PTR fs:40	# tmp101, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L9	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:40: }
-	.loc 1 40 1 is_stmt 0
+# /home/jscha/dvp/cpumon/src/sysfs.c:41: }
+	.loc 1 41 1 is_stmt 0
 	call	__stack_chk_fail@PLT	#
 .L9:
 	leave	
@@ -143,21 +143,18 @@ identifiy_cpu:
 	.align 8
 .LC5:
 	.string	"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw"
-	.align 8
 .LC6:
-	.string	"get_sysfs_power_limits filepath %s\n"
-.LC7:
 	.string	"Error opening file\n"
-.LC8:
+.LC7:
 	.string	"Couldn't read power from %s"
-.LC9:
+.LC8:
 	.string	"%ld"
 	.text
 	.globl	get_sysfs_power_limits_w
 	.type	get_sysfs_power_limits_w, @function
 get_sysfs_power_limits_w:
 .LFB7:
-	.loc 1 43 1 is_stmt 1
+	.loc 1 44 1 is_stmt 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -168,21 +165,21 @@ get_sysfs_power_limits_w:
 .LCFI4:
 	.cfi_def_cfa_register 6
 	sub	rsp, 368	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:43: {
-	.loc 1 43 1
-	mov	rax, QWORD PTR fs:40	# tmp120, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.4793, tmp120
-	xor	eax, eax	# tmp120
+# /home/jscha/dvp/cpumon/src/sysfs.c:44: {
+	.loc 1 44 1
+	mov	rax, QWORD PTR fs:40	# tmp118, MEM[(<address-space-1> long unsigned int *)40B]
+	mov	QWORD PTR -8[rbp], rax	# D.4799, tmp118
+	xor	eax, eax	# tmp118
 .LBB2:
-# /home/jscha/dvp/cpumon/src/sysfs.c:50:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 50 15
+# /home/jscha/dvp/cpumon/src/sysfs.c:51:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 51 15
 	mov	DWORD PTR -368[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/sysfs.c:50:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 50 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:51:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 51 5
 	jmp	.L12	#
 .L15:
-# /home/jscha/dvp/cpumon/src/sysfs.c:51:         sprintf(path,"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw",i);
-	.loc 1 51 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:52:         sprintf(path,"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw",i);
+	.loc 1 52 9
 	mov	edx, DWORD PTR -368[rbp]	# tmp89, i
 	lea	rax, -272[rbp]	# tmp90,
 	lea	rcx, .LC5[rip]	# tmp91,
@@ -190,128 +187,120 @@ get_sysfs_power_limits_w:
 	mov	rdi, rax	#, tmp90
 	mov	eax, 0	#,
 	call	sprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:52:         fp = fopen(path, "r");
-	.loc 1 52 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:53:         fp = fopen(path, "r");
+	.loc 1 53 14
 	lea	rax, -272[rbp]	# tmp92,
 	lea	rdx, .LC0[rip]	# tmp93,
 	mov	rsi, rdx	#, tmp93
 	mov	rdi, rax	#, tmp92
 	call	fopen@PLT	#
 	mov	QWORD PTR -360[rbp], rax	# fp, tmp94
-# /home/jscha/dvp/cpumon/src/sysfs.c:53:         if (fp == NULL) {
-	.loc 1 53 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:54:         if (fp == NULL) {
+	.loc 1 54 12
 	cmp	QWORD PTR -360[rbp], 0	# fp,
 	jne	.L13	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:55:             printf("get_sysfs_power_limits filepath %s\n", path);
-	.loc 1 55 13
-	lea	rax, -272[rbp]	# tmp95,
-	mov	rsi, rax	#, tmp95
-	lea	rax, .LC6[rip]	# tmp96,
-	mov	rdi, rax	#, tmp96
-	mov	eax, 0	#,
-	call	printf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:57:             perror("Error opening file\n");
-	.loc 1 57 13
-	lea	rax, .LC7[rip]	# tmp97,
-	mov	rdi, rax	#, tmp97
+# /home/jscha/dvp/cpumon/src/sysfs.c:58:             perror("Error opening file\n");
+	.loc 1 58 13
+	lea	rax, .LC6[rip]	# tmp95,
+	mov	rdi, rax	#, tmp95
 	call	perror@PLT	#
 .L13:
-# /home/jscha/dvp/cpumon/src/sysfs.c:59:         if (fgets(results,BUFSIZE, fp) == NULL)
-	.loc 1 59 13
-	mov	rdx, QWORD PTR -360[rbp]	# tmp98, fp
-	lea	rax, -336[rbp]	# tmp99,
+# /home/jscha/dvp/cpumon/src/sysfs.c:60:         if (fgets(results,BUFSIZE, fp) == NULL)
+	.loc 1 60 13
+	mov	rdx, QWORD PTR -360[rbp]	# tmp96, fp
+	lea	rax, -336[rbp]	# tmp97,
 	mov	esi, 64	#,
-	mov	rdi, rax	#, tmp99
+	mov	rdi, rax	#, tmp97
 	call	fgets@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:59:         if (fgets(results,BUFSIZE, fp) == NULL)
-	.loc 1 59 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:60:         if (fgets(results,BUFSIZE, fp) == NULL)
+	.loc 1 60 12
 	test	rax, rax	# _1
 	jne	.L14	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:61:             printf("Couldn't read power from %s", path);
-	.loc 1 61 13
-	lea	rax, -272[rbp]	# tmp100,
-	mov	rsi, rax	#, tmp100
-	lea	rax, .LC8[rip]	# tmp101,
-	mov	rdi, rax	#, tmp101
+# /home/jscha/dvp/cpumon/src/sysfs.c:62:             printf("Couldn't read power from %s", path);
+	.loc 1 62 13
+	lea	rax, -272[rbp]	# tmp98,
+	mov	rsi, rax	#, tmp98
+	lea	rax, .LC7[rip]	# tmp99,
+	mov	rdi, rax	#, tmp99
 	mov	eax, 0	#,
 	call	printf@PLT	#
 .L14:
-# /home/jscha/dvp/cpumon/src/sysfs.c:63:         sscanf(results, "%ld", &power_uw[i]);
-	.loc 1 63 9 discriminator 2
-	lea	rdx, -352[rbp]	# tmp102,
-	mov	eax, DWORD PTR -368[rbp]	# tmp104, i
+# /home/jscha/dvp/cpumon/src/sysfs.c:64:         sscanf(results, "%ld", &power_uw[i]);
+	.loc 1 64 9 discriminator 2
+	lea	rdx, -352[rbp]	# tmp100,
+	mov	eax, DWORD PTR -368[rbp]	# tmp102, i
 	cdqe
-	sal	rax, 3	# tmp105,
-	add	rdx, rax	# _2, tmp105
-	lea	rax, -336[rbp]	# tmp106,
-	lea	rcx, .LC9[rip]	# tmp107,
-	mov	rsi, rcx	#, tmp107
-	mov	rdi, rax	#, tmp106
+	sal	rax, 3	# tmp103,
+	add	rdx, rax	# _2, tmp103
+	lea	rax, -336[rbp]	# tmp104,
+	lea	rcx, .LC8[rip]	# tmp105,
+	mov	rsi, rcx	#, tmp105
+	mov	rdi, rax	#, tmp104
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:64:         fclose(fp);
-	.loc 1 64 9 discriminator 2
-	mov	rax, QWORD PTR -360[rbp]	# tmp108, fp
-	mov	rdi, rax	#, tmp108
+# /home/jscha/dvp/cpumon/src/sysfs.c:65:         fclose(fp);
+	.loc 1 65 9 discriminator 2
+	mov	rax, QWORD PTR -360[rbp]	# tmp106, fp
+	mov	rdi, rax	#, tmp106
 	call	fclose@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:50:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 50 30 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:51:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 51 30 discriminator 2
 	add	DWORD PTR -368[rbp], 1	# i,
 .L12:
-# /home/jscha/dvp/cpumon/src/sysfs.c:50:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 50 24 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:51:     for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 51 24 discriminator 1
 	cmp	DWORD PTR -368[rbp], 1	# i,
 	jle	.L15	#,
 .LBE2:
 .LBB3:
-# /home/jscha/dvp/cpumon/src/sysfs.c:67:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 67 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:68:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 68 14
 	mov	DWORD PTR -364[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/sysfs.c:67:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 67 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:68:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 68 5
 	jmp	.L16	#
 .L17:
-# /home/jscha/dvp/cpumon/src/sysfs.c:68:         power_limits[i] = (int)(power_uw[i]/1000000);
-	.loc 1 68 41 discriminator 3
-	mov	eax, DWORD PTR -364[rbp]	# tmp110, i
+# /home/jscha/dvp/cpumon/src/sysfs.c:69:         power_limits[i] = (int)(power_uw[i]/1000000);
+	.loc 1 69 41 discriminator 3
+	mov	eax, DWORD PTR -364[rbp]	# tmp108, i
 	cdqe
 	mov	rcx, QWORD PTR -352[rbp+rax*8]	# _3, power_uw[i_7]
-# /home/jscha/dvp/cpumon/src/sysfs.c:68:         power_limits[i] = (int)(power_uw[i]/1000000);
-	.loc 1 68 44 discriminator 3
-	movabs	rdx, 4835703278458516699	# tmp112,
-	mov	rax, rcx	# tmp121, _3
-	imul	rdx	# tmp112
-	mov	rax, rdx	# tmp111, tmp111
-	sar	rax, 18	# tmp111,
+# /home/jscha/dvp/cpumon/src/sysfs.c:69:         power_limits[i] = (int)(power_uw[i]/1000000);
+	.loc 1 69 44 discriminator 3
+	movabs	rdx, 4835703278458516699	# tmp110,
+	mov	rax, rcx	# tmp119, _3
+	imul	rdx	# tmp110
+	mov	rax, rdx	# tmp109, tmp109
+	sar	rax, 18	# tmp109,
 	sar	rcx, 63	# _3,
-	mov	rdx, rcx	# tmp114, _3
-	sub	rax, rdx	# _4, tmp114
-# /home/jscha/dvp/cpumon/src/sysfs.c:68:         power_limits[i] = (int)(power_uw[i]/1000000);
-	.loc 1 68 27 discriminator 3
+	mov	rdx, rcx	# tmp112, _3
+	sub	rax, rdx	# _4, tmp112
+# /home/jscha/dvp/cpumon/src/sysfs.c:69:         power_limits[i] = (int)(power_uw[i]/1000000);
+	.loc 1 69 27 discriminator 3
 	mov	ecx, eax	# _5, _4
-# /home/jscha/dvp/cpumon/src/sysfs.c:68:         power_limits[i] = (int)(power_uw[i]/1000000);
-	.loc 1 68 25 discriminator 3
-	mov	eax, DWORD PTR -364[rbp]	# tmp116, i
+# /home/jscha/dvp/cpumon/src/sysfs.c:69:         power_limits[i] = (int)(power_uw[i]/1000000);
+	.loc 1 69 25 discriminator 3
+	mov	eax, DWORD PTR -364[rbp]	# tmp114, i
 	cdqe
-	lea	rdx, 0[0+rax*4]	# tmp117,
-	lea	rax, power_limits.0[rip]	# tmp118,
+	lea	rdx, 0[0+rax*4]	# tmp115,
+	lea	rax, power_limits.0[rip]	# tmp116,
 	mov	DWORD PTR [rdx+rax], ecx	# power_limits[i_7], _5
-# /home/jscha/dvp/cpumon/src/sysfs.c:67:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 67 29 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:68:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 68 29 discriminator 3
 	add	DWORD PTR -364[rbp], 1	# i,
 .L16:
-# /home/jscha/dvp/cpumon/src/sysfs.c:67:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
-	.loc 1 67 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:68:     for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
+	.loc 1 68 23 discriminator 1
 	cmp	DWORD PTR -364[rbp], 1	# i,
 	jle	.L17	#,
 .LBE3:
-# /home/jscha/dvp/cpumon/src/sysfs.c:70:     return power_limits;
-	.loc 1 70 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:71:     return power_limits;
+	.loc 1 71 12
 	lea	rax, power_limits.0[rip]	# _15,
-# /home/jscha/dvp/cpumon/src/sysfs.c:71: }
-	.loc 1 71 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp122, D.4793
-	sub	rdx, QWORD PTR fs:40	# tmp122, MEM[(<address-space-1> long unsigned int *)40B]
+# /home/jscha/dvp/cpumon/src/sysfs.c:72: }
+	.loc 1 72 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp120, D.4799
+	sub	rdx, QWORD PTR fs:40	# tmp120, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L19	#,
 	call	__stack_chk_fail@PLT	#
 .L19:
@@ -324,39 +313,39 @@ get_sysfs_power_limits_w:
 	.size	get_sysfs_power_limits_w, .-get_sysfs_power_limits_w
 	.section	.rodata
 	.align 8
-.LC10:
+.LC9:
 	.string	"Power Limits: \t\tPL1 = %d W, PL2 = %d\n"
 	.align 8
-.LC11:
+.LC10:
 	.string	"/sys/devices/system/cpu/intel_pstate/no_turbo"
 	.align 8
-.LC12:
+.LC11:
 	.string	"/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference"
 	.align 8
-.LC13:
+.LC12:
 	.string	"Energy-Performance-Preference: \t%s \n"
 	.align 8
-.LC14:
+.LC13:
 	.string	"/sys/devices/system/cpu/cpufreq/policy0/scaling_driver"
-.LC15:
+.LC14:
 	.string	"Scaling Driver: \t\t%s \n"
 	.align 8
-.LC16:
+.LC15:
 	.string	"/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
 	.align 8
-.LC17:
+.LC16:
 	.string	"CPU Frequency Scaling Governor: %s \n"
 	.align 8
-.LC18:
+.LC17:
 	.string	"/sys/devices/system/cpu/amd_pstate/prefcore"
-.LC19:
+.LC18:
 	.string	"AMD Preferential Core: \t\t%s \n"
 	.text
 	.globl	power_config
 	.type	power_config, @function
 power_config:
 .LFB8:
-	.loc 1 74 1
+	.loc 1 75 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -370,104 +359,104 @@ power_config:
 	mov	eax, edi	# tmp85, running_with_privileges
 	mov	DWORD PTR -24[rbp], esi	# designer, designer
 	mov	BYTE PTR -20[rbp], al	# running_with_privileges, tmp86
-# /home/jscha/dvp/cpumon/src/sysfs.c:75:     if (running_with_privileges == TRUE && designer == INTEL)
-	.loc 1 75 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:76:     if (running_with_privileges == TRUE && designer == INTEL)
+	.loc 1 76 8
 	cmp	BYTE PTR -20[rbp], 0	# running_with_privileges,
 	je	.L21	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:75:     if (running_with_privileges == TRUE && designer == INTEL)
-	.loc 1 75 40 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:76:     if (running_with_privileges == TRUE && designer == INTEL)
+	.loc 1 76 40 discriminator 1
 	cmp	DWORD PTR -24[rbp], 0	# designer,
 	jne	.L21	#,
 .LBB4:
-# /home/jscha/dvp/cpumon/src/sysfs.c:77:         int *power_limits = get_sysfs_power_limits_w();
-	.loc 1 77 29
+# /home/jscha/dvp/cpumon/src/sysfs.c:78:         int *power_limits = get_sysfs_power_limits_w();
+	.loc 1 78 29
 	call	get_sysfs_power_limits_w	#
 	mov	QWORD PTR -16[rbp], rax	# power_limits, tmp87
-# /home/jscha/dvp/cpumon/src/sysfs.c:78:         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
-	.loc 1 78 89
+# /home/jscha/dvp/cpumon/src/sysfs.c:79:         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+	.loc 1 79 89
 	mov	rax, QWORD PTR -16[rbp]	# tmp88, power_limits
 	add	rax, 4	# _1,
-# /home/jscha/dvp/cpumon/src/sysfs.c:78:         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
-	.loc 1 78 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:79:         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
+	.loc 1 79 9
 	mov	edx, DWORD PTR [rax]	# _2, *_1
 	mov	rax, QWORD PTR -16[rbp]	# tmp89, power_limits
 	mov	eax, DWORD PTR [rax]	# _3, *power_limits_10
 	mov	esi, eax	#, _3
-	lea	rax, .LC10[rip]	# tmp90,
+	lea	rax, .LC9[rip]	# tmp90,
 	mov	rdi, rax	#, tmp90
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L21:
 .LBE4:
-# /home/jscha/dvp/cpumon/src/sysfs.c:82:     char *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
-	.loc 1 82 18
-	lea	rax, .LC11[rip]	# tmp91,
+# /home/jscha/dvp/cpumon/src/sysfs.c:83:     char *file = read_string("/sys/devices/system/cpu/intel_pstate/no_turbo");
+	.loc 1 83 18
+	lea	rax, .LC10[rip]	# tmp91,
 	mov	rdi, rax	#, tmp91
 	call	read_string@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# file, tmp92
-# /home/jscha/dvp/cpumon/src/sysfs.c:90:     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-	.loc 1 90 12
-	lea	rax, .LC12[rip]	# tmp93,
+# /home/jscha/dvp/cpumon/src/sysfs.c:91:     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
+	.loc 1 91 12
+	lea	rax, .LC11[rip]	# tmp93,
 	mov	rdi, rax	#, tmp93
 	call	read_string@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# file, tmp94
-# /home/jscha/dvp/cpumon/src/sysfs.c:91:     printw("Energy-Performance-Preference: \t%s \n", file);
-	.loc 1 91 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:92:     printw("Energy-Performance-Preference: \t%s \n", file);
+	.loc 1 92 5
 	mov	rax, QWORD PTR -8[rbp]	# tmp95, file
 	mov	rsi, rax	#, tmp95
-	lea	rax, .LC13[rip]	# tmp96,
+	lea	rax, .LC12[rip]	# tmp96,
 	mov	rdi, rax	#, tmp96
 	mov	eax, 0	#,
 	call	printw@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:93:     file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
-	.loc 1 93 12
-	lea	rax, .LC14[rip]	# tmp97,
+# /home/jscha/dvp/cpumon/src/sysfs.c:94:     file = read_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
+	.loc 1 94 12
+	lea	rax, .LC13[rip]	# tmp97,
 	mov	rdi, rax	#, tmp97
 	call	read_string@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# file, tmp98
-# /home/jscha/dvp/cpumon/src/sysfs.c:94:     printw("Scaling Driver: \t\t%s \n",file);
-	.loc 1 94 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:95:     printw("Scaling Driver: \t\t%s \n",file);
+	.loc 1 95 5
 	mov	rax, QWORD PTR -8[rbp]	# tmp99, file
 	mov	rsi, rax	#, tmp99
-	lea	rax, .LC15[rip]	# tmp100,
+	lea	rax, .LC14[rip]	# tmp100,
 	mov	rdi, rax	#, tmp100
 	mov	eax, 0	#,
 	call	printw@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:96:     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-	.loc 1 96 12
-	lea	rax, .LC16[rip]	# tmp101,
+# /home/jscha/dvp/cpumon/src/sysfs.c:97:     file = read_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+	.loc 1 97 12
+	lea	rax, .LC15[rip]	# tmp101,
 	mov	rdi, rax	#, tmp101
 	call	read_string@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# file, tmp102
-# /home/jscha/dvp/cpumon/src/sysfs.c:97:     printw("CPU Frequency Scaling Governor: %s \n", file);   
-	.loc 1 97 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:98:     printw("CPU Frequency Scaling Governor: %s \n", file);   
+	.loc 1 98 5
 	mov	rax, QWORD PTR -8[rbp]	# tmp103, file
 	mov	rsi, rax	#, tmp103
-	lea	rax, .LC17[rip]	# tmp104,
+	lea	rax, .LC16[rip]	# tmp104,
 	mov	rdi, rax	#, tmp104
 	mov	eax, 0	#,
 	call	printw@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:99:     if (designer == AMD)
-	.loc 1 99 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:100:     if (designer == AMD)
+	.loc 1 100 8
 	cmp	DWORD PTR -24[rbp], 1	# designer,
 	jne	.L23	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:101:         file = read_string("/sys/devices/system/cpu/amd_pstate/prefcore");
-	.loc 1 101 16
-	lea	rax, .LC18[rip]	# tmp105,
+# /home/jscha/dvp/cpumon/src/sysfs.c:102:         file = read_string("/sys/devices/system/cpu/amd_pstate/prefcore");
+	.loc 1 102 16
+	lea	rax, .LC17[rip]	# tmp105,
 	mov	rdi, rax	#, tmp105
 	call	read_string@PLT	#
 	mov	QWORD PTR -8[rbp], rax	# file, tmp106
-# /home/jscha/dvp/cpumon/src/sysfs.c:102:         printw("AMD Preferential Core: \t\t%s \n", file);
-	.loc 1 102 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:103:         printw("AMD Preferential Core: \t\t%s \n", file);
+	.loc 1 103 9
 	mov	rax, QWORD PTR -8[rbp]	# tmp107, file
 	mov	rsi, rax	#, tmp107
-	lea	rax, .LC19[rip]	# tmp108,
+	lea	rax, .LC18[rip]	# tmp108,
 	mov	rdi, rax	#, tmp108
 	mov	eax, 0	#,
 	call	printw@PLT	#
 .L23:
-# /home/jscha/dvp/cpumon/src/sysfs.c:105: }
-	.loc 1 105 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:106: }
+	.loc 1 106 1
 	nop	
 	leave	
 .LCFI8:
@@ -478,20 +467,20 @@ power_config:
 	.size	power_config, .-power_config
 	.section	.rodata
 	.align 8
-.LC20:
+.LC19:
 	.string	"/sys/class/power_supply/BAT0/power_now"
 	.align 8
-.LC22:
+.LC21:
 	.string	"/sys/class/power_supply/BAT1/voltage_now"
 	.align 8
-.LC23:
+.LC22:
 	.string	"/sys/class/power_supply/BAT1/current_now"
 	.text
 	.globl	get_sysfs_power_battery_w
 	.type	get_sysfs_power_battery_w, @function
 get_sysfs_power_battery_w:
 .LFB9:
-	.loc 1 108 1
+	.loc 1 109 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -503,139 +492,139 @@ get_sysfs_power_battery_w:
 	.cfi_def_cfa_register 6
 	sub	rsp, 64	#,
 	mov	QWORD PTR -56[rbp], rdi	# battery_power, battery_power
-# /home/jscha/dvp/cpumon/src/sysfs.c:108: {
-	.loc 1 108 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:109: {
+	.loc 1 109 1
 	mov	rax, QWORD PTR fs:40	# tmp118, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.4810, tmp118
+	mov	QWORD PTR -8[rbp], rax	# D.4815, tmp118
 	xor	eax, eax	# tmp118
-# /home/jscha/dvp/cpumon/src/sysfs.c:112:     if (read_line(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
-	.loc 1 112 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:113:     if (read_line(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
+	.loc 1 113 9
 	lea	rax, -32[rbp]	# tmp98,
-	lea	rdx, .LC20[rip]	# tmp99,
+	lea	rdx, .LC19[rip]	# tmp99,
 	mov	rsi, rdx	#, tmp99
 	mov	rdi, rax	#, tmp98
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:112:     if (read_line(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
-	.loc 1 112 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:113:     if (read_line(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
+	.loc 1 113 8
 	test	eax, eax	# _1
 	jne	.L25	#,
 .LBB5:
-# /home/jscha/dvp/cpumon/src/sysfs.c:114:         long power_uw = 0;
-	.loc 1 114 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:115:         long power_uw = 0;
+	.loc 1 115 14
 	mov	QWORD PTR -40[rbp], 0	# MEM[(long int *)_40],
-# /home/jscha/dvp/cpumon/src/sysfs.c:115:         sscanf(read_value, "%ld", &power_uw);
-	.loc 1 115 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:116:         sscanf(read_value, "%ld", &power_uw);
+	.loc 1 116 9
 	lea	rdx, -40[rbp]	# tmp100,
 	lea	rax, -32[rbp]	# tmp101,
-	lea	rcx, .LC9[rip]	# tmp102,
+	lea	rcx, .LC8[rip]	# tmp102,
 	mov	rsi, rcx	#, tmp102
 	mov	rdi, rax	#, tmp101
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:116:         *battery_power = (float)power_uw * 1e-6;
-	.loc 1 116 26
+# /home/jscha/dvp/cpumon/src/sysfs.c:117:         *battery_power = (float)power_uw * 1e-6;
+	.loc 1 117 26
 	mov	rax, QWORD PTR -40[rbp]	# power_uw.0_2, MEM[(long int *)_40]
 	pxor	xmm0, xmm0	# _3
 	cvtsi2ss	xmm0, rax	# _3, power_uw.0_2
 	pxor	xmm1, xmm1	# _4
 	cvtss2sd	xmm1, xmm0	# _4, _3
-# /home/jscha/dvp/cpumon/src/sysfs.c:116:         *battery_power = (float)power_uw * 1e-6;
-	.loc 1 116 42
-	movsd	xmm0, QWORD PTR .LC21[rip]	# tmp103,
+# /home/jscha/dvp/cpumon/src/sysfs.c:117:         *battery_power = (float)power_uw * 1e-6;
+	.loc 1 117 42
+	movsd	xmm0, QWORD PTR .LC20[rip]	# tmp103,
 	mulsd	xmm0, xmm1	# _5, _4
 	cvtsd2ss	xmm0, xmm0	# _6, _5
-# /home/jscha/dvp/cpumon/src/sysfs.c:116:         *battery_power = (float)power_uw * 1e-6;
-	.loc 1 116 24
+# /home/jscha/dvp/cpumon/src/sysfs.c:117:         *battery_power = (float)power_uw * 1e-6;
+	.loc 1 117 24
 	mov	rax, QWORD PTR -56[rbp]	# tmp104, battery_power
 	movss	DWORD PTR [rax], xmm0	# *battery_power_26(D), _6
-# /home/jscha/dvp/cpumon/src/sysfs.c:117:         return 0;
-	.loc 1 117 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:118:         return 0;
+	.loc 1 118 16
 	mov	eax, 0	# _15,
 	jmp	.L28	#
 .L25:
 .LBE5:
-# /home/jscha/dvp/cpumon/src/sysfs.c:119:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
-	.loc 1 119 10
+# /home/jscha/dvp/cpumon/src/sysfs.c:120:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+	.loc 1 120 10
 	lea	rax, -32[rbp]	# tmp105,
-	lea	rdx, .LC22[rip]	# tmp106,
+	lea	rdx, .LC21[rip]	# tmp106,
 	mov	rsi, rdx	#, tmp106
 	mov	rdi, rax	#, tmp105
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:119:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
-	.loc 1 119 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:120:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+	.loc 1 120 8
 	test	eax, eax	# _7
 	jne	.L27	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:119:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
-	.loc 1 119 85 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:120:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+	.loc 1 120 85 discriminator 1
 	lea	rax, -20[rbp]	# tmp107,
-	lea	rdx, .LC23[rip]	# tmp108,
+	lea	rdx, .LC22[rip]	# tmp108,
 	mov	rsi, rdx	#, tmp108
 	mov	rdi, rax	#, tmp107
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:119:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
-	.loc 1 119 81 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:120:     if ((read_line(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_line(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+	.loc 1 120 81 discriminator 1
 	test	eax, eax	# _8
 	jne	.L27	#,
 .LBB6:
-# /home/jscha/dvp/cpumon/src/sysfs.c:121:         long voltage_uv = 0;
-	.loc 1 121 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:122:         long voltage_uv = 0;
+	.loc 1 122 14
 	mov	QWORD PTR -48[rbp], 0	# voltage_uv,
-# /home/jscha/dvp/cpumon/src/sysfs.c:122:         sscanf(read_value, "%ld", &voltage_uv);
-	.loc 1 122 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:123:         sscanf(read_value, "%ld", &voltage_uv);
+	.loc 1 123 9
 	lea	rdx, -48[rbp]	# tmp109,
 	lea	rax, -32[rbp]	# tmp110,
-	lea	rcx, .LC9[rip]	# tmp111,
+	lea	rcx, .LC8[rip]	# tmp111,
 	mov	rsi, rcx	#, tmp111
 	mov	rdi, rax	#, tmp110
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:123:         long current_ua = 0;
-	.loc 1 123 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:124:         long current_ua = 0;
+	.loc 1 124 14
 	mov	QWORD PTR -40[rbp], 0	# MEM[(long int *)_40],
-# /home/jscha/dvp/cpumon/src/sysfs.c:124:         sscanf(read_value2, "%ld", &current_ua);
-	.loc 1 124 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:125:         sscanf(read_value2, "%ld", &current_ua);
+	.loc 1 125 9
 	lea	rdx, -40[rbp]	# tmp112,
 	lea	rax, -20[rbp]	# tmp113,
-	lea	rcx, .LC9[rip]	# tmp114,
+	lea	rcx, .LC8[rip]	# tmp114,
 	mov	rsi, rcx	#, tmp114
 	mov	rdi, rax	#, tmp113
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:125:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-	.loc 1 125 45
+# /home/jscha/dvp/cpumon/src/sysfs.c:126:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+	.loc 1 126 45
 	mov	rdx, QWORD PTR -48[rbp]	# voltage_uv.1_9, voltage_uv
 	mov	rax, QWORD PTR -40[rbp]	# current_ua.2_10, MEM[(long int *)_40]
 	imul	rax, rdx	# _11, voltage_uv.1_9
-# /home/jscha/dvp/cpumon/src/sysfs.c:125:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-	.loc 1 125 58
+# /home/jscha/dvp/cpumon/src/sysfs.c:126:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+	.loc 1 126 58
 	pxor	xmm1, xmm1	# _12
 	cvtsi2sd	xmm1, rax	# _12, _11
-	movsd	xmm0, QWORD PTR .LC24[rip]	# tmp115,
+	movsd	xmm0, QWORD PTR .LC23[rip]	# tmp115,
 	mulsd	xmm0, xmm1	# _13, _12
-# /home/jscha/dvp/cpumon/src/sysfs.c:125:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-	.loc 1 125 26
+# /home/jscha/dvp/cpumon/src/sysfs.c:126:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+	.loc 1 126 26
 	cvtsd2ss	xmm0, xmm0	# _14, _13
-# /home/jscha/dvp/cpumon/src/sysfs.c:125:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-	.loc 1 125 24
+# /home/jscha/dvp/cpumon/src/sysfs.c:126:         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+	.loc 1 126 24
 	mov	rax, QWORD PTR -56[rbp]	# tmp116, battery_power
 	movss	DWORD PTR [rax], xmm0	# *battery_power_26(D), _14
-# /home/jscha/dvp/cpumon/src/sysfs.c:126:         return 0;
-	.loc 1 126 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:127:         return 0;
+	.loc 1 127 16
 	mov	eax, 0	# _15,
 	jmp	.L28	#
 .L27:
 .LBE6:
-# /home/jscha/dvp/cpumon/src/sysfs.c:129:     return -1;
-	.loc 1 129 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:130:     return -1;
+	.loc 1 130 12
 	mov	eax, -1	# _15,
 .L28:
-# /home/jscha/dvp/cpumon/src/sysfs.c:130: }
-	.loc 1 130 1 discriminator 3
-	mov	rdx, QWORD PTR -8[rbp]	# tmp119, D.4810
+# /home/jscha/dvp/cpumon/src/sysfs.c:131: }
+	.loc 1 131 1 discriminator 3
+	mov	rdx, QWORD PTR -8[rbp]	# tmp119, D.4815
 	sub	rdx, QWORD PTR fs:40	# tmp119, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L29	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:130: }
-	.loc 1 130 1 is_stmt 0
+# /home/jscha/dvp/cpumon/src/sysfs.c:131: }
+	.loc 1 131 1 is_stmt 0
 	call	__stack_chk_fail@PLT	#
 .L29:
 	leave	
@@ -647,17 +636,17 @@ get_sysfs_power_battery_w:
 	.size	get_sysfs_power_battery_w, .-get_sysfs_power_battery_w
 	.section	.rodata
 	.align 8
-.LC25:
+.LC24:
 	.string	"/sys/class/power_supply/BAT0/status"
 	.align 8
-.LC26:
+.LC25:
 	.string	"/sys/class/power_supply/BAT1/status"
 	.text
 	.globl	get_battery_status
 	.type	get_battery_status, @function
 get_battery_status:
 .LFB10:
-	.loc 1 133 1 is_stmt 1
+	.loc 1 134 1 is_stmt 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -669,52 +658,52 @@ get_battery_status:
 	.cfi_def_cfa_register 6
 	sub	rsp, 16	#,
 	mov	QWORD PTR -8[rbp], rdi	# status, status
-# /home/jscha/dvp/cpumon/src/sysfs.c:135:     if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
-	.loc 1 135 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:136:     if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
+	.loc 1 136 9
 	mov	rax, QWORD PTR -8[rbp]	# tmp86, status
-	lea	rdx, .LC25[rip]	# tmp87,
+	lea	rdx, .LC24[rip]	# tmp87,
 	mov	rsi, rdx	#, tmp87
 	mov	rdi, rax	#, tmp86
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:135:     if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
-	.loc 1 135 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:136:     if (read_line(status, "/sys/class/power_supply/BAT0/status") == 0)
+	.loc 1 136 8
 	test	eax, eax	# _1
 	jne	.L31	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:137:         return 0;
-	.loc 1 137 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:138:         return 0;
+	.loc 1 138 16
 	mov	eax, 0	# _3,
 	jmp	.L32	#
 .L31:
-# /home/jscha/dvp/cpumon/src/sysfs.c:139:     if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
-	.loc 1 139 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:140:     if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
+	.loc 1 140 9
 	mov	rax, QWORD PTR -8[rbp]	# tmp88, status
-	lea	rdx, .LC26[rip]	# tmp89,
+	lea	rdx, .LC25[rip]	# tmp89,
 	mov	rsi, rdx	#, tmp89
 	mov	rdi, rax	#, tmp88
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:139:     if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
-	.loc 1 139 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:140:     if  (read_line(status, "/sys/class/power_supply/BAT1/status") == 0)
+	.loc 1 140 8
 	test	eax, eax	# _2
 	jne	.L33	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:141:         return 0;
-	.loc 1 141 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:142:         return 0;
+	.loc 1 142 16
 	mov	eax, 0	# _3,
 	jmp	.L32	#
 .L33:
-# /home/jscha/dvp/cpumon/src/sysfs.c:144:     strcpy(status, "Status unknown");
-	.loc 1 144 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:145:     strcpy(status, "Status unknown");
+	.loc 1 145 5
 	mov	rax, QWORD PTR -8[rbp]	# tmp90, status
 	movabs	rcx, 8439872649993221203	# tmp93,
 	mov	QWORD PTR [rax], rcx	# MEM <char[1:15]> [(void *)status_6(D)], tmp93
 	mov	DWORD PTR 8[rax], 1869507438	# MEM <char[1:15]> [(void *)status_6(D)],
 	mov	WORD PTR 12[rax], 28279	# MEM <char[1:15]> [(void *)status_6(D)],
 	mov	BYTE PTR 14[rax], 0	# MEM <char[1:15]> [(void *)status_6(D)],
-# /home/jscha/dvp/cpumon/src/sysfs.c:145:     return -1;
-	.loc 1 145 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:146:     return -1;
+	.loc 1 146 12
 	mov	eax, -1	# _3,
 .L32:
-# /home/jscha/dvp/cpumon/src/sysfs.c:146: }
-	.loc 1 146 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:147: }
+	.loc 1 147 1
 	leave	
 .LCFI14:
 	.cfi_def_cfa 7, 8
@@ -726,7 +715,7 @@ get_battery_status:
 	.type	reset_if_status_change, @function
 reset_if_status_change:
 .LFB11:
-	.loc 1 149 1
+	.loc 1 150 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -740,32 +729,32 @@ reset_if_status_change:
 	mov	QWORD PTR -8[rbp], rdi	# cumulative, cumulative
 	mov	QWORD PTR -16[rbp], rsi	# status, status
 	mov	QWORD PTR -24[rbp], rdx	# status_before, status_before
-# /home/jscha/dvp/cpumon/src/sysfs.c:150:     if (strcmp(status, status_before) != 0)
-	.loc 1 150 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:151:     if (strcmp(status, status_before) != 0)
+	.loc 1 151 9
 	mov	rdx, QWORD PTR -24[rbp]	# tmp83, status_before
 	mov	rax, QWORD PTR -16[rbp]	# tmp84, status
 	mov	rsi, rdx	#, tmp83
 	mov	rdi, rax	#, tmp84
 	call	strcmp@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:150:     if (strcmp(status, status_before) != 0)
-	.loc 1 150 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:151:     if (strcmp(status, status_before) != 0)
+	.loc 1 151 8
 	test	eax, eax	# _1
 	je	.L36	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:152:         *cumulative = 0;
-	.loc 1 152 21
+# /home/jscha/dvp/cpumon/src/sysfs.c:153:         *cumulative = 0;
+	.loc 1 153 21
 	mov	rax, QWORD PTR -8[rbp]	# tmp85, cumulative
 	pxor	xmm0, xmm0	# tmp86
 	movss	DWORD PTR [rax], xmm0	# *cumulative_6(D), tmp86
-# /home/jscha/dvp/cpumon/src/sysfs.c:153:         strcpy(status_before, status);
-	.loc 1 153 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:154:         strcpy(status_before, status);
+	.loc 1 154 9
 	mov	rdx, QWORD PTR -16[rbp]	# tmp87, status
 	mov	rax, QWORD PTR -24[rbp]	# tmp88, status_before
 	mov	rsi, rdx	#, tmp87
 	mov	rdi, rax	#, tmp88
 	call	strcpy@PLT	#
 .L36:
-# /home/jscha/dvp/cpumon/src/sysfs.c:155: }
-	.loc 1 155 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:156: }
+	.loc 1 156 1
 	nop	
 	leave	
 .LCFI17:
@@ -776,14 +765,14 @@ reset_if_status_change:
 	.size	reset_if_status_change, .-reset_if_status_change
 	.section	.rodata
 	.align 8
-.LC28:
+.LC27:
 	.string	"/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq"
 	.text
 	.globl	sysfs_freq_ghz
 	.type	sysfs_freq_ghz, @function
 sysfs_freq_ghz:
 .LFB12:
-	.loc 1 160 1
+	.loc 1 161 1
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -797,119 +786,119 @@ sysfs_freq_ghz:
 	mov	QWORD PTR -168[rbp], rdi	# freq_ghz, freq_ghz
 	mov	QWORD PTR -176[rbp], rsi	# average, average
 	mov	DWORD PTR -180[rbp], edx	# core_count, core_count
-# /home/jscha/dvp/cpumon/src/sysfs.c:160: {
-	.loc 1 160 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:161: {
+	.loc 1 161 1
 	mov	rax, QWORD PTR fs:40	# tmp118, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.4816, tmp118
+	mov	QWORD PTR -8[rbp], rax	# D.4821, tmp118
 	xor	eax, eax	# tmp118
-# /home/jscha/dvp/cpumon/src/sysfs.c:164:     float total = 0;
-	.loc 1 164 11
+# /home/jscha/dvp/cpumon/src/sysfs.c:165:     float total = 0;
+	.loc 1 165 11
 	pxor	xmm0, xmm0	# tmp98
 	movss	DWORD PTR -152[rbp], xmm0	# total, tmp98
 .LBB7:
-# /home/jscha/dvp/cpumon/src/sysfs.c:166:     for (int i = 0; i < core_count; i++){
-	.loc 1 166 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:167:     for (int i = 0; i < core_count; i++){
+	.loc 1 167 14
 	mov	DWORD PTR -148[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/sysfs.c:166:     for (int i = 0; i < core_count; i++){
-	.loc 1 166 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:167:     for (int i = 0; i < core_count; i++){
+	.loc 1 167 5
 	jmp	.L38	#
 .L41:
-# /home/jscha/dvp/cpumon/src/sysfs.c:167:         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
-	.loc 1 167 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:168:         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
+	.loc 1 168 9
 	mov	edx, DWORD PTR -148[rbp]	# tmp99, i
 	lea	rax, -80[rbp]	# tmp100,
-	lea	rcx, .LC28[rip]	# tmp101,
+	lea	rcx, .LC27[rip]	# tmp101,
 	mov	rsi, rcx	#, tmp101
 	mov	rdi, rax	#, tmp100
 	mov	eax, 0	#,
 	call	sprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:168:         if (read_line(file_buf, path) == 0)
-	.loc 1 168 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:169:         if (read_line(file_buf, path) == 0)
+	.loc 1 169 13
 	lea	rdx, -80[rbp]	# tmp102,
 	lea	rax, -144[rbp]	# tmp103,
 	mov	rsi, rdx	#, tmp102
 	mov	rdi, rax	#, tmp103
 	call	read_line@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:168:         if (read_line(file_buf, path) == 0)
-	.loc 1 168 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:169:         if (read_line(file_buf, path) == 0)
+	.loc 1 169 12
 	test	eax, eax	# _1
 	jne	.L39	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:170:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-	.loc 1 170 34
+# /home/jscha/dvp/cpumon/src/sysfs.c:171:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+	.loc 1 171 34
 	lea	rax, -144[rbp]	# tmp104,
 	mov	edx, 10	#,
 	mov	esi, 0	#,
 	mov	rdi, rax	#, tmp104
 	call	strtol@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:170:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-	.loc 1 170 27
+# /home/jscha/dvp/cpumon/src/sysfs.c:171:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+	.loc 1 171 27
 	pxor	xmm0, xmm0	# _3
 	cvtsi2ss	xmm0, rax	# _3, _2
-# /home/jscha/dvp/cpumon/src/sysfs.c:170:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-	.loc 1 170 21
+# /home/jscha/dvp/cpumon/src/sysfs.c:171:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+	.loc 1 171 21
 	mov	eax, DWORD PTR -148[rbp]	# tmp105, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _5,
 	mov	rax, QWORD PTR -168[rbp]	# tmp106, freq_ghz
 	add	rax, rdx	# _6, _5
-# /home/jscha/dvp/cpumon/src/sysfs.c:170:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-	.loc 1 170 60
-	movss	xmm1, DWORD PTR .LC29[rip]	# tmp107,
+# /home/jscha/dvp/cpumon/src/sysfs.c:171:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+	.loc 1 171 60
+	movss	xmm1, DWORD PTR .LC28[rip]	# tmp107,
 	divss	xmm0, xmm1	# _7, tmp107
-# /home/jscha/dvp/cpumon/src/sysfs.c:170:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-	.loc 1 170 25
+# /home/jscha/dvp/cpumon/src/sysfs.c:171:             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
+	.loc 1 171 25
 	movss	DWORD PTR [rax], xmm0	# *_6, _7
-# /home/jscha/dvp/cpumon/src/sysfs.c:171:             total += freq_ghz[i];
-	.loc 1 171 30
+# /home/jscha/dvp/cpumon/src/sysfs.c:172:             total += freq_ghz[i];
+	.loc 1 172 30
 	mov	eax, DWORD PTR -148[rbp]	# tmp108, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _9,
 	mov	rax, QWORD PTR -168[rbp]	# tmp109, freq_ghz
 	add	rax, rdx	# _10, _9
 	movss	xmm0, DWORD PTR [rax]	# _11, *_10
-# /home/jscha/dvp/cpumon/src/sysfs.c:171:             total += freq_ghz[i];
-	.loc 1 171 19
+# /home/jscha/dvp/cpumon/src/sysfs.c:172:             total += freq_ghz[i];
+	.loc 1 172 19
 	movss	xmm1, DWORD PTR -152[rbp]	# tmp111, total
 	addss	xmm0, xmm1	# tmp110, tmp111
 	movss	DWORD PTR -152[rbp], xmm0	# total, tmp110
 	jmp	.L40	#
 .L39:
-# /home/jscha/dvp/cpumon/src/sysfs.c:175:             freq_ghz[i] = -1;
-	.loc 1 175 21
+# /home/jscha/dvp/cpumon/src/sysfs.c:176:             freq_ghz[i] = -1;
+	.loc 1 176 21
 	mov	eax, DWORD PTR -148[rbp]	# tmp112, i
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _13,
 	mov	rax, QWORD PTR -168[rbp]	# tmp113, freq_ghz
 	add	rax, rdx	# _14, _13
-# /home/jscha/dvp/cpumon/src/sysfs.c:175:             freq_ghz[i] = -1;
-	.loc 1 175 25
-	movss	xmm0, DWORD PTR .LC30[rip]	# tmp114,
+# /home/jscha/dvp/cpumon/src/sysfs.c:176:             freq_ghz[i] = -1;
+	.loc 1 176 25
+	movss	xmm0, DWORD PTR .LC29[rip]	# tmp114,
 	movss	DWORD PTR [rax], xmm0	# *_14, tmp114
 .L40:
-# /home/jscha/dvp/cpumon/src/sysfs.c:166:     for (int i = 0; i < core_count; i++){
-	.loc 1 166 38 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:167:     for (int i = 0; i < core_count; i++){
+	.loc 1 167 38 discriminator 2
 	add	DWORD PTR -148[rbp], 1	# i,
 .L38:
-# /home/jscha/dvp/cpumon/src/sysfs.c:166:     for (int i = 0; i < core_count; i++){
-	.loc 1 166 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:167:     for (int i = 0; i < core_count; i++){
+	.loc 1 167 23 discriminator 1
 	mov	eax, DWORD PTR -148[rbp]	# tmp115, i
 	cmp	eax, DWORD PTR -180[rbp]	# tmp115, core_count
 	jl	.L41	#,
 .LBE7:
-# /home/jscha/dvp/cpumon/src/sysfs.c:179:     *average = total / core_count;
-	.loc 1 179 22
+# /home/jscha/dvp/cpumon/src/sysfs.c:180:     *average = total / core_count;
+	.loc 1 180 22
 	pxor	xmm1, xmm1	# _15
 	cvtsi2ss	xmm1, DWORD PTR -180[rbp]	# _15, core_count
 	movss	xmm0, DWORD PTR -152[rbp]	# tmp116, total
 	divss	xmm0, xmm1	# _16, _15
-# /home/jscha/dvp/cpumon/src/sysfs.c:179:     *average = total / core_count;
-	.loc 1 179 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:180:     *average = total / core_count;
+	.loc 1 180 14
 	mov	rax, QWORD PTR -176[rbp]	# tmp117, average
 	movss	DWORD PTR [rax], xmm0	# *average_26(D), _16
-# /home/jscha/dvp/cpumon/src/sysfs.c:180: }
-	.loc 1 180 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:181: }
+	.loc 1 181 1
 	nop	
-	mov	rax, QWORD PTR -8[rbp]	# tmp119, D.4816
+	mov	rax, QWORD PTR -8[rbp]	# tmp119, D.4821
 	sub	rax, QWORD PTR fs:40	# tmp119, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L42	#,
 	call	__stack_chk_fail@PLT	#
@@ -922,23 +911,23 @@ sysfs_freq_ghz:
 .LFE12:
 	.size	sysfs_freq_ghz, .-sysfs_freq_ghz
 	.section	.rodata
-.LC31:
+.LC30:
 	.string	"/proc/stat"
-.LC32:
+.LC31:
 	.string	"Error opening file /proc/stat"
-.LC33:
+.LC32:
 	.string	"Error %s\n"
-.LC34:
+.LC33:
 	.string	"cpu%d "
 	.align 8
-.LC35:
+.LC34:
 	.string	"%*s %lld %lld %lld %lld %lld %lld %lld"
 	.text
 	.globl	cpucore_load
 	.type	cpucore_load, @function
 cpucore_load:
 .LFB13:
-	.loc 1 183 130
+	.loc 1 184 130
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -968,39 +957,39 @@ cpucore_load:
 	mov	QWORD PTR -8424[rbp], rdx	# work_jiffies_before, work_jiffies_before
 	mov	QWORD PTR -8432[rbp], rcx	# total_jiffies_before, total_jiffies_before
 	mov	DWORD PTR -8436[rbp], r8d	# core_count, core_count
-# /home/jscha/dvp/cpumon/src/sysfs.c:183: void cpucore_load(float *load, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
-	.loc 1 183 130
+# /home/jscha/dvp/cpumon/src/sysfs.c:184: void cpucore_load(float *load, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
+	.loc 1 184 130
 	mov	rax, QWORD PTR fs:40	# tmp299, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -56[rbp], rax	# D.4818, tmp299
+	mov	QWORD PTR -56[rbp], rax	# D.4823, tmp299
 	xor	eax, eax	# tmp299
 	mov	rax, rsp	# tmp179,
 	mov	rbx, rax	# saved_stack.17_109, tmp179
-# /home/jscha/dvp/cpumon/src/sysfs.c:185:     FILE *fp = fopen("/proc/stat", "r");
-	.loc 1 185 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:186:     FILE *fp = fopen("/proc/stat", "r");
+	.loc 1 186 16
 	lea	rax, .LC0[rip]	# tmp180,
 	mov	rsi, rax	#, tmp180
-	lea	rax, .LC31[rip]	# tmp181,
+	lea	rax, .LC30[rip]	# tmp181,
 	mov	rdi, rax	#, tmp181
 	call	fopen@PLT	#
 	mov	QWORD PTR -8320[rbp], rax	# fp, tmp182
-# /home/jscha/dvp/cpumon/src/sysfs.c:186:     if (fp == NULL) {
-	.loc 1 186 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:187:     if (fp == NULL) {
+	.loc 1 187 8
 	cmp	QWORD PTR -8320[rbp], 0	# fp,
 	jne	.L44	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:187:         perror("Error opening file /proc/stat");
-	.loc 1 187 9
-	lea	rax, .LC32[rip]	# tmp183,
+# /home/jscha/dvp/cpumon/src/sysfs.c:188:         perror("Error opening file /proc/stat");
+	.loc 1 188 9
+	lea	rax, .LC31[rip]	# tmp183,
 	mov	rdi, rax	#, tmp183
 	call	perror@PLT	#
 .L44:
-# /home/jscha/dvp/cpumon/src/sysfs.c:193:     long long work_jiffies_after[core_count];
-	.loc 1 193 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:194:     long long work_jiffies_after[core_count];
+	.loc 1 194 5
 	mov	eax, DWORD PTR -8436[rbp]	# core_count.3_114, core_count
-# /home/jscha/dvp/cpumon/src/sysfs.c:193:     long long work_jiffies_after[core_count];
-	.loc 1 193 15
+# /home/jscha/dvp/cpumon/src/sysfs.c:194:     long long work_jiffies_after[core_count];
+	.loc 1 194 15
 	movsx	rdx, eax	# _1, core_count.3_114
 	sub	rdx, 1	# _2,
-	mov	QWORD PTR -8312[rbp], rdx	# D.4749, _3
+	mov	QWORD PTR -8312[rbp], rdx	# D.4755, _3
 	movsx	rdx, eax	# _4, core_count.3_114
 	mov	QWORD PTR -8464[rbp], rdx	# %sfp, _4
 	mov	QWORD PTR -8456[rbp], 0	# %sfp,
@@ -1044,14 +1033,14 @@ cpucore_load:
 	shr	rax, 3	# tmp198,
 	sal	rax, 3	# tmp199,
 	mov	QWORD PTR -8304[rbp], rax	# work_jiffies_after.4, tmp199
-# /home/jscha/dvp/cpumon/src/sysfs.c:194:     long long total_jiffies_after[core_count];
-	.loc 1 194 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:195:     long long total_jiffies_after[core_count];
+	.loc 1 195 5
 	mov	eax, DWORD PTR -8436[rbp]	# core_count.5_122, core_count
-# /home/jscha/dvp/cpumon/src/sysfs.c:194:     long long total_jiffies_after[core_count];
-	.loc 1 194 15
+# /home/jscha/dvp/cpumon/src/sysfs.c:195:     long long total_jiffies_after[core_count];
+	.loc 1 195 15
 	movsx	rdx, eax	# _14, core_count.5_122
 	sub	rdx, 1	# _15,
-	mov	QWORD PTR -8296[rbp], rdx	# D.4756, _16
+	mov	QWORD PTR -8296[rbp], rdx	# D.4762, _16
 	movsx	rdx, eax	# _17, core_count.5_122
 	mov	r14, rdx	# _18, _17
 	mov	r15d, 0	# _18,
@@ -1095,74 +1084,74 @@ cpucore_load:
 	shr	rax, 3	# tmp214,
 	sal	rax, 3	# tmp215,
 	mov	QWORD PTR -8288[rbp], rax	# total_jiffies_after.6, tmp215
-# /home/jscha/dvp/cpumon/src/sysfs.c:196:     float total = 0;
-	.loc 1 196 11
+# /home/jscha/dvp/cpumon/src/sysfs.c:197:     float total = 0;
+	.loc 1 197 11
 	pxor	xmm0, xmm0	# tmp216
 	movss	DWORD PTR -8392[rbp], xmm0	# total, tmp216
-# /home/jscha/dvp/cpumon/src/sysfs.c:198:         line = fgets(file_buf, BUFSIZ, fp);
-	.loc 1 198 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:199:         line = fgets(file_buf, BUFSIZ, fp);
+	.loc 1 199 16
 	mov	rdx, QWORD PTR -8320[rbp]	# tmp217, fp
 	lea	rax, -8256[rbp]	# tmp218,
 	mov	esi, 8192	#,
 	mov	rdi, rax	#, tmp218
 	call	fgets@PLT	#
 	mov	QWORD PTR -8280[rbp], rax	# line, tmp219
-# /home/jscha/dvp/cpumon/src/sysfs.c:199:         if (line == NULL) {
-	.loc 1 199 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:200:         if (line == NULL) {
+	.loc 1 200 12
 	cmp	QWORD PTR -8280[rbp], 0	# line,
 	jne	.L51	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:200:             printf("Error %s\n", file_buf);
-	.loc 1 200 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:201:             printf("Error %s\n", file_buf);
+	.loc 1 201 13
 	lea	rax, -8256[rbp]	# tmp220,
 	mov	rsi, rax	#, tmp220
-	lea	rax, .LC33[rip]	# tmp221,
+	lea	rax, .LC32[rip]	# tmp221,
 	mov	rdi, rax	#, tmp221
 	mov	eax, 0	#,
 	call	printf@PLT	#
 .L51:
 .LBB8:
-# /home/jscha/dvp/cpumon/src/sysfs.c:203:         for (int core = 0; core < core_count; core++) {
-	.loc 1 203 18
+# /home/jscha/dvp/cpumon/src/sysfs.c:204:         for (int core = 0; core < core_count; core++) {
+	.loc 1 204 18
 	mov	DWORD PTR -8388[rbp], 0	# core,
-# /home/jscha/dvp/cpumon/src/sysfs.c:203:         for (int core = 0; core < core_count; core++) {
-	.loc 1 203 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:204:         for (int core = 0; core < core_count; core++) {
+	.loc 1 204 9
 	jmp	.L52	#
 .L56:
-# /home/jscha/dvp/cpumon/src/sysfs.c:204:             line = fgets(file_buf, BUFSIZ, fp);
-	.loc 1 204 20
+# /home/jscha/dvp/cpumon/src/sysfs.c:205:             line = fgets(file_buf, BUFSIZ, fp);
+	.loc 1 205 20
 	mov	rdx, QWORD PTR -8320[rbp]	# tmp222, fp
 	lea	rax, -8256[rbp]	# tmp223,
 	mov	esi, 8192	#,
 	mov	rdi, rax	#, tmp223
 	call	fgets@PLT	#
 	mov	QWORD PTR -8280[rbp], rax	# line, tmp224
-# /home/jscha/dvp/cpumon/src/sysfs.c:205:             if (line == NULL) {
-	.loc 1 205 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:206:             if (line == NULL) {
+	.loc 1 206 16
 	cmp	QWORD PTR -8280[rbp], 0	# line,
 	je	.L64	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:209:             sprintf(comparator,"cpu%d ", core);
-	.loc 1 209 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:210:             sprintf(comparator,"cpu%d ", core);
+	.loc 1 210 13
 	mov	edx, DWORD PTR -8388[rbp]	# tmp225, core
 	lea	rax, -8272[rbp]	# tmp226,
-	lea	rcx, .LC34[rip]	# tmp227,
+	lea	rcx, .LC33[rip]	# tmp227,
 	mov	rsi, rcx	#, tmp227
 	mov	rdi, rax	#, tmp226
 	mov	eax, 0	#,
 	call	sprintf@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:211:             if (!strncmp(line, comparator, 5)) {
-	.loc 1 211 18
+# /home/jscha/dvp/cpumon/src/sysfs.c:212:             if (!strncmp(line, comparator, 5)) {
+	.loc 1 212 18
 	lea	rcx, -8272[rbp]	# tmp228,
 	mov	rax, QWORD PTR -8280[rbp]	# tmp229, line
 	mov	edx, 5	#,
 	mov	rsi, rcx	#, tmp228
 	mov	rdi, rax	#, tmp229
 	call	strncmp@PLT	#
-# /home/jscha/dvp/cpumon/src/sysfs.c:211:             if (!strncmp(line, comparator, 5)) {
-	.loc 1 211 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:212:             if (!strncmp(line, comparator, 5)) {
+	.loc 1 212 16
 	test	eax, eax	# _27
 	jne	.L55	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:213:                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-	.loc 1 213 17
+# /home/jscha/dvp/cpumon/src/sysfs.c:214:                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
+	.loc 1 214 17
 	lea	r8, -8352[rbp]	# tmp230,
 	lea	rdi, -8360[rbp]	# tmp231,
 	lea	rcx, -8368[rbp]	# tmp232,
@@ -1177,191 +1166,191 @@ cpucore_load:
 	push	rsi	# tmp237
 	mov	r9, r8	#, tmp230
 	mov	r8, rdi	#, tmp231
-	lea	rsi, .LC35[rip]	# tmp238,
+	lea	rsi, .LC34[rip]	# tmp238,
 	mov	rdi, rax	#, tmp234
 	mov	eax, 0	#,
 	call	__isoc99_sscanf@PLT	#
 	add	rsp, 32	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:215:                 work_jiffies_after[core] = user + nice + system;
-	.loc 1 215 49
+# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 work_jiffies_after[core] = user + nice + system;
+	.loc 1 216 49
 	mov	rdx, QWORD PTR -8376[rbp]	# user.7_28, user
 	mov	rax, QWORD PTR -8368[rbp]	# nice.8_29, nice
 	add	rdx, rax	# _30, nice.8_29
-# /home/jscha/dvp/cpumon/src/sysfs.c:215:                 work_jiffies_after[core] = user + nice + system;
-	.loc 1 215 56
+# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 work_jiffies_after[core] = user + nice + system;
+	.loc 1 216 56
 	mov	rax, QWORD PTR -8360[rbp]	# system.9_31, system
 	lea	rcx, [rdx+rax]	# _32,
-# /home/jscha/dvp/cpumon/src/sysfs.c:215:                 work_jiffies_after[core] = user + nice + system;
-	.loc 1 215 42
+# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 work_jiffies_after[core] = user + nice + system;
+	.loc 1 216 42
 	mov	rax, QWORD PTR -8304[rbp]	# tmp239, work_jiffies_after.4
 	mov	edx, DWORD PTR -8388[rbp]	# tmp241, core
 	movsx	rdx, edx	# tmp240, tmp241
 	mov	QWORD PTR [rax+rdx*8], rcx	# (*work_jiffies_after.4_121)[core_96], _32
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 50
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 50
 	mov	rdx, QWORD PTR -8376[rbp]	# user.10_33, user
 	mov	rax, QWORD PTR -8368[rbp]	# nice.11_34, nice
 	add	rdx, rax	# _35, nice.11_34
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 57
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 57
 	mov	rax, QWORD PTR -8360[rbp]	# system.12_36, system
 	add	rdx, rax	# _37, system.12_36
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 66
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 66
 	mov	rax, QWORD PTR -8352[rbp]	# idle.13_38, idle
 	add	rdx, rax	# _39, idle.13_38
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 73
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 73
 	mov	rax, QWORD PTR -8344[rbp]	# iowait.14_40, iowait
 	add	rdx, rax	# _41, iowait.14_40
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 82
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 82
 	mov	rax, QWORD PTR -8336[rbp]	# irq.15_42, irq
 	add	rdx, rax	# _43, irq.15_42
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 88
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 88
 	mov	rax, QWORD PTR -8328[rbp]	# softirq.16_44, softirq
 	lea	rcx, [rdx+rax]	# _45,
-# /home/jscha/dvp/cpumon/src/sysfs.c:216:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-	.loc 1 216 43
+# /home/jscha/dvp/cpumon/src/sysfs.c:217:                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+	.loc 1 217 43
 	mov	rax, QWORD PTR -8288[rbp]	# tmp242, total_jiffies_after.6
 	mov	edx, DWORD PTR -8388[rbp]	# tmp244, core
 	movsx	rdx, edx	# tmp243, tmp244
 	mov	QWORD PTR [rax+rdx*8], rcx	# (*total_jiffies_after.6_129)[core_96], _45
 .L55:
-# /home/jscha/dvp/cpumon/src/sysfs.c:203:         for (int core = 0; core < core_count; core++) {
-	.loc 1 203 51 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:204:         for (int core = 0; core < core_count; core++) {
+	.loc 1 204 51 discriminator 2
 	add	DWORD PTR -8388[rbp], 1	# core,
 .L52:
-# /home/jscha/dvp/cpumon/src/sysfs.c:203:         for (int core = 0; core < core_count; core++) {
-	.loc 1 203 33 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:204:         for (int core = 0; core < core_count; core++) {
+	.loc 1 204 33 discriminator 1
 	mov	eax, DWORD PTR -8388[rbp]	# tmp245, core
 	cmp	eax, DWORD PTR -8436[rbp]	# tmp245, core_count
 	jl	.L56	#,
 	jmp	.L54	#
 .L64:
-# /home/jscha/dvp/cpumon/src/sysfs.c:206:                 break;
-	.loc 1 206 17
+# /home/jscha/dvp/cpumon/src/sysfs.c:207:                 break;
+	.loc 1 207 17
 	nop	
 .L54:
 .LBE8:
-# /home/jscha/dvp/cpumon/src/sysfs.c:219:     fclose(fp);
-	.loc 1 219 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:220:     fclose(fp);
+	.loc 1 220 5
 	mov	rax, QWORD PTR -8320[rbp]	# tmp246, fp
 	mov	rdi, rax	#, tmp246
 	call	fclose@PLT	#
 .LBB9:
-# /home/jscha/dvp/cpumon/src/sysfs.c:222:     for (int core = 0; core < (core_count); core++){
-	.loc 1 222 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:223:     for (int core = 0; core < (core_count); core++){
+	.loc 1 223 14
 	mov	DWORD PTR -8384[rbp], 0	# core,
-# /home/jscha/dvp/cpumon/src/sysfs.c:222:     for (int core = 0; core < (core_count); core++){
-	.loc 1 222 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:223:     for (int core = 0; core < (core_count); core++){
+	.loc 1 223 5
 	jmp	.L57	#
 .L60:
-# /home/jscha/dvp/cpumon/src/sysfs.c:223:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-	.loc 1 223 32
+# /home/jscha/dvp/cpumon/src/sysfs.c:224:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
+	.loc 1 224 32
 	mov	rax, QWORD PTR -8288[rbp]	# tmp247, total_jiffies_after.6
 	mov	edx, DWORD PTR -8384[rbp]	# tmp249, core
 	movsx	rdx, edx	# tmp248, tmp249
 	mov	rdx, QWORD PTR [rax+rdx*8]	# _46, (*total_jiffies_after.6_129)[core_97]
-# /home/jscha/dvp/cpumon/src/sysfs.c:223:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-	.loc 1 223 61
+# /home/jscha/dvp/cpumon/src/sysfs.c:224:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
+	.loc 1 224 61
 	mov	eax, DWORD PTR -8384[rbp]	# tmp250, core
 	cdqe
 	lea	rcx, 0[0+rax*8]	# _48,
 	mov	rax, QWORD PTR -8432[rbp]	# tmp251, total_jiffies_before
 	add	rax, rcx	# _49, _48
 	mov	rax, QWORD PTR [rax]	# _50, *_49
-# /home/jscha/dvp/cpumon/src/sysfs.c:223:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-	.loc 1 223 12
+# /home/jscha/dvp/cpumon/src/sysfs.c:224:         if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
+	.loc 1 224 12
 	cmp	rdx, rax	# _46, _50
 	je	.L58	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 55
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 55
 	mov	rax, QWORD PTR -8304[rbp]	# tmp252, work_jiffies_after.4
 	mov	edx, DWORD PTR -8384[rbp]	# tmp254, core
 	movsx	rdx, edx	# tmp253, tmp254
 	mov	rax, QWORD PTR [rax+rdx*8]	# _51, (*work_jiffies_after.4_121)[core_97]
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 83
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 83
 	mov	edx, DWORD PTR -8384[rbp]	# tmp255, core
 	movsx	rdx, edx	# _52, tmp255
 	lea	rcx, 0[0+rdx*8]	# _53,
 	mov	rdx, QWORD PTR -8424[rbp]	# tmp256, work_jiffies_before
 	add	rdx, rcx	# _54, _53
 	mov	rcx, QWORD PTR [rdx]	# _55, *_54
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 62
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 62
 	sub	rax, rcx	# _51, _55
 	mov	rdx, rax	# _56, _51
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 34
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 34
 	mov	rax, rdx	# tmp257, _56
 	sal	rax, 2	# tmp257,
 	add	rax, rdx	# tmp257, _56
 	lea	rdx, 0[0+rax*4]	# tmp258,
 	add	rax, rdx	# tmp257, tmp258
 	sal	rax, 2	# tmp259,
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 22
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 22
 	pxor	xmm0, xmm0	# _58
 	cvtsi2ss	xmm0, rax	# _58, _57
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 121
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 121
 	mov	rax, QWORD PTR -8288[rbp]	# tmp260, total_jiffies_after.6
 	mov	edx, DWORD PTR -8384[rbp]	# tmp262, core
 	movsx	rdx, edx	# tmp261, tmp262
 	mov	rax, QWORD PTR [rax+rdx*8]	# _59, (*total_jiffies_after.6_129)[core_97]
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 150
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 150
 	mov	edx, DWORD PTR -8384[rbp]	# tmp263, core
 	movsx	rdx, edx	# _60, tmp263
 	lea	rcx, 0[0+rdx*8]	# _61,
 	mov	rdx, QWORD PTR -8432[rbp]	# tmp264, total_jiffies_before
 	add	rdx, rcx	# _62, _61
 	mov	rdx, QWORD PTR [rdx]	# _63, *_62
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 128
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 128
 	sub	rax, rdx	# _64, _63
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 94
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 94
 	pxor	xmm1, xmm1	# _65
 	cvtsi2ss	xmm1, rax	# _65, _64
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 13
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 13
 	mov	eax, DWORD PTR -8384[rbp]	# tmp265, core
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _67,
 	mov	rax, QWORD PTR -8408[rbp]	# tmp266, load
 	add	rax, rdx	# _68, _67
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 92
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 92
 	divss	xmm0, xmm1	# _69, _65
-# /home/jscha/dvp/cpumon/src/sysfs.c:224:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-	.loc 1 224 20
+# /home/jscha/dvp/cpumon/src/sysfs.c:225:         load[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
+	.loc 1 225 20
 	movss	DWORD PTR [rax], xmm0	# *_68, _69
 	jmp	.L59	#
 .L58:
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 52
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 52
 	mov	rax, QWORD PTR -8304[rbp]	# tmp267, work_jiffies_after.4
 	mov	edx, DWORD PTR -8384[rbp]	# tmp269, core
 	movsx	rdx, edx	# tmp268, tmp269
 	mov	rax, QWORD PTR [rax+rdx*8]	# _70, (*work_jiffies_after.4_121)[core_97]
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 80
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 80
 	mov	edx, DWORD PTR -8384[rbp]	# tmp270, core
 	movsx	rdx, edx	# _71, tmp270
 	lea	rcx, 0[0+rdx*8]	# _72,
 	mov	rdx, QWORD PTR -8424[rbp]	# tmp271, work_jiffies_before
 	add	rdx, rcx	# _73, _72
 	mov	rcx, QWORD PTR [rdx]	# _74, *_73
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 59
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 59
 	sub	rax, rcx	# _70, _74
 	mov	rdx, rax	# _75, _70
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 89
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 89
 	mov	rax, rdx	# tmp272, _75
 	sal	rax, 2	# tmp272,
 	add	rax, rdx	# tmp272, _75
@@ -1369,107 +1358,107 @@ cpucore_load:
 	add	rax, rdx	# tmp272, tmp273
 	sal	rax, 2	# tmp274,
 	mov	rcx, rax	# _76, tmp272
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 17
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 17
 	mov	eax, DWORD PTR -8384[rbp]	# tmp275, core
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _78,
 	mov	rax, QWORD PTR -8408[rbp]	# tmp276, load
 	add	rax, rdx	# _79, _78
-# /home/jscha/dvp/cpumon/src/sysfs.c:226:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-	.loc 1 226 24
+# /home/jscha/dvp/cpumon/src/sysfs.c:227:             load[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+	.loc 1 227 24
 	pxor	xmm0, xmm0	# _80
 	cvtsi2ss	xmm0, rcx	# _80, _76
 	movss	DWORD PTR [rax], xmm0	# *_79, _80
 .L59:
-# /home/jscha/dvp/cpumon/src/sysfs.c:228:         total += load[core];
-	.loc 1 228 22 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:229:         total += load[core];
+	.loc 1 229 22 discriminator 2
 	mov	eax, DWORD PTR -8384[rbp]	# tmp277, core
 	cdqe
 	lea	rdx, 0[0+rax*4]	# _82,
 	mov	rax, QWORD PTR -8408[rbp]	# tmp278, load
 	add	rax, rdx	# _83, _82
 	movss	xmm0, DWORD PTR [rax]	# _84, *_83
-# /home/jscha/dvp/cpumon/src/sysfs.c:228:         total += load[core];
-	.loc 1 228 15 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:229:         total += load[core];
+	.loc 1 229 15 discriminator 2
 	movss	xmm1, DWORD PTR -8392[rbp]	# tmp280, total
 	addss	xmm0, xmm1	# tmp279, tmp280
 	movss	DWORD PTR -8392[rbp], xmm0	# total, tmp279
-# /home/jscha/dvp/cpumon/src/sysfs.c:222:     for (int core = 0; core < (core_count); core++){
-	.loc 1 222 49 discriminator 2
+# /home/jscha/dvp/cpumon/src/sysfs.c:223:     for (int core = 0; core < (core_count); core++){
+	.loc 1 223 49 discriminator 2
 	add	DWORD PTR -8384[rbp], 1	# core,
 .L57:
-# /home/jscha/dvp/cpumon/src/sysfs.c:222:     for (int core = 0; core < (core_count); core++){
-	.loc 1 222 29 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:223:     for (int core = 0; core < (core_count); core++){
+	.loc 1 223 29 discriminator 1
 	mov	eax, DWORD PTR -8384[rbp]	# tmp281, core
 	cmp	eax, DWORD PTR -8436[rbp]	# tmp281, core_count
 	jl	.L60	#,
 .LBE9:
-# /home/jscha/dvp/cpumon/src/sysfs.c:231:     *average = total / core_count;
-	.loc 1 231 22
+# /home/jscha/dvp/cpumon/src/sysfs.c:232:     *average = total / core_count;
+	.loc 1 232 22
 	pxor	xmm1, xmm1	# _85
 	cvtsi2ss	xmm1, DWORD PTR -8436[rbp]	# _85, core_count
 	movss	xmm0, DWORD PTR -8392[rbp]	# tmp282, total
 	divss	xmm0, xmm1	# _86, _85
-# /home/jscha/dvp/cpumon/src/sysfs.c:231:     *average = total / core_count;
-	.loc 1 231 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:232:     *average = total / core_count;
+	.loc 1 232 14
 	mov	rax, QWORD PTR -8416[rbp]	# tmp283, average
 	movss	DWORD PTR [rax], xmm0	# *average_144(D), _86
 .LBB10:
-# /home/jscha/dvp/cpumon/src/sysfs.c:234:     for (int i = 0; i < (core_count); i++){
-	.loc 1 234 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:235:     for (int i = 0; i < (core_count); i++){
+	.loc 1 235 14
 	mov	DWORD PTR -8380[rbp], 0	# i,
-# /home/jscha/dvp/cpumon/src/sysfs.c:234:     for (int i = 0; i < (core_count); i++){
-	.loc 1 234 5
+# /home/jscha/dvp/cpumon/src/sysfs.c:235:     for (int i = 0; i < (core_count); i++){
+	.loc 1 235 5
 	jmp	.L61	#
 .L62:
-# /home/jscha/dvp/cpumon/src/sysfs.c:235:         work_jiffies_before[i] = work_jiffies_after[i];
-	.loc 1 235 28 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:236:         work_jiffies_before[i] = work_jiffies_after[i];
+	.loc 1 236 28 discriminator 3
 	mov	eax, DWORD PTR -8380[rbp]	# tmp284, i
 	cdqe
 	lea	rdx, 0[0+rax*8]	# _88,
 	mov	rax, QWORD PTR -8424[rbp]	# tmp285, work_jiffies_before
 	lea	rcx, [rdx+rax]	# _89,
-# /home/jscha/dvp/cpumon/src/sysfs.c:235:         work_jiffies_before[i] = work_jiffies_after[i];
-	.loc 1 235 52 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:236:         work_jiffies_before[i] = work_jiffies_after[i];
+	.loc 1 236 52 discriminator 3
 	mov	rax, QWORD PTR -8304[rbp]	# tmp286, work_jiffies_after.4
 	mov	edx, DWORD PTR -8380[rbp]	# tmp288, i
 	movsx	rdx, edx	# tmp287, tmp288
 	mov	rax, QWORD PTR [rax+rdx*8]	# _90, (*work_jiffies_after.4_121)[i_98]
-# /home/jscha/dvp/cpumon/src/sysfs.c:235:         work_jiffies_before[i] = work_jiffies_after[i];
-	.loc 1 235 32 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:236:         work_jiffies_before[i] = work_jiffies_after[i];
+	.loc 1 236 32 discriminator 3
 	mov	QWORD PTR [rcx], rax	# *_89, _90
-# /home/jscha/dvp/cpumon/src/sysfs.c:236:         total_jiffies_before[i] = total_jiffies_after[i];
-	.loc 1 236 29 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:237:         total_jiffies_before[i] = total_jiffies_after[i];
+	.loc 1 237 29 discriminator 3
 	mov	eax, DWORD PTR -8380[rbp]	# tmp289, i
 	cdqe
 	lea	rdx, 0[0+rax*8]	# _92,
 	mov	rax, QWORD PTR -8432[rbp]	# tmp290, total_jiffies_before
 	lea	rcx, [rdx+rax]	# _93,
-# /home/jscha/dvp/cpumon/src/sysfs.c:236:         total_jiffies_before[i] = total_jiffies_after[i];
-	.loc 1 236 54 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:237:         total_jiffies_before[i] = total_jiffies_after[i];
+	.loc 1 237 54 discriminator 3
 	mov	rax, QWORD PTR -8288[rbp]	# tmp291, total_jiffies_after.6
 	mov	edx, DWORD PTR -8380[rbp]	# tmp293, i
 	movsx	rdx, edx	# tmp292, tmp293
 	mov	rax, QWORD PTR [rax+rdx*8]	# _94, (*total_jiffies_after.6_129)[i_98]
-# /home/jscha/dvp/cpumon/src/sysfs.c:236:         total_jiffies_before[i] = total_jiffies_after[i];
-	.loc 1 236 33 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:237:         total_jiffies_before[i] = total_jiffies_after[i];
+	.loc 1 237 33 discriminator 3
 	mov	QWORD PTR [rcx], rax	# *_93, _94
-# /home/jscha/dvp/cpumon/src/sysfs.c:234:     for (int i = 0; i < (core_count); i++){
-	.loc 1 234 40 discriminator 3
+# /home/jscha/dvp/cpumon/src/sysfs.c:235:     for (int i = 0; i < (core_count); i++){
+	.loc 1 235 40 discriminator 3
 	add	DWORD PTR -8380[rbp], 1	# i,
 .L61:
-# /home/jscha/dvp/cpumon/src/sysfs.c:234:     for (int i = 0; i < (core_count); i++){
-	.loc 1 234 23 discriminator 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:235:     for (int i = 0; i < (core_count); i++){
+	.loc 1 235 23 discriminator 1
 	mov	eax, DWORD PTR -8380[rbp]	# tmp294, i
 	cmp	eax, DWORD PTR -8436[rbp]	# tmp294, core_count
 	jl	.L62	#,
 .LBE10:
 	mov	rsp, rbx	#, saved_stack.17_109
-# /home/jscha/dvp/cpumon/src/sysfs.c:238: }
-	.loc 1 238 1
+# /home/jscha/dvp/cpumon/src/sysfs.c:239: }
+	.loc 1 239 1
 	nop	
-	mov	rax, QWORD PTR -56[rbp]	# tmp300, D.4818
+	mov	rax, QWORD PTR -56[rbp]	# tmp300, D.4823
 	sub	rax, QWORD PTR fs:40	# tmp300, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L63	#,
 	call	__stack_chk_fail@PLT	#
@@ -1489,14 +1478,14 @@ cpucore_load:
 	.size	cpucore_load, .-cpucore_load
 	.section	.rodata
 	.align 8
-.LC36:
+.LC35:
 	.string	"/sys/class/drm/card0/gt_cur_freq_mhz"
 	.text
 	.globl	gpu
 	.type	gpu, @function
 gpu:
 .LFB14:
-	.loc 1 242 14
+	.loc 1 243 14
 	.cfi_startproc
 	endbr64	
 	push	rbp	#
@@ -1507,48 +1496,48 @@ gpu:
 .LCFI25:
 	.cfi_def_cfa_register 6
 	sub	rsp, 96	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:242: int gpu(void){
-	.loc 1 242 14
+# /home/jscha/dvp/cpumon/src/sysfs.c:243: int gpu(void){
+	.loc 1 243 14
 	mov	rax, QWORD PTR fs:40	# tmp90, MEM[(<address-space-1> long unsigned int *)40B]
-	mov	QWORD PTR -8[rbp], rax	# D.4826, tmp90
+	mov	QWORD PTR -8[rbp], rax	# D.4831, tmp90
 	xor	eax, eax	# tmp90
-# /home/jscha/dvp/cpumon/src/sysfs.c:245:     int freq_mhz = 0;
-	.loc 1 245 9
+# /home/jscha/dvp/cpumon/src/sysfs.c:246:     int freq_mhz = 0;
+	.loc 1 246 9
 	mov	DWORD PTR -88[rbp], 0	# freq_mhz,
-# /home/jscha/dvp/cpumon/src/sysfs.c:247:     int return_val = read_line(file_buf, "/sys/class/drm/card0/gt_cur_freq_mhz");
-	.loc 1 247 22
+# /home/jscha/dvp/cpumon/src/sysfs.c:248:     int return_val = read_line(file_buf, "/sys/class/drm/card0/gt_cur_freq_mhz");
+	.loc 1 248 22
 	lea	rax, -80[rbp]	# tmp84,
-	lea	rdx, .LC36[rip]	# tmp85,
+	lea	rdx, .LC35[rip]	# tmp85,
 	mov	rsi, rdx	#, tmp85
 	mov	rdi, rax	#, tmp84
 	call	read_line@PLT	#
 	mov	DWORD PTR -84[rbp], eax	# return_val, tmp86
-# /home/jscha/dvp/cpumon/src/sysfs.c:249:     if (return_val == 0)
-	.loc 1 249 8
+# /home/jscha/dvp/cpumon/src/sysfs.c:250:     if (return_val == 0)
+	.loc 1 250 8
 	cmp	DWORD PTR -84[rbp], 0	# return_val,
 	jne	.L66	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:251:         return freq_mhz = atoi(file_buf);
-	.loc 1 251 27
+# /home/jscha/dvp/cpumon/src/sysfs.c:252:         return freq_mhz = atoi(file_buf);
+	.loc 1 252 27
 	lea	rax, -80[rbp]	# tmp87,
 	mov	rdi, rax	#, tmp87
 	call	atoi@PLT	#
 	mov	DWORD PTR -88[rbp], eax	# freq_mhz, tmp88
-# /home/jscha/dvp/cpumon/src/sysfs.c:251:         return freq_mhz = atoi(file_buf);
-	.loc 1 251 25
+# /home/jscha/dvp/cpumon/src/sysfs.c:252:         return freq_mhz = atoi(file_buf);
+	.loc 1 252 25
 	mov	eax, DWORD PTR -88[rbp]	# _1, freq_mhz
 	jmp	.L68	#
 .L66:
-# /home/jscha/dvp/cpumon/src/sysfs.c:255:         return return_val;
-	.loc 1 255 16
+# /home/jscha/dvp/cpumon/src/sysfs.c:256:         return return_val;
+	.loc 1 256 16
 	mov	eax, DWORD PTR -84[rbp]	# _1, return_val
 .L68:
-# /home/jscha/dvp/cpumon/src/sysfs.c:270: }
-	.loc 1 270 1 discriminator 1
-	mov	rdx, QWORD PTR -8[rbp]	# tmp91, D.4826
+# /home/jscha/dvp/cpumon/src/sysfs.c:271: }
+	.loc 1 271 1 discriminator 1
+	mov	rdx, QWORD PTR -8[rbp]	# tmp91, D.4831
 	sub	rdx, QWORD PTR fs:40	# tmp91, MEM[(<address-space-1> long unsigned int *)40B]
 	je	.L69	#,
-# /home/jscha/dvp/cpumon/src/sysfs.c:270: }
-	.loc 1 270 1 is_stmt 0
+# /home/jscha/dvp/cpumon/src/sysfs.c:271: }
+	.loc 1 271 1 is_stmt 0
 	call	__stack_chk_fail@PLT	#
 .L69:
 	leave	
@@ -1562,18 +1551,18 @@ gpu:
 	.comm	power_limits.0,8,8
 	.section	.rodata
 	.align 8
-.LC21:
+.LC20:
 	.long	-1598689907
 	.long	1051772663
 	.align 8
-.LC24:
+.LC23:
 	.long	-2127697391
 	.long	1030854553
 	.align 4
-.LC29:
+.LC28:
 	.long	1232348160
 	.align 4
-.LC30:
+.LC29:
 	.long	-1082130432
 	.text
 .Letext0:
@@ -1584,8 +1573,9 @@ gpu:
 	.file 6 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h"
 	.file 7 "/usr/include/stdlib.h"
 	.file 8 "/usr/include/string.h"
-	.file 9 "/usr/include/curses.h"
-	.file 10 "/usr/include/stdio.h"
+	.file 9 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+	.file 10 "/usr/include/curses.h"
+	.file 11 "/usr/include/stdio.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
 	.long	0xb59
@@ -2014,7 +2004,7 @@ gpu:
 	.byte	0x4
 	.long	0x44
 	.byte	0x6
-	.byte	0x32
+	.byte	0x2f
 	.byte	0xe
 	.long	0x325
 	.uleb128 0xf
@@ -2027,7 +2017,7 @@ gpu:
 	.uleb128 0x2
 	.long	.LASF1474
 	.byte	0x6
-	.byte	0x32
+	.byte	0x2f
 	.byte	0x1d
 	.long	0x30a
 	.uleb128 0x11
@@ -2096,8 +2086,8 @@ gpu:
 	.uleb128 0x11
 	.byte	0x1
 	.long	.LASF1479
+	.byte	0x9
 	.byte	0x6
-	.byte	0x37
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -2111,8 +2101,8 @@ gpu:
 	.uleb128 0x11
 	.byte	0x1
 	.long	.LASF1480
-	.byte	0x6
-	.byte	0x36
+	.byte	0x9
+	.byte	0x5
 	.byte	0x7
 	.byte	0x1
 	.long	0x9f
@@ -2124,7 +2114,7 @@ gpu:
 	.uleb128 0x13
 	.byte	0x1
 	.long	.LASF1481
-	.byte	0x9
+	.byte	0xa
 	.value	0x2f9
 	.byte	0xc
 	.byte	0x1
@@ -2138,7 +2128,7 @@ gpu:
 	.uleb128 0x13
 	.byte	0x1
 	.long	.LASF1482
-	.byte	0xa
+	.byte	0xb
 	.value	0x164
 	.byte	0xc
 	.byte	0x1
@@ -2152,7 +2142,7 @@ gpu:
 	.uleb128 0x13
 	.byte	0x1
 	.long	.LASF1483
-	.byte	0xa
+	.byte	0xb
 	.value	0x166
 	.byte	0xc
 	.byte	0x1
@@ -2168,7 +2158,7 @@ gpu:
 	.uleb128 0x11
 	.byte	0x1
 	.long	.LASF1484
-	.byte	0xa
+	.byte	0xb
 	.byte	0xb2
 	.byte	0xc
 	.byte	0x1
@@ -2181,7 +2171,7 @@ gpu:
 	.uleb128 0x15
 	.byte	0x1
 	.long	.LASF1539
-	.byte	0xa
+	.byte	0xb
 	.value	0x1b7
 	.byte	0xc
 	.long	.LASF1540
@@ -2215,7 +2205,7 @@ gpu:
 	.uleb128 0x13
 	.byte	0x1
 	.long	.LASF1486
-	.byte	0xa
+	.byte	0xb
 	.value	0x250
 	.byte	0xe
 	.byte	0x1
@@ -2245,7 +2235,7 @@ gpu:
 	.uleb128 0x16
 	.byte	0x1
 	.long	.LASF1541
-	.byte	0xa
+	.byte	0xb
 	.value	0x324
 	.byte	0xd
 	.byte	0x1
@@ -2257,7 +2247,7 @@ gpu:
 	.uleb128 0x13
 	.byte	0x1
 	.long	.LASF1488
-	.byte	0xa
+	.byte	0xb
 	.value	0x102
 	.byte	0xe
 	.byte	0x1
@@ -2273,7 +2263,7 @@ gpu:
 	.byte	0x1
 	.string	"gpu"
 	.byte	0x1
-	.byte	0xf2
+	.byte	0xf3
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -2285,7 +2275,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1489
 	.byte	0x1
-	.byte	0xf4
+	.byte	0xf5
 	.byte	0xa
 	.long	0x567
 	.byte	0x3
@@ -2294,7 +2284,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1490
 	.byte	0x1
-	.byte	0xf5
+	.byte	0xf6
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -2303,7 +2293,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1491
 	.byte	0x1
-	.byte	0xf7
+	.byte	0xf8
 	.byte	0x9
 	.long	0x69
 	.byte	0x3
@@ -2321,7 +2311,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1509
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB13
@@ -2332,7 +2322,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1492
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x1a
 	.long	0x74e
 	.byte	0x4
@@ -2341,7 +2331,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1493
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x28
 	.long	0x74e
 	.byte	0x4
@@ -2350,7 +2340,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1494
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x3c
 	.long	0x754
 	.byte	0x4
@@ -2359,7 +2349,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1495
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x5c
 	.long	0x754
 	.byte	0x4
@@ -2368,7 +2358,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1496
 	.byte	0x1
-	.byte	0xb7
+	.byte	0xb8
 	.byte	0x76
 	.long	0x69
 	.byte	0x4
@@ -2377,7 +2367,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"fp"
 	.byte	0x1
-	.byte	0xb9
+	.byte	0xba
 	.byte	0xb
 	.long	0x2e2
 	.byte	0x4
@@ -2386,7 +2376,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1489
 	.byte	0x1
-	.byte	0xbe
+	.byte	0xbf
 	.byte	0xa
 	.long	0x75a
 	.byte	0x4
@@ -2395,7 +2385,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1497
 	.byte	0x1
-	.byte	0xbf
+	.byte	0xc0
 	.byte	0xb
 	.long	0x9f
 	.byte	0x4
@@ -2404,7 +2394,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1498
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0xf
 	.long	0x2e8
 	.byte	0x4
@@ -2413,7 +2403,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1499
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x15
 	.long	0x2e8
 	.byte	0x4
@@ -2422,7 +2412,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1500
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x1b
 	.long	0x2e8
 	.byte	0x4
@@ -2431,7 +2421,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1501
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x23
 	.long	0x2e8
 	.byte	0x4
@@ -2440,7 +2430,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1502
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x29
 	.long	0x2e8
 	.byte	0x4
@@ -2449,7 +2439,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"irq"
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x31
 	.long	0x2e8
 	.byte	0x4
@@ -2458,7 +2448,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1503
 	.byte	0x1
-	.byte	0xc0
+	.byte	0xc1
 	.byte	0x36
 	.long	0x2e8
 	.byte	0x4
@@ -2467,7 +2457,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1504
 	.byte	0x1
-	.byte	0xc1
+	.byte	0xc2
 	.byte	0xf
 	.long	0x76b
 	.byte	0x5
@@ -2477,7 +2467,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1505
 	.byte	0x1
-	.byte	0xc2
+	.byte	0xc3
 	.byte	0xf
 	.long	0x780
 	.byte	0x5
@@ -2487,7 +2477,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1506
 	.byte	0x1
-	.byte	0xc3
+	.byte	0xc4
 	.byte	0xa
 	.long	0x795
 	.byte	0x4
@@ -2496,7 +2486,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1507
 	.byte	0x1
-	.byte	0xc4
+	.byte	0xc5
 	.byte	0xb
 	.long	0x303
 	.byte	0x4
@@ -2509,7 +2499,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1508
 	.byte	0x1
-	.byte	0xcb
+	.byte	0xcc
 	.byte	0x12
 	.long	0x69
 	.byte	0x4
@@ -2523,7 +2513,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1508
 	.byte	0x1
-	.byte	0xde
+	.byte	0xdf
 	.byte	0xe
 	.long	0x69
 	.byte	0x4
@@ -2536,7 +2526,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"i"
 	.byte	0x1
-	.byte	0xea
+	.byte	0xeb
 	.byte	0xe
 	.long	0x69
 	.byte	0x4
@@ -2588,7 +2578,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1510
 	.byte	0x1
-	.byte	0x9f
+	.byte	0xa0
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB12
@@ -2599,7 +2589,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1511
 	.byte	0x1
-	.byte	0x9f
+	.byte	0xa0
 	.byte	0x1c
 	.long	0x74e
 	.byte	0x3
@@ -2608,7 +2598,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1493
 	.byte	0x1
-	.byte	0x9f
+	.byte	0xa0
 	.byte	0x2d
 	.long	0x74e
 	.byte	0x3
@@ -2617,7 +2607,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1496
 	.byte	0x1
-	.byte	0x9f
+	.byte	0xa0
 	.byte	0x3a
 	.long	0x69
 	.byte	0x3
@@ -2626,7 +2616,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1489
 	.byte	0x1
-	.byte	0xa2
+	.byte	0xa3
 	.byte	0xa
 	.long	0x567
 	.byte	0x3
@@ -2635,7 +2625,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1512
 	.byte	0x1
-	.byte	0xa3
+	.byte	0xa4
 	.byte	0xa
 	.long	0x849
 	.byte	0x3
@@ -2644,7 +2634,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1507
 	.byte	0x1
-	.byte	0xa4
+	.byte	0xa5
 	.byte	0xb
 	.long	0x303
 	.byte	0x3
@@ -2656,7 +2646,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"i"
 	.byte	0x1
-	.byte	0xa6
+	.byte	0xa7
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -2675,7 +2665,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1513
 	.byte	0x1
-	.byte	0x94
+	.byte	0x95
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB11
@@ -2686,7 +2676,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1514
 	.byte	0x1
-	.byte	0x94
+	.byte	0x95
 	.byte	0x24
 	.long	0x74e
 	.byte	0x2
@@ -2695,7 +2685,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1515
 	.byte	0x1
-	.byte	0x94
+	.byte	0x95
 	.byte	0x36
 	.long	0x9f
 	.byte	0x2
@@ -2704,7 +2694,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1516
 	.byte	0x1
-	.byte	0x94
+	.byte	0x95
 	.byte	0x44
 	.long	0x9f
 	.byte	0x2
@@ -2715,7 +2705,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1517
 	.byte	0x1
-	.byte	0x84
+	.byte	0x85
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -2727,7 +2717,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1515
 	.byte	0x1
-	.byte	0x84
+	.byte	0x85
 	.byte	0x1e
 	.long	0x9f
 	.byte	0x2
@@ -2738,7 +2728,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1518
 	.byte	0x1
-	.byte	0x6b
+	.byte	0x6c
 	.byte	0x5
 	.byte	0x1
 	.long	0x69
@@ -2750,7 +2740,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1519
 	.byte	0x1
-	.byte	0x6b
+	.byte	0x6c
 	.byte	0x26
 	.long	0x74e
 	.byte	0x3
@@ -2759,7 +2749,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1520
 	.byte	0x1
-	.byte	0x6d
+	.byte	0x6e
 	.byte	0xa
 	.long	0x98c
 	.byte	0x2
@@ -2768,7 +2758,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1521
 	.byte	0x1
-	.byte	0x6e
+	.byte	0x6f
 	.byte	0xa
 	.long	0x98c
 	.byte	0x2
@@ -2781,7 +2771,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1522
 	.byte	0x1
-	.byte	0x72
+	.byte	0x73
 	.byte	0xe
 	.long	0x70
 	.byte	0x2
@@ -2794,7 +2784,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1523
 	.byte	0x1
-	.byte	0x79
+	.byte	0x7a
 	.byte	0xe
 	.long	0x70
 	.byte	0x2
@@ -2803,7 +2793,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1524
 	.byte	0x1
-	.byte	0x7b
+	.byte	0x7c
 	.byte	0xe
 	.long	0x70
 	.byte	0x2
@@ -2822,7 +2812,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1525
 	.byte	0x1
-	.byte	0x49
+	.byte	0x4a
 	.byte	0x6
 	.byte	0x1
 	.quad	.LFB8
@@ -2833,7 +2823,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1526
 	.byte	0x1
-	.byte	0x49
+	.byte	0x4a
 	.byte	0x17
 	.long	0x2fc
 	.byte	0x2
@@ -2842,7 +2832,7 @@ gpu:
 	.uleb128 0x1a
 	.long	.LASF1527
 	.byte	0x1
-	.byte	0x49
+	.byte	0x4a
 	.byte	0x3f
 	.long	0x325
 	.byte	0x2
@@ -2851,7 +2841,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1528
 	.byte	0x1
-	.byte	0x52
+	.byte	0x53
 	.byte	0xb
 	.long	0x9f
 	.byte	0x2
@@ -2863,7 +2853,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1529
 	.byte	0x1
-	.byte	0x4d
+	.byte	0x4e
 	.byte	0xe
 	.long	0xa0e
 	.byte	0x2
@@ -2878,7 +2868,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1530
 	.byte	0x1
-	.byte	0x2a
+	.byte	0x2b
 	.byte	0x7
 	.byte	0x1
 	.long	0xa0e
@@ -2890,7 +2880,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"fp"
 	.byte	0x1
-	.byte	0x2c
+	.byte	0x2d
 	.byte	0xb
 	.long	0x2e2
 	.byte	0x3
@@ -2899,7 +2889,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1531
 	.byte	0x1
-	.byte	0x2d
+	.byte	0x2e
 	.byte	0xa
 	.long	0x567
 	.byte	0x3
@@ -2908,7 +2898,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1522
 	.byte	0x1
-	.byte	0x2e
+	.byte	0x2f
 	.byte	0xa
 	.long	0xad5
 	.byte	0x3
@@ -2917,7 +2907,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1529
 	.byte	0x1
-	.byte	0x2f
+	.byte	0x30
 	.byte	0x10
 	.long	0x8f
 	.byte	0x9
@@ -2926,7 +2916,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1512
 	.byte	0x1
-	.byte	0x30
+	.byte	0x31
 	.byte	0xa
 	.long	0xae5
 	.byte	0x3
@@ -2939,7 +2929,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"i"
 	.byte	0x1
-	.byte	0x32
+	.byte	0x33
 	.byte	0xf
 	.long	0x69
 	.byte	0x3
@@ -2952,7 +2942,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"i"
 	.byte	0x1
-	.byte	0x43
+	.byte	0x44
 	.byte	0xe
 	.long	0x69
 	.byte	0x3
@@ -2978,7 +2968,7 @@ gpu:
 	.byte	0x1
 	.long	.LASF1532
 	.byte	0x1
-	.byte	0xd
+	.byte	0xe
 	.byte	0x7
 	.byte	0x1
 	.long	0x9f
@@ -2989,7 +2979,7 @@ gpu:
 	.uleb128 0x1b
 	.string	"fp"
 	.byte	0x1
-	.byte	0xf
+	.byte	0x10
 	.byte	0xb
 	.long	0x2e2
 	.byte	0x4
@@ -2998,7 +2988,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1489
 	.byte	0x1
-	.byte	0x15
+	.byte	0x16
 	.byte	0xa
 	.long	0x75a
 	.byte	0x4
@@ -3007,7 +2997,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1533
 	.byte	0x1
-	.byte	0x16
+	.byte	0x17
 	.byte	0xb
 	.long	0x9f
 	.byte	0x4
@@ -3016,7 +3006,7 @@ gpu:
 	.uleb128 0x18
 	.long	.LASF1497
 	.byte	0x1
-	.byte	0x17
+	.byte	0x18
 	.byte	0xb
 	.long	0x9f
 	.byte	0x4
@@ -4836,49 +4826,49 @@ gpu:
 	.byte	0x5
 	.uleb128 0
 	.long	.LASF360
-	.file 11 "/usr/include/stdc-predef.h"
+	.file 12 "/usr/include/stdc-predef.h"
 	.byte	0x3
 	.uleb128 0
-	.uleb128 0xb
+	.uleb128 0xc
 	.byte	0x7
 	.long	.Ldebug_macro2
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x4
-	.uleb128 0xa
+	.uleb128 0xb
 	.byte	0x7
 	.long	.Ldebug_macro3
-	.file 12 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h"
+	.file 13 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h"
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0xc
+	.uleb128 0xd
 	.byte	0x6
 	.uleb128 0x1f
 	.long	.LASF369
-	.file 13 "/usr/include/features.h"
+	.file 14 "/usr/include/features.h"
 	.byte	0x3
 	.uleb128 0x21
-	.uleb128 0xd
+	.uleb128 0xe
 	.byte	0x7
 	.long	.Ldebug_macro4
-	.file 14 "/usr/include/features-time64.h"
+	.file 15 "/usr/include/features-time64.h"
 	.byte	0x3
 	.uleb128 0x188
-	.uleb128 0xe
-	.file 15 "/usr/include/x86_64-linux-gnu/bits/wordsize.h"
+	.uleb128 0xf
+	.file 16 "/usr/include/x86_64-linux-gnu/bits/wordsize.h"
 	.byte	0x3
 	.uleb128 0x14
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 16 "/usr/include/x86_64-linux-gnu/bits/timesize.h"
+	.file 17 "/usr/include/x86_64-linux-gnu/bits/timesize.h"
 	.byte	0x3
 	.uleb128 0x15
-	.uleb128 0x10
+	.uleb128 0x11
 	.byte	0x3
 	.uleb128 0x13
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
@@ -4889,22 +4879,22 @@ gpu:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro6
-	.file 17 "/usr/include/x86_64-linux-gnu/sys/cdefs.h"
+	.file 18 "/usr/include/x86_64-linux-gnu/sys/cdefs.h"
 	.byte	0x3
 	.uleb128 0x1e6
-	.uleb128 0x11
+	.uleb128 0x12
 	.byte	0x7
 	.long	.Ldebug_macro7
 	.byte	0x3
 	.uleb128 0x22f
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 18 "/usr/include/x86_64-linux-gnu/bits/long-double.h"
+	.file 19 "/usr/include/x86_64-linux-gnu/bits/long-double.h"
 	.byte	0x3
 	.uleb128 0x230
-	.uleb128 0x12
+	.uleb128 0x13
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF503
@@ -4912,14 +4902,14 @@ gpu:
 	.byte	0x7
 	.long	.Ldebug_macro8
 	.byte	0x4
-	.file 19 "/usr/include/x86_64-linux-gnu/gnu/stubs.h"
+	.file 20 "/usr/include/x86_64-linux-gnu/gnu/stubs.h"
 	.byte	0x3
 	.uleb128 0x1fe
-	.uleb128 0x13
-	.file 20 "/usr/include/x86_64-linux-gnu/gnu/stubs-64.h"
+	.uleb128 0x14
+	.file 21 "/usr/include/x86_64-linux-gnu/gnu/stubs-64.h"
 	.byte	0x3
 	.uleb128 0xa
-	.uleb128 0x14
+	.uleb128 0x15
 	.byte	0x7
 	.long	.Ldebug_macro9
 	.byte	0x4
@@ -4939,10 +4929,10 @@ gpu:
 	.byte	0x5
 	.uleb128 0x23
 	.long	.LASF566
-	.file 21 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h"
+	.file 22 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h"
 	.byte	0x3
 	.uleb128 0x24
-	.uleb128 0x15
+	.uleb128 0x16
 	.byte	0x7
 	.long	.Ldebug_macro13
 	.byte	0x4
@@ -4954,16 +4944,16 @@ gpu:
 	.long	.LASF569
 	.byte	0x3
 	.uleb128 0x1b
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x1c
-	.uleb128 0x10
+	.uleb128 0x11
 	.byte	0x3
 	.uleb128 0x13
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
@@ -4973,17 +4963,17 @@ gpu:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro14
-	.file 22 "/usr/include/x86_64-linux-gnu/bits/typesizes.h"
+	.file 23 "/usr/include/x86_64-linux-gnu/bits/typesizes.h"
 	.byte	0x3
 	.uleb128 0x8d
-	.uleb128 0x16
+	.uleb128 0x17
 	.byte	0x7
 	.long	.Ldebug_macro15
 	.byte	0x4
-	.file 23 "/usr/include/x86_64-linux-gnu/bits/time64.h"
+	.file 24 "/usr/include/x86_64-linux-gnu/bits/time64.h"
 	.byte	0x3
 	.uleb128 0x8e
-	.uleb128 0x17
+	.uleb128 0x18
 	.byte	0x7
 	.long	.Ldebug_macro16
 	.byte	0x4
@@ -4991,34 +4981,34 @@ gpu:
 	.uleb128 0xe2
 	.long	.LASF629
 	.byte	0x4
-	.file 24 "/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h"
+	.file 25 "/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h"
 	.byte	0x3
 	.uleb128 0x27
-	.uleb128 0x18
+	.uleb128 0x19
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF630
-	.file 25 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
+	.file 26 "/usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h"
 	.byte	0x3
 	.uleb128 0x5
-	.uleb128 0x19
+	.uleb128 0x1a
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF631
 	.byte	0x4
 	.byte	0x4
-	.file 26 "/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h"
+	.file 27 "/usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h"
 	.byte	0x3
 	.uleb128 0x28
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF632
 	.byte	0x4
-	.file 27 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
+	.file 28 "/usr/include/x86_64-linux-gnu/bits/types/__FILE.h"
 	.byte	0x3
 	.uleb128 0x29
-	.uleb128 0x1b
+	.uleb128 0x1c
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF633
@@ -5038,31 +5028,31 @@ gpu:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro18
-	.file 28 "/usr/include/x86_64-linux-gnu/bits/stdio_lim.h"
+	.file 29 "/usr/include/x86_64-linux-gnu/bits/stdio_lim.h"
 	.byte	0x3
 	.uleb128 0x85
-	.uleb128 0x1c
+	.uleb128 0x1d
 	.byte	0x7
 	.long	.Ldebug_macro19
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro20
-	.file 29 "/usr/include/x86_64-linux-gnu/bits/floatn.h"
+	.file 30 "/usr/include/x86_64-linux-gnu/bits/floatn.h"
 	.byte	0x3
 	.uleb128 0x1ae
-	.uleb128 0x1d
+	.uleb128 0x1e
 	.byte	0x7
 	.long	.Ldebug_macro21
-	.file 30 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h"
+	.file 31 "/usr/include/x86_64-linux-gnu/bits/floatn-common.h"
 	.byte	0x3
 	.uleb128 0x77
-	.uleb128 0x1e
+	.uleb128 0x1f
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF674
 	.byte	0x3
 	.uleb128 0x18
-	.uleb128 0x12
+	.uleb128 0x13
 	.byte	0x5
 	.uleb128 0x15
 	.long	.LASF503
@@ -5080,7 +5070,7 @@ gpu:
 	.long	.LASF368
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xc
+	.uleb128 0xd
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
@@ -5095,56 +5085,56 @@ gpu:
 	.byte	0x5
 	.uleb128 0x24
 	.long	.LASF714
-	.file 31 "/usr/include/x86_64-linux-gnu/bits/waitflags.h"
+	.file 32 "/usr/include/x86_64-linux-gnu/bits/waitflags.h"
 	.byte	0x3
 	.uleb128 0x28
-	.uleb128 0x1f
+	.uleb128 0x20
 	.byte	0x7
 	.long	.Ldebug_macro26
 	.byte	0x4
-	.file 32 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h"
+	.file 33 "/usr/include/x86_64-linux-gnu/bits/waitstatus.h"
 	.byte	0x3
 	.uleb128 0x29
-	.uleb128 0x20
+	.uleb128 0x21
 	.byte	0x7
 	.long	.Ldebug_macro27
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro28
-	.file 33 "/usr/include/x86_64-linux-gnu/sys/types.h"
+	.file 34 "/usr/include/x86_64-linux-gnu/sys/types.h"
 	.byte	0x3
 	.uleb128 0x18b
-	.uleb128 0x21
+	.uleb128 0x22
 	.byte	0x7
 	.long	.Ldebug_macro29
-	.file 34 "/usr/include/x86_64-linux-gnu/bits/types/clock_t.h"
+	.file 35 "/usr/include/x86_64-linux-gnu/bits/types/clock_t.h"
 	.byte	0x3
 	.uleb128 0x7e
-	.uleb128 0x22
+	.uleb128 0x23
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF761
 	.byte	0x4
-	.file 35 "/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h"
+	.file 36 "/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h"
 	.byte	0x3
 	.uleb128 0x80
-	.uleb128 0x23
+	.uleb128 0x24
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF762
 	.byte	0x4
-	.file 36 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h"
+	.file 37 "/usr/include/x86_64-linux-gnu/bits/types/time_t.h"
 	.byte	0x3
 	.uleb128 0x81
-	.uleb128 0x24
+	.uleb128 0x25
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF763
 	.byte	0x4
-	.file 37 "/usr/include/x86_64-linux-gnu/bits/types/timer_t.h"
+	.file 38 "/usr/include/x86_64-linux-gnu/bits/types/timer_t.h"
 	.byte	0x3
 	.uleb128 0x82
-	.uleb128 0x25
+	.uleb128 0x26
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF764
@@ -5158,10 +5148,10 @@ gpu:
 	.byte	0x7
 	.long	.Ldebug_macro30
 	.byte	0x4
-	.file 38 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h"
+	.file 39 "/usr/include/x86_64-linux-gnu/bits/stdint-intn.h"
 	.byte	0x3
 	.uleb128 0x9b
-	.uleb128 0x26
+	.uleb128 0x27
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF765
@@ -5169,23 +5159,23 @@ gpu:
 	.byte	0x5
 	.uleb128 0xab
 	.long	.LASF766
-	.file 39 "/usr/include/endian.h"
+	.file 40 "/usr/include/endian.h"
 	.byte	0x3
 	.uleb128 0xb0
-	.uleb128 0x27
+	.uleb128 0x28
 	.byte	0x5
 	.uleb128 0x13
 	.long	.LASF767
-	.file 40 "/usr/include/x86_64-linux-gnu/bits/endian.h"
+	.file 41 "/usr/include/x86_64-linux-gnu/bits/endian.h"
 	.byte	0x3
 	.uleb128 0x18
-	.uleb128 0x28
+	.uleb128 0x29
 	.byte	0x7
 	.long	.Ldebug_macro31
-	.file 41 "/usr/include/x86_64-linux-gnu/bits/endianness.h"
+	.file 42 "/usr/include/x86_64-linux-gnu/bits/endianness.h"
 	.byte	0x3
 	.uleb128 0x23
-	.uleb128 0x29
+	.uleb128 0x2a
 	.byte	0x7
 	.long	.Ldebug_macro32
 	.byte	0x4
@@ -5194,17 +5184,17 @@ gpu:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro34
-	.file 42 "/usr/include/x86_64-linux-gnu/bits/byteswap.h"
+	.file 43 "/usr/include/x86_64-linux-gnu/bits/byteswap.h"
 	.byte	0x3
 	.uleb128 0x23
-	.uleb128 0x2a
+	.uleb128 0x2b
 	.byte	0x7
 	.long	.Ldebug_macro35
 	.byte	0x4
-	.file 43 "/usr/include/x86_64-linux-gnu/bits/uintn-identity.h"
+	.file 44 "/usr/include/x86_64-linux-gnu/bits/uintn-identity.h"
 	.byte	0x3
 	.uleb128 0x24
-	.uleb128 0x2b
+	.uleb128 0x2c
 	.byte	0x5
 	.uleb128 0x18
 	.long	.LASF784
@@ -5212,47 +5202,47 @@ gpu:
 	.byte	0x7
 	.long	.Ldebug_macro36
 	.byte	0x4
-	.file 44 "/usr/include/x86_64-linux-gnu/sys/select.h"
+	.file 45 "/usr/include/x86_64-linux-gnu/sys/select.h"
 	.byte	0x3
 	.uleb128 0xb3
-	.uleb128 0x2c
+	.uleb128 0x2d
 	.byte	0x5
 	.uleb128 0x16
 	.long	.LASF797
-	.file 45 "/usr/include/x86_64-linux-gnu/bits/select.h"
+	.file 46 "/usr/include/x86_64-linux-gnu/bits/select.h"
 	.byte	0x3
 	.uleb128 0x1e
-	.uleb128 0x2d
+	.uleb128 0x2e
 	.byte	0x7
 	.long	.Ldebug_macro37
 	.byte	0x4
-	.file 46 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h"
+	.file 47 "/usr/include/x86_64-linux-gnu/bits/types/sigset_t.h"
 	.byte	0x3
 	.uleb128 0x21
-	.uleb128 0x2e
+	.uleb128 0x2f
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF802
-	.file 47 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h"
+	.file 48 "/usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h"
 	.byte	0x3
 	.uleb128 0x4
-	.uleb128 0x2f
+	.uleb128 0x30
 	.byte	0x7
 	.long	.Ldebug_macro38
 	.byte	0x4
 	.byte	0x4
-	.file 48 "/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h"
+	.file 49 "/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h"
 	.byte	0x3
 	.uleb128 0x25
-	.uleb128 0x30
+	.uleb128 0x31
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF805
 	.byte	0x4
-	.file 49 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h"
+	.file 50 "/usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h"
 	.byte	0x3
 	.uleb128 0x27
-	.uleb128 0x31
+	.uleb128 0x32
 	.byte	0x5
 	.uleb128 0x3
 	.long	.LASF806
@@ -5262,55 +5252,55 @@ gpu:
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro40
-	.file 50 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h"
+	.file 51 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h"
 	.byte	0x3
 	.uleb128 0xe3
-	.uleb128 0x32
-	.byte	0x5
-	.uleb128 0x14
-	.long	.LASF823
-	.file 51 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h"
-	.byte	0x3
-	.uleb128 0x17
 	.uleb128 0x33
 	.byte	0x5
 	.uleb128 0x14
+	.long	.LASF823
+	.file 52 "/usr/include/x86_64-linux-gnu/bits/thread-shared-types.h"
+	.byte	0x3
+	.uleb128 0x17
+	.uleb128 0x34
+	.byte	0x5
+	.uleb128 0x14
 	.long	.LASF824
-	.file 52 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h"
+	.file 53 "/usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h"
 	.byte	0x3
 	.uleb128 0x2c
-	.uleb128 0x34
+	.uleb128 0x35
 	.byte	0x5
 	.uleb128 0x13
 	.long	.LASF825
 	.byte	0x3
 	.uleb128 0x15
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro41
 	.byte	0x4
-	.file 53 "/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h"
+	.file 54 "/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h"
 	.byte	0x3
 	.uleb128 0x2e
-	.uleb128 0x35
+	.uleb128 0x36
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF837
 	.byte	0x4
-	.file 54 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h"
+	.file 55 "/usr/include/x86_64-linux-gnu/bits/struct_mutex.h"
 	.byte	0x3
 	.uleb128 0x4c
-	.uleb128 0x36
+	.uleb128 0x37
 	.byte	0x7
 	.long	.Ldebug_macro42
 	.byte	0x4
-	.file 55 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h"
+	.file 56 "/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h"
 	.byte	0x3
 	.uleb128 0x59
-	.uleb128 0x37
+	.uleb128 0x38
 	.byte	0x7
 	.long	.Ldebug_macro43
 	.byte	0x4
@@ -5323,10 +5313,10 @@ gpu:
 	.long	.LASF845
 	.byte	0x4
 	.byte	0x4
-	.file 56 "/usr/include/alloca.h"
+	.file 57 "/usr/include/alloca.h"
 	.byte	0x3
 	.uleb128 0x23e
-	.uleb128 0x38
+	.uleb128 0x39
 	.byte	0x7
 	.long	.Ldebug_macro44
 	.byte	0x3
@@ -5341,10 +5331,10 @@ gpu:
 	.byte	0x5
 	.uleb128 0x32f
 	.long	.LASF849
-	.file 57 "/usr/include/x86_64-linux-gnu/bits/stdlib-float.h"
+	.file 58 "/usr/include/x86_64-linux-gnu/bits/stdlib-float.h"
 	.byte	0x3
 	.uleb128 0x3ff
-	.uleb128 0x39
+	.uleb128 0x3a
 	.byte	0x4
 	.byte	0x4
 	.byte	0x3
@@ -5354,7 +5344,7 @@ gpu:
 	.long	.Ldebug_macro46
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xc
+	.uleb128 0xd
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
@@ -5366,26 +5356,26 @@ gpu:
 	.byte	0x7
 	.long	.Ldebug_macro48
 	.byte	0x4
-	.file 58 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h"
+	.file 59 "/usr/include/x86_64-linux-gnu/bits/types/locale_t.h"
 	.byte	0x3
 	.uleb128 0xac
-	.uleb128 0x3a
+	.uleb128 0x3b
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF851
-	.file 59 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h"
+	.file 60 "/usr/include/x86_64-linux-gnu/bits/types/__locale_t.h"
 	.byte	0x3
 	.uleb128 0x16
-	.uleb128 0x3b
+	.uleb128 0x3c
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF852
 	.byte	0x4
 	.byte	0x4
-	.file 60 "/usr/include/strings.h"
+	.file 61 "/usr/include/strings.h"
 	.byte	0x3
 	.uleb128 0x1ce
-	.uleb128 0x3c
+	.uleb128 0x3d
 	.byte	0x7
 	.long	.Ldebug_macro49
 	.byte	0x3
@@ -5398,49 +5388,49 @@ gpu:
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x7
-	.uleb128 0x9
+	.uleb128 0xa
 	.byte	0x7
 	.long	.Ldebug_macro50
-	.file 61 "/usr/include/ncurses_dll.h"
+	.file 62 "/usr/include/ncurses_dll.h"
 	.byte	0x3
 	.uleb128 0x59
-	.uleb128 0x3d
+	.uleb128 0x3e
 	.byte	0x7
 	.long	.Ldebug_macro51
 	.byte	0x4
-	.file 62 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h"
+	.file 63 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h"
 	.byte	0x3
 	.uleb128 0x5f
-	.uleb128 0x3e
-	.file 63 "/usr/include/stdint.h"
+	.uleb128 0x3f
+	.file 64 "/usr/include/stdint.h"
 	.byte	0x3
 	.uleb128 0x9
-	.uleb128 0x3f
+	.uleb128 0x40
 	.byte	0x7
 	.long	.Ldebug_macro52
 	.byte	0x3
 	.uleb128 0x1a
-	.uleb128 0xc
+	.uleb128 0xd
 	.byte	0x7
 	.long	.Ldebug_macro23
 	.byte	0x4
-	.file 64 "/usr/include/x86_64-linux-gnu/bits/wchar.h"
+	.file 65 "/usr/include/x86_64-linux-gnu/bits/wchar.h"
 	.byte	0x3
 	.uleb128 0x1c
-	.uleb128 0x40
+	.uleb128 0x41
 	.byte	0x7
 	.long	.Ldebug_macro53
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x1d
-	.uleb128 0xf
+	.uleb128 0x10
 	.byte	0x7
 	.long	.Ldebug_macro5
 	.byte	0x4
-	.file 65 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
+	.file 66 "/usr/include/x86_64-linux-gnu/bits/stdint-uintn.h"
 	.byte	0x3
 	.uleb128 0x25
-	.uleb128 0x41
+	.uleb128 0x42
 	.byte	0x5
 	.uleb128 0x14
 	.long	.LASF876
@@ -5456,30 +5446,30 @@ gpu:
 	.long	.Ldebug_macro55
 	.byte	0x3
 	.uleb128 0xf9
-	.uleb128 0x15
+	.uleb128 0x16
 	.byte	0x7
 	.long	.Ldebug_macro56
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro57
-	.file 66 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h"
+	.file 67 "/usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h"
 	.byte	0x3
 	.uleb128 0x11a
-	.uleb128 0x42
+	.uleb128 0x43
 	.byte	0x7
 	.long	.Ldebug_macro58
 	.byte	0x4
 	.byte	0x7
 	.long	.Ldebug_macro59
-	.file 67 "/usr/include/unctrl.h"
+	.file 68 "/usr/include/unctrl.h"
 	.byte	0x3
 	.uleb128 0x830
-	.uleb128 0x43
+	.uleb128 0x44
 	.byte	0x7
 	.long	.Ldebug_macro60
 	.byte	0x3
 	.uleb128 0x37
-	.uleb128 0x9
+	.uleb128 0xa
 	.byte	0x4
 	.byte	0x6
 	.uleb128 0x39
@@ -5488,14 +5478,21 @@ gpu:
 	.byte	0x4
 	.byte	0x3
 	.uleb128 0x8
+	.uleb128 0x9
+	.byte	0x5
+	.uleb128 0x2
+	.long	.LASF1417
+	.byte	0x4
+	.byte	0x3
+	.uleb128 0x9
 	.uleb128 0x6
 	.byte	0x7
 	.long	.Ldebug_macro61
 	.byte	0x4
-	.file 68 "/home/jscha/dvp/cpumon/src/../include/sysfs.h"
+	.file 69 "/home/jscha/dvp/cpumon/src/../include/sysfs.h"
 	.byte	0x3
-	.uleb128 0x9
-	.uleb128 0x44
+	.uleb128 0xa
+	.uleb128 0x45
 	.byte	0x5
 	.uleb128 0x2
 	.long	.LASF1424
@@ -8989,30 +8986,27 @@ gpu:
 	.uleb128 0x31
 	.long	.LASF861
 	.byte	0
-	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.53a80dcb972256ad710bb0611da875ed,comdat
+	.section	.debug_macro,"G",@progbits,wm4.cpumonlib.h.3.02eaf6afe85a1ee5acd07b0e880f112e,comdat
 .Ldebug_macro61:
 	.value	0x4
 	.byte	0
 	.byte	0x5
 	.uleb128 0x3
-	.long	.LASF1417
-	.byte	0x5
-	.uleb128 0x6
 	.long	.LASF1418
 	.byte	0x5
-	.uleb128 0x7
+	.uleb128 0x6
 	.long	.LASF1419
 	.byte	0x5
-	.uleb128 0x8
+	.uleb128 0x7
 	.long	.LASF1420
 	.byte	0x5
-	.uleb128 0x9
+	.uleb128 0x8
 	.long	.LASF1421
 	.byte	0x5
-	.uleb128 0xa
+	.uleb128 0x9
 	.long	.LASF1422
 	.byte	0x5
-	.uleb128 0xc
+	.uleb128 0xa
 	.long	.LASF1423
 	.byte	0
 	.section	.debug_line,"",@progbits
@@ -9024,12 +9018,14 @@ gpu:
 	.string	"__ldiv_t_defined 1"
 .LASF1507:
 	.string	"total"
-.LASF1418:
+.LASF1419:
 	.string	"AVG_WINDOW 60"
 .LASF998:
 	.string	"WA_BLINK A_BLINK"
 .LASF36:
 	.string	"__FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__"
+.LASF1417:
+	.string	"UTILS "
 .LASF109:
 	.string	"__UINT16_MAX__ 0xffff"
 .LASF847:
@@ -9589,7 +9585,7 @@ gpu:
 	.string	"__UINT_LEAST32_MAX__ 0xffffffffU"
 .LASF879:
 	.string	"INT16_MIN (-32767-1)"
-.LASF1417:
+.LASF1418:
 	.string	"CPUMONLIB "
 .LASF1153:
 	.string	"addch(ch) waddch(stdscr,(ch))"
@@ -9883,7 +9879,7 @@ gpu:
 	.string	"wgetstr(w,s) wgetnstr(w, s, -1)"
 .LASF1340:
 	.string	"KEY_SREPLACE 0621"
-.LASF1419:
+.LASF1420:
 	.string	"BATTERY_STATUS_BUF_SIZE 20"
 .LASF1443:
 	.string	"_IO_buf_base"
@@ -10429,7 +10425,7 @@ gpu:
 	.string	"UINT_LEAST32_MAX (4294967295U)"
 .LASF469:
 	.string	"__REDIRECT_NTHNL(name,proto,alias) name proto __asm__ (__ASMNAME (#alias)) __THROWNL"
-.LASF1421:
+.LASF1422:
 	.string	"BUFSIZE 64"
 .LASF1086:
 	.string	"NCURSES_SP_OUTC NCURSES_SP_NAME(NCURSES_OUTC)"
@@ -10853,7 +10849,7 @@ gpu:
 	.string	"__UINT32_C(c) c ## U"
 .LASF222:
 	.string	"__FLT64_MAX_EXP__ 1024"
-.LASF1420:
+.LASF1421:
 	.string	"POWER_LIMIT_COUNT 2"
 .LASF1318:
 	.string	"KEY_SCANCEL 0573"
@@ -11149,8 +11145,6 @@ gpu:
 	.string	"ACS_LANTERN NCURSES_ACS('i')"
 .LASF829:
 	.string	"__SIZEOF_PTHREAD_BARRIER_T 32"
-.LASF1423:
-	.string	"DEBUG_ENABLE 1"
 .LASF592:
 	.string	"__INO64_T_TYPE __UQUAD_TYPE"
 .LASF280:
@@ -11853,7 +11847,7 @@ gpu:
 	.string	"ACS_GEQUAL NCURSES_ACS('z')"
 .LASF639:
 	.string	"__feof_unlocked_body(_fp) (((_fp)->_flags & _IO_EOF_SEEN) != 0)"
-.LASF1422:
+.LASF1423:
 	.string	"POLL_INTERVAL_S 1"
 .LASF96:
 	.string	"__INTMAX_MAX__ 0x7fffffffffffffffL"

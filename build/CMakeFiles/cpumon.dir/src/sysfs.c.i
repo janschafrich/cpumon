@@ -5947,6 +5947,21 @@ extern void exit_curses (int);
  const char * unctrl_sp (SCREEN*, chtype);
 # 2097 "/usr/include/curses.h" 2 3 4
 # 8 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
+# 1 "/home/jscha/dvp/cpumon/src/../include/utils.h" 1
+
+#define UTILS 
+
+
+
+# 5 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+char *read_string(const char *filepath);
+int read_line(char *return_string, const char *filepath);
+int acc_cmdln(char *cmd);
+void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
+float get_min_value(float previous_min_value, float *sample_next, int sample_count);
+float get_max_value(float previous_min_value, float *sample_next, int sample_count);
+# 9 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h" 1
 
 
@@ -5959,13 +5974,8 @@ extern void exit_curses (int);
 #define BUFSIZE 64
 #define POLL_INTERVAL_S 1
 
-#define DEBUG_ENABLE 1
 
 
-
-
-
-# 17 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h"
 struct sensor {
 
     float cpu_avg;
@@ -5983,13 +5993,13 @@ struct power {
     float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg;
-    unsigned int time_unit, energy_unit, power_unit;
+    float time_unit, energy_unit, power_unit;
     float per_core[];
 };
 typedef struct power power;
 
 
-struct battery {
+struct battery_s {
     float power_now;
     float power_cumulative;
     float power_runtime_avg;
@@ -5997,25 +6007,20 @@ struct battery {
     float max;
     char status[20];
 };
-typedef struct battery battery;
+typedef struct battery_s battery_s;
 
 typedef enum { INTEL, AMD } cpu_designer_e;
 
 
 void init_environment(void);
-char *read_string(const char *filepath);
-int read_line(char *return_string, const char *filepath);
-int acc_cmdln(char *cmd);
+void *init_sensor(int core_count);
+void *init_sensor_battery();
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
 
-
-void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float *sample_next, int sample_count);
-float get_max_value(float previous_min_value, float *sample_next, int sample_count);
 int print_fanspeed(void);
-# 9 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
+# 10 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/sysfs.h" 1
 
 #define SYSFS 
@@ -6035,7 +6040,7 @@ void reset_if_status_change(float *cumulative, char *status, char *status_before
 void sysfs_freq_ghz(float *, float *, int core_count);
 void cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
 int gpu(void);
-# 10 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
+# 11 "/home/jscha/dvp/cpumon/src/sysfs.c" 2
 
 
 
@@ -6043,22 +6048,22 @@ char *identifiy_cpu(void)
 {
     FILE *fp = fopen("/proc/cpuinfo", "r");
     if (fp == 
-# 16 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 17 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
              ((void *)0)
-# 16 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 17 "/home/jscha/dvp/cpumon/src/sysfs.c"
                  ) {
         perror("Error opening file /proc/cpuinfo");
         return (
-# 18 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 19 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                ((void *)0)
-# 18 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 19 "/home/jscha/dvp/cpumon/src/sysfs.c"
                    );
     }
 
     char file_buf[
-# 21 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 22 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                  8192
-# 21 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 22 "/home/jscha/dvp/cpumon/src/sysfs.c"
                        ];
     char *model = malloc ((sizeof *model) * 15);
     char *line;
@@ -6066,14 +6071,14 @@ char *identifiy_cpu(void)
 
     while(1) {
         line = fgets(file_buf, 
-# 27 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 28 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                               8192
-# 27 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 28 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                     , fp);
         if (line == 
-# 28 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 29 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                    ((void *)0)
-# 28 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 29 "/home/jscha/dvp/cpumon/src/sysfs.c"
                        ) break;
 
         if(!strncmp(line, "model name", 10)) {
@@ -6100,19 +6105,19 @@ int * get_sysfs_power_limits_w(void)
         sprintf(path,"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw",i);
         fp = fopen(path, "r");
         if (fp == 
-# 53 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 54 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                  ((void *)0)
-# 53 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 54 "/home/jscha/dvp/cpumon/src/sysfs.c"
                      ) {
 
-            printf("get_sysfs_power_limits filepath %s\n", path);
+
 
             perror("Error opening file\n");
         }
         if (fgets(results,64, fp) == 
-# 59 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 60 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                                          ((void *)0)
-# 59 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 60 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                              )
         {
             printf("Couldn't read power from %s", path);
@@ -6128,15 +6133,15 @@ int * get_sysfs_power_limits_w(void)
 }
 
 void power_config(
-# 73 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 74 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                  _Bool 
-# 73 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 74 "/home/jscha/dvp/cpumon/src/sysfs.c"
                       running_with_privileges, cpu_designer_e designer)
 {
     if (running_with_privileges == 
-# 75 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 76 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                                   1 
-# 75 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 76 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                        && designer == INTEL)
     {
         int *power_limits = get_sysfs_power_limits_w();
@@ -6233,9 +6238,9 @@ void sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
         if (read_line(file_buf, path) == 0)
         {
             freq_ghz[i] = (float)strtol(file_buf, 
-# 170 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 171 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                                                  ((void *)0)
-# 170 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 171 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                                      , 10) / 1000000;
             total += freq_ghz[i];
         }
@@ -6253,17 +6258,17 @@ void cpucore_load(float *load, float * average, long long *work_jiffies_before, 
 
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == 
-# 186 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 187 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
              ((void *)0)
-# 186 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 187 "/home/jscha/dvp/cpumon/src/sysfs.c"
                  ) {
         perror("Error opening file /proc/stat");
     }
 
     char file_buf[
-# 190 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 191 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                  8192
-# 190 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 191 "/home/jscha/dvp/cpumon/src/sysfs.c"
                        ];
     char *line;
     long long user, nice, system, idle, iowait, irq, softirq;
@@ -6273,28 +6278,28 @@ void cpucore_load(float *load, float * average, long long *work_jiffies_before, 
     float total = 0;
 
         line = fgets(file_buf, 
-# 198 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 199 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                               8192
-# 198 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 199 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                     , fp);
         if (line == 
-# 199 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 200 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                    ((void *)0)
-# 199 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 200 "/home/jscha/dvp/cpumon/src/sysfs.c"
                        ) {
             printf("Error %s\n", file_buf);
         }
 
         for (int core = 0; core < core_count; core++) {
             line = fgets(file_buf, 
-# 204 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 205 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                                   8192
-# 204 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 205 "/home/jscha/dvp/cpumon/src/sysfs.c"
                                         , fp);
             if (line == 
-# 205 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
+# 206 "/home/jscha/dvp/cpumon/src/sysfs.c" 3 4
                        ((void *)0)
-# 205 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 206 "/home/jscha/dvp/cpumon/src/sysfs.c"
                            ) {
                 break;
             }
@@ -6347,5 +6352,5 @@ int gpu(void){
     {
         return return_val;
     }
-# 270 "/home/jscha/dvp/cpumon/src/sysfs.c"
+# 271 "/home/jscha/dvp/cpumon/src/sysfs.c"
 }

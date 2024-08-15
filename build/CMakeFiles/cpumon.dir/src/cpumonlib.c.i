@@ -9217,6 +9217,21 @@ extern void exit_curses (int);
  const char * unctrl_sp (SCREEN*, chtype);
 # 2097 "/usr/include/curses.h" 2 3 4
 # 13 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
+# 1 "/home/jscha/dvp/cpumon/src/../include/utils.h" 1
+
+#define UTILS 
+
+
+
+# 5 "/home/jscha/dvp/cpumon/src/../include/utils.h"
+char *read_string(const char *filepath);
+int read_line(char *return_string, const char *filepath);
+int acc_cmdln(char *cmd);
+void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
+float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
+float get_min_value(float previous_min_value, float *sample_next, int sample_count);
+float get_max_value(float previous_min_value, float *sample_next, int sample_count);
+# 14 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h" 1
 
 
@@ -9229,13 +9244,8 @@ extern void exit_curses (int);
 #define BUFSIZE 64
 #define POLL_INTERVAL_S 1
 
-#define DEBUG_ENABLE 1
 
 
-
-
-
-# 17 "/home/jscha/dvp/cpumon/src/../include/cpumonlib.h"
 struct sensor {
 
     float cpu_avg;
@@ -9253,13 +9263,13 @@ struct power {
     float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg;
-    unsigned int time_unit, energy_unit, power_unit;
+    float time_unit, energy_unit, power_unit;
     float per_core[];
 };
 typedef struct power power;
 
 
-struct battery {
+struct battery_s {
     float power_now;
     float power_cumulative;
     float power_runtime_avg;
@@ -9267,25 +9277,20 @@ struct battery {
     float max;
     char status[20];
 };
-typedef struct battery battery;
+typedef struct battery_s battery_s;
 
 typedef enum { INTEL, AMD } cpu_designer_e;
 
 
 void init_environment(void);
-char *read_string(const char *filepath);
-int read_line(char *return_string, const char *filepath);
-int acc_cmdln(char *cmd);
+void *init_sensor(int core_count);
+void *init_sensor_battery();
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
 
-
-void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float *sample_next, int sample_count);
-float get_max_value(float previous_min_value, float *sample_next, int sample_count);
 int print_fanspeed(void);
-# 14 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
+# 15 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/machine_specific_registers.h" 1
 
 
@@ -9340,10 +9345,6 @@ int print_fanspeed(void);
 
 
 
-
-
-
-
 int open_msr(int core);
 long long read_msr(int fd, unsigned int offset);
 
@@ -9354,8 +9355,9 @@ void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
-int get_amd_pck_power_w(float *power_w);
-# 15 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
+int get_amd_pkg_power_w(power *my_power);
+int get_msr_core_units(power *my_power, cpu_designer_e designer);
+# 16 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
 # 1 "/home/jscha/dvp/cpumon/src/../include/sysfs.h" 1
 
 #define SYSFS 
@@ -9375,28 +9377,28 @@ void reset_if_status_change(float *cumulative, char *status, char *status_before
 void sysfs_freq_ghz(float *, float *, int core_count);
 void cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
 int gpu(void);
-# 16 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
+# 17 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 2
 
 
 extern long period_counter;
 extern long poll_cycle_counter;
 extern 
-# 20 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-      _Bool 
-# 20 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-           display_power_config_flag;
-extern 
 # 21 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
       _Bool 
 # 21 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+           display_power_config_flag;
+extern 
+# 22 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+      _Bool 
+# 22 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
            display_moving_average_flag;
 
 int core_count = 0;
 char charging_status_before[20];
 
-# 25 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 26 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
 _Bool 
-# 25 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 26 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
     running_with_privileges;
 
 extern float freq_his[60];
@@ -9410,134 +9412,90 @@ void init_environment(void)
 {
     FILE *fp;
     if ((fp = popen("sudo modprobe msr", "r")) == 
-# 37 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 38 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                                  ((void *)0)
-# 37 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 38 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                                      )
     {
         printf("Error modprobe msr\n");
     }
 
     setlocale(
-# 42 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 43 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
              1
-# 42 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 43 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                        , "");
 
     core_count = sysconf(
-# 44 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 45 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                         _SC_NPROCESSORS_ONLN
-# 44 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 45 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                             );
     if (core_count == -1)
     {
         fprintf(
-# 47 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 48 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                stderr
-# 47 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 48 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                      , "Could not determine CPU core count from sysconf\n");
     }
 
     running_with_privileges = 
-# 50 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 51 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                              0
-# 50 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 51 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                   ;
     if (geteuid() == 0)
     {
         running_with_privileges = 
-# 53 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 54 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                  1
-# 53 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 54 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                      ;
     }
 }
 
-int init_sensors(cpu_designer_e designer)
-{
-    return 0;
-}
-
-
-char *read_string(const char *filepath)
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
 {
 
-        printf("read_string filepath = %s\n", filepath);
-
-    FILE *fp = fopen(filepath, "r");
-    static char file_buf[64];
-    int i = 0;
-    int single_character;
-
-    if(fp == 
-# 73 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-            ((void *)0)
-# 73 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                ) {
-        perror("Error opening file\n");
-        return 
-# 75 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-              ((void *)0)
-# 75 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                  ;
-    }
-
-    while ((single_character = fgetc(fp)) != 
-# 78 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-                                            (-1) 
-# 78 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                                                && i < 64 -1 ){
-        if(single_character == '\n') {
-            continue;
-        } else {
-            file_buf[i] = single_character;
-        }
-    i++;
-    }
-
-    file_buf[i] = '\0';
-    fclose(fp);
-
-    return file_buf;
-}
-
-int read_line(char *return_string, const char *filepath)
-{
-
-        printf("read_line filepath = %s\n", filepath);
-
-    FILE *fp = fopen(filepath, "r");
-
-    if(fp == 
-# 100 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-            ((void *)0)
-# 100 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                ) {
-        perror("Error opening file\n");
-        return -1;
-    }
-    if (fscanf(fp, "%s", return_string) == 1)
+    power *my_power;
+    switch (cpu_designer)
     {
-        fclose(fp);
-        return 0;
-    }
-    if (fscanf(fp, "%s", return_string) == 
-# 109 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-                                          (-1)
-# 109 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                                             )
-    {
-
-        fclose(fp);
-        return -1;
+        case INTEL:
+            my_power = malloc(sizeof(power));
+            break;
+        case AMD :
+            my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
+            break;
+        default:
+            my_power = malloc(sizeof(power));
+            break;
     }
 
-    fclose(fp);
-    return -1;
+    get_msr_core_units(my_power, cpu_designer);
 
+    return my_power;
 }
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery)
+void *init_sensor(int core_count)
+{
+    sensor *my_sensor = malloc( sizeof(sensor) + core_count * sizeof(my_sensor->per_core[0]) );
+    *my_sensor = (sensor) {.min = 1000, .max = 0};
+
+    return my_sensor;
+}
+
+void *init_sensor_battery()
+{
+    battery_s *battery = malloc(sizeof(battery));
+    *battery = (battery_s) {.min = 1000, .max = 0};
+
+    return battery;
+}
+
+
+
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery)
 {
 
     sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
@@ -9547,21 +9505,21 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
 
     freq_his[period_counter] = freq->cpu_avg;
 
-    get_sysfs_power_battery_w(&my_battery->power_now);
-    get_battery_status(my_battery->status);
-    reset_if_status_change(&my_battery->power_cumulative, my_battery->status, charging_status_before);
-    my_battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &my_battery->power_cumulative, &my_battery->power_now);
-    my_battery->min = get_min_value(my_battery->min, &my_battery->power_now, 1);
-    my_battery->max = get_max_value(my_battery->max, &my_battery->power_now, 1);
+    get_sysfs_power_battery_w(&battery->power_now);
+    get_battery_status(battery->status);
+    reset_if_status_change(&battery->power_cumulative, battery->status, charging_status_before);
+    battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &battery->power_cumulative, &battery->power_now);
+    battery->min = get_min_value(battery->min, &battery->power_now, 1);
+    battery->max = get_max_value(battery->max, &battery->power_now, 1);
 
     if (running_with_privileges == 
-# 138 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 115 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                   1
-# 138 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 115 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                       )
     {
-# 159 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-        get_amd_pck_power_w(power_per_domain);
+# 136 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+        get_amd_pkg_power_w(my_power);
 
         power_his[period_counter] = *power_per_domain;
         if (period_counter == 1)
@@ -9569,111 +9527,12 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
             power_his[0] = *power_per_domain;
         }
 
-        my_power->pkg_now = power_per_domain[0];
-        my_power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &my_power->pkg_cumulative, &my_power->pkg_now);
+
+
 
     }
 }
 
-
-
-
-
-int acc_cmdln(char *cmd){
-    char buf[64];
-    FILE *fp;
-
-    if ((fp = popen(cmd, "r")) == 
-# 181 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-                                 ((void *)0)
-# 181 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                                     ) {
-        printf("cmd = %s\n", cmd);
-        printf("Error opening pipe\n");
-        return -1;
-    }
-
-    while (fgets(buf, 64, fp) != 
-# 187 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
-                                     ((void *)0)
-# 187 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
-                                         ) {
-        printf(" %s", buf);
-    }
-
-    if (pclose(fp) == -1) {
-        printf("Command not found or exited with error status\n");
-        return -1;
-    }
-
-    return 0;
-}
-
-
-
-
-
-
-void moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power){
-
-    i += 1;
-    double freq_total = 0;
-    long load_total = 0;
-    long temp_total = 0;
-    double voltage_total = 0;
-    double power_total = 0;
-
-
-    for (int j = 0; j < i; j++){
-        freq_total += (double)freq[j];
-        load_total += (long)load[j];
-        temp_total += (long)temp[j];
-        voltage_total += (double)voltage[j];
-        power_total += (double)power[j];
-    }
-
-    if (i != 0){
-        printf("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i );
-        printf("Avg Pwr %.2f W\n", power_total/i);
-    }
-}
-
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next){
-
-    float avg = 0;
-    *samples_cumulative += *sample_next;
-    if (poll_cycle_counter != 0)
-    {
-        avg = *samples_cumulative / (float) poll_cycle_counter;
-    }
-
-    return avg;
-}
-
-
-float get_min_value(float previous_min_value, float *sample_next, int sample_count)
-{
-    for (int i = 0; i < sample_count; i++)
-        {
-        if (sample_next[i] < previous_min_value)
-        {
-            previous_min_value = sample_next[i];
-        }
-    }
-    return previous_min_value;
-}
-
-float get_max_value(float previous_max_value, float *sample_next, int sample_count)
-{
-    for (int i = 0; i < sample_count; i++)
-        {
-        if (sample_next[i] > previous_max_value)
-        {
-            previous_max_value = sample_next[i];
-        }
-    }
-    return previous_max_value;
-}
 
 
 int print_fanspeed(void){
@@ -9682,17 +9541,17 @@ int print_fanspeed(void){
 
     int duty = 0;
     if ((fp = popen("ectool pwmgetduty 0", "r")) == 
-# 271 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 157 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                                    ((void *)0)
-# 271 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 157 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                                        ) {
         printw("Error accessing the ectool. Error opening pipe\n");
         return -1;
     }
     while (fgets(buf, 64, fp) != 
-# 275 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 161 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                      ((void *)0)
-# 275 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 161 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                          ) {
         sscanf(buf, "%*s%*s%*s%d", &duty);
         printw("Fan speed %d %% ", (100 * duty)/ 65536 );
@@ -9703,17 +9562,17 @@ int print_fanspeed(void){
 
     int rpm = 0;
     if ((fp = popen("ectool pwmgetfanrpm", "r")) == 
-# 284 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 170 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                                    ((void *)0)
-# 284 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 170 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                                        ) {
         printw("Error accessing the ectool. Error opening pipe\n");
         return -1;
     }
     while (fgets(buf, 64, fp) != 
-# 288 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
+# 174 "/home/jscha/dvp/cpumon/src/cpumonlib.c" 3 4
                                      ((void *)0)
-# 288 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
+# 174 "/home/jscha/dvp/cpumon/src/cpumonlib.c"
                                          ) {
         sscanf(buf, "%*s%*d%*s%d", &rpm);
         printw("(%d RPM)\n", rpm);
