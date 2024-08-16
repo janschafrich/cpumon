@@ -1,6 +1,7 @@
-./.vscode
-test.c
-test.py
-./test
-./.Archiv
-./build
+.vscode
+test
+.Archiv
+bin/CMakeFiles
+bin/cmake_install.cmake
+bin/CMakeCache.txt
+
