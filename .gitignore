@@ -1,5 +1,4 @@
 .vscode
 test/
-build
-.Archiv
+build/
 src/ryzen.c
