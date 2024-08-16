@@ -24,11 +24,14 @@
 #include <stdlib.h>                 // malloc
 #include <unistd.h>                 // uid_t sleep()
 #include <ncurses.h>
+#include "../include/utils.h"
 #include "../include/cpumonlib.h"
 #include "../include/guilib.h"
 #include "../include/machine_specific_registers.h"
 #include "../include/sysfs.h"
 
+
+#define DEBUG_ENABLE 0
 
 
 long period_counter = 0;
@@ -52,40 +55,23 @@ int main (int argc, char **argv)
 {   
     init_environment();
     
-    //int gpu_freq;
+    int gpu_freq;
 
     float power_per_domain[POWER_DOMAIN_COUNT];
 
-    sensor *freq = malloc( sizeof(sensor) + core_count * sizeof(freq->per_core[0]) );
-    *freq = (sensor) {.min = 1000, .max = 0}; 
-    sensor *load = malloc( sizeof(sensor) + core_count * sizeof(load->per_core[0]) ); 
-    *load = (sensor) {.min = 1000, .max = 0}; 
-    sensor *temperature = malloc( sizeof(sensor) + core_count * sizeof(temperature->per_core[0]) ); 
-    *temperature = (sensor) {.min = 1000, .max = 0}; 
-    sensor *voltage = malloc( sizeof(sensor) + core_count * sizeof(voltage->per_core[0]) ); 
-    *voltage = (sensor) {.min = 1000, .max = 0}; 
-    battery *my_battery = malloc(sizeof(battery));
-    *my_battery = (battery) {.min = 1000, .max = 0};
+    sensor *freq = init_sensor(core_count);
+    sensor *load = init_sensor(core_count);
+    sensor *temperature = init_sensor(core_count);
+    sensor *voltage = init_sensor(core_count); 
     
-    power *my_power;
-    switch (cpu_designer)
-    {
-        case INTEL: 
-            my_power = malloc(sizeof(power)); 
-            break;
-        case AMD : 
-            my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
-            break;
-        default: 
-            my_power = malloc(sizeof(power)); 
-            break;
-    }
+    battery_s *battery = init_sensor_battery();
+
+    power *my_power = init_sensor_power(AMD, core_count);
     
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
     char *cpu_model = identifiy_cpu();
-    //get_msr_core_units(my_power, cpu_designer);
     
     int command;
 
@@ -108,6 +94,7 @@ int main (int argc, char **argv)
     init_gui();
 
   
+    // ------------------------------ run infinitely ------------------------------------------ //
     while (1) {
         
         command = kbhit();
@@ -118,13 +105,13 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        update_sensor_data(freq, load, temperature, voltage, power_per_domain, my_power, my_battery);
+        update_sensor_data(freq, load, temperature, voltage, power_per_domain, my_power, battery);
 
         cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
         load_his[period_counter] = load->cpu_avg;
         
-        //gpu_freq = gpu();      
+        gpu_freq = gpu();      
 
         if (period_counter < AVG_WINDOW/POLL_INTERVAL_S)    // for last minute history
         {   
@@ -140,17 +127,21 @@ int main (int argc, char **argv)
         
         clear();
 
+#if DEBUG_ENABLE
+        printw("my_power energy_unit = %f\n", my_power->energy_unit);
+#endif
+
         attron(A_BOLD);
         printw("\n\t\t%s\n\n", cpu_model);
         attroff(A_BOLD);
         
         if (running_with_privileges == TRUE)
         {
-            printw("       f/GHz \tC0%%   Temp/°C\tU/V\n");
+            printw("Core    f/GHz \tC0%%   Temp/°C\tU/V\n");
             printw("-------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {   
-                printw("Core %d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
+                printw("%d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
             }
             printw("\n");
             //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
@@ -162,9 +153,10 @@ int main (int argc, char **argv)
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
-            draw_power(power_per_domain, my_power->pkg_runtime_avg);
+            printw("Pwr Pkg = %.2f W\n", my_power->pkg_now);
+            //draw_power(power_per_domain, my_power->pkg_runtime_avg);
             printw("\n");
-            //printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
+            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
             printw("\n");
             // if (print_fanspeed() != 0)
             // {
@@ -187,12 +179,9 @@ int main (int argc, char **argv)
         }
 
         printw("\n");
-        //printw("GPU\t%d\n", gpu_freq);
-        printw("\n");
-        printw("\n");
-        printw("---------- Battery (%s) ----------\n", my_battery->status);
+        printw("---------- Battery (%s) ----------\n", battery->status);
         printw("    now      avg      min      max\n");
-        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", my_battery->power_now, my_battery->power_runtime_avg, my_battery->min, my_battery->max);
+        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", battery->power_now, battery->power_runtime_avg, battery->min, battery->max);
         printw("\n");
         if (display_power_config_flag == TRUE)
         {
