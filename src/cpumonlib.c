@@ -55,28 +55,6 @@ void init_environment(void)
     } 
 }
 
-void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
-{
-    
-    power *my_power;
-    switch (cpu_designer)
-    {
-        case INTEL: 
-            my_power = malloc(sizeof(power)); 
-            break;
-        case AMD : 
-            my_power = malloc( sizeof(power) + core_count * sizeof(my_power->per_core[0]) );
-            break;
-        default: 
-            my_power = malloc(sizeof(power)); 
-            break;
-    }
-    
-    get_msr_core_units(my_power, cpu_designer);
-
-    return my_power;
-}
-
 void *init_sensor(int core_count)
 {
     sensor *my_sensor = malloc( sizeof(sensor) + core_count * sizeof(my_sensor->per_core[0]) );
@@ -85,6 +63,54 @@ void *init_sensor(int core_count)
     return my_sensor;
 }
 
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
+{
+    
+    power *my_power;
+    float *core_enrgy_bfr, *core_enrgy_aftr;
+    switch (cpu_designer)
+    {
+        case INTEL: 
+            my_power = malloc(sizeof(power)); 
+            break;
+        case AMD : 
+            my_power = malloc( sizeof(power)    + core_count * sizeof(my_power->per_core[0]) );
+            if (my_power == NULL)
+            {
+                fprintf(stderr, "Memory allocation for my_power failed\n");
+            }
+
+            core_enrgy_bfr = malloc( sizeof(*core_enrgy_bfr) * core_count/2);
+            if (core_enrgy_bfr == NULL)
+            {
+                fprintf(stderr, "Memory allocation for core_energy_before failed\n");
+                free(my_power); // Clean up previously allocated memory
+            }
+
+            core_enrgy_aftr = malloc( sizeof(*core_enrgy_aftr) * core_count/2);
+            if (core_enrgy_aftr == NULL)
+            {
+                fprintf(stderr, "Memory allocation for core_energy_after failed\n");
+                free(core_enrgy_bfr); // Clean up previously allocated memory
+                free(my_power);
+            }
+            
+            my_power->core_energy_before = core_enrgy_bfr;
+            my_power->core_energy_after = core_enrgy_aftr;
+            break;
+        default: 
+            my_power = malloc(sizeof(power)); 
+            break;
+    }
+    if (running_with_privileges == TRUE)
+    {
+        get_msr_core_units(my_power, cpu_designer);
+    }
+    
+    return my_power;
+}
+
+
 void *init_sensor_battery()
 {
     battery_s *battery = malloc(sizeof(battery_s));
@@ -92,7 +118,6 @@ void *init_sensor_battery()
     
     return battery;
 }
-
 
 
 void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery)
@@ -134,7 +159,7 @@ void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor 
         } */
 
         get_amd_pkg_power_w(my_power);
-        //rapl_msr_amd_core(my_power, core_count);
+        get_amd_msr_core_power_w(my_power, core_count);
         power_his[period_counter] = *power_per_domain;
         if (period_counter == 1)
         {

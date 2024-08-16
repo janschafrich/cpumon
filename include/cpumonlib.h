@@ -10,6 +10,7 @@
 #define POLL_INTERVAL_S 1
 
 
+#define DEBUG_ENABLE 1
 
 struct sensor {
 
@@ -29,9 +30,16 @@ struct power {
     float pkg_cumulative;
     float pkg_runtime_avg; 
     float time_unit, energy_unit, power_unit;
+    float *core_energy_before;
+    float *core_energy_after;
     float per_core[];
 };
 typedef struct power power;
+
+typedef struct core_energy_s {
+    float *energy_before;
+    float *energy_after;
+}   core_energy_s;
 
 
 typedef struct battery_s {

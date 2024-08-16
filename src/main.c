@@ -31,7 +31,6 @@
 #include "../include/sysfs.h"
 
 
-#define DEBUG_ENABLE 0
 
 
 long period_counter = 0;
@@ -54,8 +53,6 @@ float power_his[AVG_WINDOW];
 int main (int argc, char **argv)
 {   
     init_environment();
-    
-    int gpu_freq;
 
     float power_per_domain[POWER_DOMAIN_COUNT];
 
@@ -93,6 +90,8 @@ int main (int argc, char **argv)
 
     init_gui();
 
+
+    int gpu_freq;
   
     // ------------------------------ run infinitely ------------------------------------------ //
     while (1) {
@@ -128,7 +127,12 @@ int main (int argc, char **argv)
         clear();
 
 #if DEBUG_ENABLE
-        printw("my_power energy_unit = %f\n", my_power->energy_unit);
+        // printw("Core 0 f = %.1f GHz\n", freq->per_core[0]);
+        // printw("Core 0 C0%% = %.2f\n", load->per_core[0]);
+        printw("Core 0 E bef = %.2f J\n", my_power->core_energy_before[0]);
+        printw("Core 0 E after = %.2f J\n", my_power->core_energy_after[0]);
+        printw("Core 0 P = %.2f W\n", my_power->per_core[0]);
+        printw("All Core P = %.2f W\n", my_power->cores);
 #endif
 
         attron(A_BOLD);
@@ -137,11 +141,11 @@ int main (int argc, char **argv)
         
         if (running_with_privileges == TRUE)
         {
-            printw("Core    f/GHz \tC0%%   Temp/°C\tU/V\n");
+            printw("Core    f/GHz \tC0%%   Temp/°C\tU/V\tP/W\n");
             printw("-------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {   
-                printw("%d \t%.1f\t%.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
+                printw("%d \t%.1f\t%.f\t%.f\t%.2f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core] , my_power->per_core[core]);
             }
             printw("\n");
             //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
