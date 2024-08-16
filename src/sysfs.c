@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ncurses.h>
+#include "../include/utils.h"
 #include "../include/cpumonlib.h"
 #include "../include/sysfs.h"
 

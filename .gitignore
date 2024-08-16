@@ -1,7 +1,5 @@
 .vscode
-test
+test/
+build
 .Archiv
-bin/CMakeFiles
-bin/cmake_install.cmake
-bin/CMakeCache.txt
-
+src/ryzen.c

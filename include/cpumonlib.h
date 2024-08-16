@@ -9,9 +9,6 @@
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
 
-#define DEBUG_ENABLE 1
-
-
 
 
 struct sensor {
@@ -31,37 +28,31 @@ struct power {
     float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg; 
-    unsigned int time_unit, energy_unit, power_unit;
+    float time_unit, energy_unit, power_unit;
     float per_core[];
 };
 typedef struct power power;
 
 
-struct battery {
+typedef struct battery_s {
     float power_now;
     float power_cumulative;
     float power_runtime_avg;
     float min;
     float max;
     char status[BATTERY_STATUS_BUF_SIZE];
-};
-typedef struct battery battery;
+} battery_s;
 
 typedef enum { INTEL, AMD } cpu_designer_e;
 
 
 void init_environment(void);
-char *read_string(const char *filepath);
-int read_line(char *return_string, const char *filepath);
-int acc_cmdln(char *cmd);
+void *init_sensor(int core_count);
+void *init_sensor_battery();
+void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery *my_battery);
+void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
 
-
-void  moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power);
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next);
-float get_min_value(float previous_min_value, float *sample_next, int sample_count);
-float get_max_value(float previous_min_value, float *sample_next, int sample_count);
 int print_fanspeed(void);
 
 

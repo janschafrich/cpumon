@@ -11,8 +11,9 @@
 #include <unistd.h>
 #include <math.h>
 #include <ncurses.h>
-#include "../include/machine_specific_registers.h"
+#include "../include/utils.h"
 #include "../include/cpumonlib.h"
+#include "../include/machine_specific_registers.h"
 
 #include <sys/types.h>
 #include <sys/syscall.h>
@@ -199,24 +200,22 @@ void get_intel_msr_power_w(float * power_w)
     }	
 }
 
-int get_amd_pck_power_w(float *my_power) 
+int get_amd_pkg_power_w(power *my_power) 
 {
 #if DEBUG_ENABLE
     printf("Entered rapl_msr_amd_core\n");
 #endif
     static float package_before = 0;
     float package_after = 0;
-    float energy_unit = 1.52588e-05;
 
-    int fp = open_msr(1);
+    int fp = open_msr(0);
 
-    printf("Reading from AMD_MSR_PWR_UNIT\n");
+    printf("Reading from AMD_MSR_PACKAGE_ENERGY\n");
     long long package_raw = read_msr(fp, AMD_MSR_PACKAGE_ENERGY);
     printf("Received raw energy Reading = %lld\n", package_raw);
 	
-    package_after = package_raw * energy_unit;
-    *my_power = (float) (package_after - package_before);
-    //power_w[1] = (float) (sum);
+    package_after = (float)package_raw * my_power->energy_unit;
+    my_power->pkg_now = package_after - package_before;
     package_before = package_after;
 
 	return 0;
@@ -232,9 +231,9 @@ int get_msr_core_units(power *my_power, cpu_designer_e designer)
             unsigned int time_unit_raw = (core_energy_units & AMD_TIME_UNIT_MASK) >> 16;
 	        unsigned int energy_unit_raw = (core_energy_units & AMD_ENERGY_UNIT_MASK) >> 8;
 	        unsigned int power_unit_raw = (core_energy_units & AMD_POWER_UNIT_MASK);
-            my_power->time_unit = pow(0.5,(double)(time_unit_raw));
-	        my_power->energy_unit = pow(0.5,(double)(energy_unit_raw));
-	        my_power->power_unit = pow(0.5,(double)(power_unit_raw));
+            my_power->time_unit = pow(0.5,(float)(time_unit_raw));
+	        my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
+	        my_power->power_unit = pow(0.5,(float)(power_unit_raw));
             break;
         default:
             break;

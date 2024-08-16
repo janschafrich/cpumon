@@ -49,10 +49,6 @@
 #define AMD_ENERGY_UNIT_MASK 0x1F00
 #define AMD_POWER_UNIT_MASK 0xF
 
-
-
-
-
 // function prototypes
 
 int open_msr(int core);
@@ -65,8 +61,8 @@ void voltage_v(float *voltage, float *average, int core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
-int get_amd_pck_power_w(float *power_w);
-//int get_msr_core_units(struct power *my_power, enum cpu_designer_e designer);
+int get_amd_pkg_power_w(power *my_power);
+int get_msr_core_units(power *my_power, cpu_designer_e designer);
 
 
 

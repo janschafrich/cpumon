@@ -1,3 +1,0 @@
-/home/jscha/dvp/cpumon/bin/CMakeFiles/cpumon.dir
-/home/jscha/dvp/cpumon/bin/CMakeFiles/edit_cache.dir
-/home/jscha/dvp/cpumon/bin/CMakeFiles/rebuild_cache.dir
