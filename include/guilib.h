@@ -24,7 +24,7 @@
 
 void init_gui(void);
 int kbhit(void);
-void draw_power(float * value, float pkg_avg);
+void draw_power(float * value, float pkg_avg, cpu_designer_e cpu_designer);
 
 
 

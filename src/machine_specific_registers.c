@@ -200,7 +200,7 @@ void get_intel_msr_power_w(float * power_w)
     }	
 }
 
-int get_amd_pkg_power_w(power *my_power) 
+int get_amd_pkg_power_w(float *my_power, float energy_unit) 
 {
 #if DEBUG_ENABLE
     printf("Entered rapl_msr_amd_core\n");
@@ -219,14 +219,14 @@ int get_amd_pkg_power_w(power *my_power)
     printf("Received raw energy Reading = %lld\n", package_raw);
 #endif
 	
-    package_after = (float)package_raw * my_power->energy_unit;
-    my_power->pkg_now = package_after - package_before;
+    package_after = (float)package_raw * energy_unit;
+    *my_power = package_after - package_before;
     package_before = package_after;
 
 	return 0;
 }
 
-int get_msr_core_units(power *my_power, cpu_designer_e designer)
+int get_msr_core_units(power_s *my_power, cpu_designer_e designer)
 {
     switch (designer)
     {
@@ -249,7 +249,7 @@ int get_msr_core_units(power *my_power, cpu_designer_e designer)
 }
 
 
-int get_amd_msr_core_power_w(power *my_power, int total_cores)
+int get_amd_msr_core_power_w(power_s *my_power, int total_cores)
 {
 	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
 	
@@ -271,11 +271,11 @@ int get_amd_msr_core_power_w(power *my_power, int total_cores)
     }
 
     int j = 0;
-    my_power->cores = 0;
+    my_power->per_domain[CORES] = 0;
 	for(int i = 0; i < total_cores; i += 2) {
 		my_power->per_core[i] = my_power->core_energy_after[i-j] - my_power->core_energy_before[i-j];
         my_power->per_core[i+1] = 0;        // report power per core as power per first thread, second thread P = 0 W
-		my_power->cores += my_power->per_core[i];
+		my_power->per_domain[CORES] += my_power->per_core[i];
         my_power->core_energy_before[i-j] = my_power->core_energy_after[i-j];
         j++;
     }

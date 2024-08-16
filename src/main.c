@@ -31,8 +31,6 @@
 #include "../include/sysfs.h"
 
 
-
-
 long period_counter = 0;
 long poll_cycle_counter = 0;
 bool display_power_config_flag = 1;
@@ -56,14 +54,14 @@ int main (int argc, char **argv)
 
     float power_per_domain[POWER_DOMAIN_COUNT];
 
-    sensor *freq = init_sensor(core_count);
-    sensor *load = init_sensor(core_count);
-    sensor *temperature = init_sensor(core_count);
-    sensor *voltage = init_sensor(core_count); 
+    sensor_s *freq = init_sensor(core_count);
+    sensor_s *load = init_sensor(core_count);
+    sensor_s *temperature = init_sensor(core_count);
+    sensor_s *voltage = init_sensor(core_count); 
     
     battery_s *battery = init_sensor_battery();
 
-    power *my_power = init_sensor_power(AMD, core_count);
+    power_s *power = init_sensor_power(AMD, core_count);
     
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
@@ -104,7 +102,7 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        update_sensor_data(freq, load, temperature, voltage, power_per_domain, my_power, battery);
+        update_sensor_data(freq, load, temperature, voltage, power_per_domain, power, battery, cpu_designer);
 
         cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
         load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
@@ -127,12 +125,10 @@ int main (int argc, char **argv)
         clear();
 
 #if DEBUG_ENABLE
-        // printw("Core 0 f = %.1f GHz\n", freq->per_core[0]);
-        // printw("Core 0 C0%% = %.2f\n", load->per_core[0]);
-        printw("Core 0 E bef = %.2f J\n", my_power->core_energy_before[0]);
-        printw("Core 0 E after = %.2f J\n", my_power->core_energy_after[0]);
-        printw("Core 0 P = %.2f W\n", my_power->per_core[0]);
-        printw("All Core P = %.2f W\n", my_power->cores);
+        printw("Core 0 E bef = %.2f J\n", power->core_energy_before[0]);
+        printw("Core 0 E after = %.2f J\n", power->core_energy_after[0]);
+        printw("Core 0 P = %.2f W\n", power->per_core[0]);
+        printw("All Core P = %.2f W\n", power->cores);
 #endif
 
         attron(A_BOLD);
@@ -141,11 +137,11 @@ int main (int argc, char **argv)
         
         if (running_with_privileges == TRUE)
         {
-            printw("Core    f/GHz \tC0%%   Temp/°C\tU/V\tP/W\n");
-            printw("-------------------------------------\n");
+            printw("Core    f/GHz \tC0%%   Temp/°C\t U/V\t P/W\n");
+            printw("--------------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {   
-                printw("%d \t%.1f\t%.f\t%.f\t%.2f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core] , my_power->per_core[core]);
+                printw("%d \t%.1f\t%.f\t%.f\t%.2f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core] , power->per_core[core]);
             }
             printw("\n");
             //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
@@ -157,8 +153,9 @@ int main (int argc, char **argv)
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
-            printw("Pwr Pkg = %.2f W\n", my_power->pkg_now);
-            //draw_power(power_per_domain, my_power->pkg_runtime_avg);
+            printw("           Power\n");
+            printw("Pkg = %.2f W, Cores = %.2f W\n", power->per_domain[PKG], power->per_domain[CORES]);
+            draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
             printw("\n");
             printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
             printw("\n");
@@ -171,14 +168,14 @@ int main (int argc, char **argv)
         {
             printw("To monitor all metrics, pls run as root.\n\n");
 
-            printw("\t\tf/GHz \tC0%% \n");
+            printw("Core\tf/GHz \tC0%% \n");
             for (int i = 0; i < core_count; i++){   
-                printw("Core \t%d \t%.1f\t%.f\n", i, freq->per_core[i], load->per_core[i]);
+                printw("%d \t%.1f\t%.f\n", i, freq->per_core[i], load->per_core[i]);
             }
             printw("\n");
-            printw("avg\t\t%.2f\t%.2f\n", freq->runtime_avg, load->runtime_avg);
-            printw("min\t\t%.2f\t\n", freq->min);
-            printw("max\t\t%.2f\t\n", freq->max);
+            printw("avg\t%.2f\t%.2f\n", freq->runtime_avg, load->runtime_avg);
+            printw("min\t%.2f\t\n", freq->min);
+            printw("max\t%.2f\t\n", freq->max);
             //printw("\nCPU\t%.2f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg);
         }
 

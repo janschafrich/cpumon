@@ -10,9 +10,9 @@
 #define POLL_INTERVAL_S 1
 
 
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
 
-struct sensor {
+typedef struct sensor_s {
 
     float cpu_avg;
     float runtime_avg;
@@ -20,26 +20,19 @@ struct sensor {
     float min;
     float max;
     float per_core[];
-};
-typedef struct sensor sensor;
+} sensor_s;
 
-struct power {
+typedef struct power_s {
     float cores;
     float gpu;
-    float pkg_now;
     float pkg_cumulative;
     float pkg_runtime_avg; 
     float time_unit, energy_unit, power_unit;
     float *core_energy_before;
     float *core_energy_after;
+    float *per_domain;
     float per_core[];
-};
-typedef struct power power;
-
-typedef struct core_energy_s {
-    float *energy_before;
-    float *energy_after;
-}   core_energy_s;
+} power_s;
 
 
 typedef struct battery_s {
@@ -52,6 +45,7 @@ typedef struct battery_s {
 } battery_s;
 
 typedef enum { INTEL, AMD } cpu_designer_e;
+typedef enum { PKG, CORES, GPU} power_domains_e;
 
 
 void init_environment(void);
@@ -59,7 +53,14 @@ void *init_sensor(int core_count);
 void *init_sensor_battery();
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(sensor* freq, sensor *load, sensor* temperature, sensor *voltage, float *power_per_domain, power *my_power, battery_s *battery);
+void update_sensor_data(    sensor_s* freq, 
+                            sensor_s *load, 
+                            sensor_s* temperature, 
+                            sensor_s *voltage, 
+                            float *power_per_domain, 
+                            power_s *power, 
+                            battery_s *battery,
+                            cpu_designer_e designer);
 
 int print_fanspeed(void);
 
