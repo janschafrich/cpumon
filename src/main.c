@@ -153,9 +153,8 @@ int main (int argc, char **argv)
                 moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
-            printw("           Power\n");
-            printw("Pkg = %.2f W, Cores = %.2f W\n", power->per_domain[PKG], power->per_domain[CORES]);
-            draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
+            // draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
+            draw_power(power->per_domain, power->n_domains, power->pkg_runtime_avg, cpu_designer);
             printw("\n");
             printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
             printw("\n");

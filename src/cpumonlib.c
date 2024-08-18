@@ -72,12 +72,11 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
     
     power_s *power;
     float *core_enrgy_bfr, *core_enrgy_aftr, *domains;
-    int n_domains = 0;
     switch (cpu_designer)
     {
         case INTEL: 
             power = malloc(sizeof(power_s)); 
-            n_domains = 3;      // PKG, CORES, GPU
+            power->n_domains = 3;      // PKG, CORES, GPU
             break;
         case AMD : 
             power = malloc( sizeof(power_s)    + core_count * sizeof(power->per_core[0]) );
@@ -102,14 +101,14 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
             }
             power->core_energy_before = core_enrgy_bfr;
             power->core_energy_after = core_enrgy_aftr;
-            n_domains = 2;      // PKG, CORES
+            power->n_domains = 2;      // PKG, CORES
             break;
         default: 
             power = malloc(sizeof(power_s)); 
             
             break;
     }
-    domains = malloc( sizeof(*domains) * n_domains);
+    domains = malloc( sizeof(*domains) * power->n_domains);
     power->per_domain = domains;
     if (running_with_privileges == TRUE)
     {

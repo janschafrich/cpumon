@@ -31,6 +31,7 @@ typedef struct power_s {
     float *core_energy_before;
     float *core_energy_after;
     float *per_domain;
+    int n_domains;
     float per_core[];
 } power_s;
 

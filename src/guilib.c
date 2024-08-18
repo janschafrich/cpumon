@@ -29,41 +29,41 @@ int kbhit(void)
     }
 }
 
-void draw_power(float *value, float pkg_avg, cpu_designer_e cpu_designer){
+void draw_power(float* values, int n_domains,float avg, cpu_designer_e cpu_designer){
 
-    int value_count = 3;
-    int width = 48;                         // choose highly composite number
-    
-    float total = value[0];
+    float total_power = values[PKG];
+    int width = 48;     // choose highly composite number
+
+    float rest_of_pkg = 0;
 
     if (cpu_designer == INTEL)
     {
-        printw("\tPkg Power: %.2f W, avg: %.2f W\n", value[0], pkg_avg);
-        value[0] = value[0] - value[1] - value[2];      // subtract cpu and uncore power from package power to get "rest of chip power"
-        for (int i = 0; i < value_count; i++){
-            switch (i) {
-                case 0: attron(COLOR_PAIR(BLUE)); break;
-                case 1: attron(COLOR_PAIR(RED)); break;
-                case 2: attron(COLOR_PAIR(GREEN)); break;
-            }
-            for (int j = 0; j < (int)( (value[i] * width ) / total ); j++ ){
-                printw("#");
-            }
-        }
-        attron(COLOR_PAIR(BLUE));
-        printw("\nRest of Pkg: %.2f W", value[0]);
-        attron(COLOR_PAIR(RED));
-        printw("  Cores: %.2f W", value[1]);
-        attron(COLOR_PAIR(GREEN));
-        printw("  GPU: %.2f W", value[2]);
-        attron(COLOR_PAIR(WHITE));
-        printw("\n");
+        rest_of_pkg = values[PKG] - values[CORES] - values[GPU];
     }
 
     if (cpu_designer == AMD)
     {
-        
+        rest_of_pkg = values[PKG] - values[CORES];
     }
 
-
+    printw("\tPkg Power: %.2f W, avg: %.2f W\n", values[PKG], avg);
+    values[0] = rest_of_pkg;      // subtract cpu and uncore power from package power to get "rest of chip power"
+    for (int i = 0; i < n_domains; i++){
+        switch (i) {
+            case PKG: attron(COLOR_PAIR(BLUE)); break;
+            case CORES: attron(COLOR_PAIR(RED)); break;
+            case GPU: attron(COLOR_PAIR(GREEN)); break;
+        }
+        for (int j = 0; j < (int)( (values[i] * width ) / total_power ); j++ ){
+            printw("#");
+        }
+    }
+    attron(COLOR_PAIR(BLUE));
+    printw("\nRest of Pkg: %.2f W", rest_of_pkg);
+    attron(COLOR_PAIR(RED));
+    printw("  Cores: %.2f W", values[CORES]);
+    attron(COLOR_PAIR(GREEN));
+    printw("  GPU: %.2f W", values[GPU]);
+    attron(COLOR_PAIR(WHITE));
+    printw("\n");
 }
