@@ -149,6 +149,8 @@ void update_sensor_data(sensor_s* freq, sensor_s *load, sensor_s* temperature, s
     battery->min = get_min_value(battery->min, &battery->power_now, 1);
     battery->max = get_max_value(battery->max, &battery->power_now, 1);
 
+    voltage_v(voltage->per_core, &voltage->cpu_avg, core_count, designer);
+    
     if (running_with_privileges == TRUE && designer == INTEL)
     {
 /*         msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
@@ -157,7 +159,6 @@ void update_sensor_data(sensor_s* freq, sensor_s *load, sensor_s* temperature, s
         temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
         temp_his[period_counter] = temperature->cpu_avg;
         
-        voltage_v(voltage->per_core, &voltage->cpu_avg, core_count);
         voltage->min = get_min_value(voltage->min, voltage->per_core, core_count);
         voltage->max = get_max_value(voltage->max, voltage->per_core, core_count);
         voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);

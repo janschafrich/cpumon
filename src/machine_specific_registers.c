@@ -65,24 +65,48 @@ long long read_msr(int fd, unsigned int offset)
 }
 
 
-void voltage_v(float *voltage, float *average, int core_count)
+void voltage_v(float *voltage, float *average, int core_count, cpu_designer_e cpu_designer)
 {
     int fd;
-    uint64_t result[core_count];
+    uint64_t result_raw[core_count/2];
     float total = 0;
 
-    for (int core = 0; core < core_count; core++) {
+    uint64_t MSR = 0;
+
+    if (cpu_designer == INTEL)
+    {
+        MSR = MSR_PERF_STATUS;
+    }
+    if (cpu_designer = AMD)
+    {
+        MSR = AMD_MSR_PSTATE_C0;
+    }
+
+    for (int core = 0; core < core_count/2; core++) {
         fd=open_msr(core);
-        result[core] = read_msr(fd,MSR_PERF_STATUS); 
+        result_raw[core] = read_msr(fd,MSR+core); 
         close(fd);
     }
     // convert results into voltages
-    for (int i= 0; i < core_count; i++) {
-        result[i] = result[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-        result[i] = result[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-        voltage[i] = (1.0/8192.0) * result[i];    // correct for scaling according to intel documentation    
+    if (cpu_designer == INTEL)
+    {
+        for (int i= 0; i < core_count/2; i++) {
+        result_raw[i] = result_raw[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
+        result_raw[i] = result_raw[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+        voltage[i] = (1.0/8192.0) * result_raw[i];    // correct for scaling according to intel documentation    
         total += voltage[i];
+        }
     }
+    if (cpu_designer == AMD)
+    {
+        for (int i= 0; i < core_count/2; i++) {
+        result_raw[i] = result_raw[i]&0x3fc0000;   // extract bit 21:14, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
+        result_raw[i] = result_raw[i]>>14;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
+        voltage[i] = (1.0/8.0) * result_raw[i];    // correct for scaling according to intel documentation    
+        total += voltage[i];
+        }
+    }
+
 
     *average = total / core_count;
 }

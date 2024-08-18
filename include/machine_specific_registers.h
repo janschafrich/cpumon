@@ -44,10 +44,21 @@
 #define AMD_MSR_PWR_UNIT 0xC0010299     // power time and energy units
 #define AMD_MSR_CORE_ENERGY 0xC001029A
 #define AMD_MSR_PACKAGE_ENERGY 0xC001029B
+#define AMD_MSR_PSTATE_C0 0xC0010064
+#define AMD_MSR_PSTATE_C1 0xC0010065
+#define AMD_MSR_PSTATE_C2 0xC0010066
+#define AMD_MSR_PSTATE_C3 0xC0010067
+#define AMD_MSR_PSTATE_C4 0xC0010068
+#define AMD_MSR_PSTATE_C5 0xC0010069
+#define AMD_MSR_PSTATE_C6 0xC001006A
+#define AMD_MSR_PSTATE_C7 0xC001006B
+
+
 
 #define AMD_TIME_UNIT_MASK 0xF0000
 #define AMD_ENERGY_UNIT_MASK 0x1F00
 #define AMD_POWER_UNIT_MASK 0xF
+#define AMD_MSR_PSTATE_CORE_F_MASK 0xFF
 
 // function prototypes
 
@@ -57,7 +68,7 @@ long long read_msr(int fd, unsigned int offset);
 
 
 void msr_temperature_c(float *temperature, float *average, int core_count);
-void voltage_v(float *voltage, float *average, int core_count);
+void voltage_v(float *voltage, float *average, int core_count, cpu_designer_e);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
