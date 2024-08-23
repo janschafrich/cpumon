@@ -54,7 +54,7 @@ void *init_sensor(int core_count);
 void *init_sensor_battery();
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void update_sensor_data(    sensor_s* freq, 
+void read_sensors(    sensor_s* freq, 
                             sensor_s *load, 
                             sensor_s* temperature, 
                             sensor_s *voltage, 

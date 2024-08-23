@@ -71,7 +71,7 @@ int * get_sysfs_power_limits_w(void)
     return power_limits;
 }
 
-void power_config(bool running_with_privileges, cpu_designer_e designer)
+void get_power_config(bool running_with_privileges, cpu_designer_e designer)
 {
     if (running_with_privileges == TRUE && designer == INTEL)
     {
@@ -146,7 +146,7 @@ int get_battery_status(char *status)
     return -1;
 }
 
-void reset_if_status_change(float *cumulative, char *status, char *status_before)
+void reset_if_status_changed(float *cumulative, char *status, char *status_before)
 {
     if (strcmp(status, status_before) != 0)
     {
@@ -157,7 +157,7 @@ void reset_if_status_change(float *cumulative, char *status, char *status_before
 
 
 
-void sysfs_freq_ghz(float *freq_ghz, float *average, int core_count) 
+void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count) 
 {
 
     char file_buf[BUFSIZE];
@@ -181,7 +181,7 @@ void sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 }
 
 
-void cpucore_load(float *load, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
+void get_cpucore_load(float *load, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
     
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
@@ -240,7 +240,7 @@ void cpucore_load(float *load, float * average, long long *work_jiffies_before, 
 
 
 
-int gpu(void){
+int read_gpu(void){
     
     char file_buf[BUFSIZE];
     int freq_mhz = 0;

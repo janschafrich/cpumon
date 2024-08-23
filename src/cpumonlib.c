@@ -16,8 +16,8 @@
 #include "../include/sysfs.h"
 
 
-extern long period_counter;
-extern long poll_cycle_counter;
+extern long history_cntr;
+extern long period_cntr;
 extern bool display_power_config_flag;
 extern bool display_moving_average_flag;
 
@@ -132,20 +132,20 @@ void *init_sensor_battery()
 }
 
 
-void update_sensor_data(sensor_s* freq, sensor_s *load, sensor_s* temperature, sensor_s *voltage, float *power_per_domain, power_s *power, battery_s *battery, cpu_designer_e designer)
+void read_sensors(sensor_s* freq, sensor_s *load, sensor_s* temperature, sensor_s *voltage, float *power_per_domain, power_s *power, battery_s *battery, cpu_designer_e designer)
 {   
     
-    sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+    get_sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
     freq->min = get_min_value(freq->min, freq->per_core, core_count);
     freq->max = get_max_value(freq->max, freq->per_core, core_count);
-    freq->runtime_avg = runtime_avg(poll_cycle_counter, &freq->cumulative, &freq->cpu_avg);
+    freq->runtime_avg = get_runtime_avg(period_cntr, &freq->cumulative, &freq->cpu_avg);
 
-    freq_his[period_counter] = freq->cpu_avg;
+    freq_his[history_cntr] = freq->cpu_avg;
 
     get_sysfs_power_battery_w(&battery->power_now);
     get_battery_status(battery->status);
-    reset_if_status_change(&battery->power_cumulative, battery->status, charging_status_before);
-    battery->power_runtime_avg = runtime_avg(poll_cycle_counter, &battery->power_cumulative, &battery->power_now);
+    reset_if_status_changed(&battery->power_cumulative, battery->status, charging_status_before);
+    battery->power_runtime_avg = get_runtime_avg(period_cntr, &battery->power_cumulative, &battery->power_now);
     battery->min = get_min_value(battery->min, &battery->power_now, 1);
     battery->max = get_max_value(battery->max, &battery->power_now, 1);
 
@@ -156,17 +156,17 @@ void update_sensor_data(sensor_s* freq, sensor_s *load, sensor_s* temperature, s
 /*         msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
         temperature->min = get_min_value(temperature->min, temperature->per_core, core_count);
         temperature->max = get_max_value(temperature->max, temperature->per_core, core_count);
-        temperature->runtime_avg = runtime_avg(poll_cycle_counter, &temperature->cumulative, &temperature->cpu_avg);
-        temp_his[period_counter] = temperature->cpu_avg;
+        temperature->runtime_avg = runtime_avg(period_cntr, &temperature->cumulative, &temperature->cpu_avg);
+        temp_his[history_cntr] = temperature->cpu_avg;
         
         voltage->min = get_min_value(voltage->min, voltage->per_core, core_count);
         voltage->max = get_max_value(voltage->max, voltage->per_core, core_count);
-        voltage->runtime_avg = runtime_avg(poll_cycle_counter, &voltage->cumulative, &voltage->cpu_avg);
-        voltage_his[period_counter] = voltage->cpu_avg; */
+        voltage->runtime_avg = runtime_avg(period_cntr, &voltage->cumulative, &voltage->cpu_avg);
+        voltage_his[history_cntr] = voltage->cpu_avg; */
         
 /*         get_intel_msr_power_w(power_per_domain);
-        power_his[period_counter] = *power_per_domain;
-        if (period_counter == 1)
+        power_his[history_cntr] = *power_per_domain;
+        if (history_cntr == 1)
         {
             power_his[0] = *power_per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
         } */
@@ -174,7 +174,7 @@ void update_sensor_data(sensor_s* freq, sensor_s *load, sensor_s* temperature, s
 
         
         power->per_domain[PKG] = power_per_domain[0];
-        power->pkg_runtime_avg = runtime_avg(poll_cycle_counter, &power->pkg_cumulative, &power->per_domain[PKG]);      
+        power->pkg_runtime_avg = get_runtime_avg(period_cntr, &power->pkg_cumulative, &power->per_domain[PKG]);      
 
     }
     if (running_with_privileges == TRUE && designer == AMD)

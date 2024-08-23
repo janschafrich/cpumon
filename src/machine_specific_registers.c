@@ -77,7 +77,7 @@ void voltage_v(float *voltage, float *average, int core_count, cpu_designer_e cp
     {
         MSR = MSR_PERF_STATUS;
     }
-    if (cpu_designer = AMD)
+    if (cpu_designer == AMD)
     {
         MSR = AMD_MSR_PSTATE_C0;
     }

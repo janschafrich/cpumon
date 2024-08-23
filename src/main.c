@@ -31,8 +31,8 @@
 #include "../include/sysfs.h"
 
 
-long period_counter = 0;
-long poll_cycle_counter = 0;
+long history_cntr = 0;
+long period_cntr = 0;
 bool display_power_config_flag = 1;
 bool display_moving_average_flag = 0;
 cpu_designer_e cpu_designer = AMD;
@@ -102,21 +102,21 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        update_sensor_data(freq, load, temperature, voltage, power_per_domain, power, battery, cpu_designer);
+        read_sensors(freq, load, temperature, voltage, power_per_domain, power, battery, cpu_designer);
 
-        cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
-        load->runtime_avg = runtime_avg(poll_cycle_counter, &load->cumulative, &load->cpu_avg);
-        load_his[period_counter] = load->cpu_avg;
+        get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
+        load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
+        load_his[history_cntr] = load->cpu_avg;
         
-        gpu_freq = gpu();      
+        gpu_freq = read_gpu();      
 
-        if (period_counter < AVG_WINDOW/POLL_INTERVAL_S)    // for last minute history
+        if (history_cntr < AVG_WINDOW/POLL_INTERVAL_S)    // for last minute history
         {   
-            period_counter++;
+            history_cntr++;                     // use as array index
         } else {
-            period_counter = 0;                    // reset index
+            history_cntr = 0;                    // reset index
         }
-        poll_cycle_counter += 1;
+        period_cntr += 1;
         
         
 
@@ -150,7 +150,7 @@ int main (int argc, char **argv)
             printw("max\t%.2f\t%.2f\t%.0f\t%.2f\n", freq->max, load->max, temperature->max, voltage->max);
             if (display_moving_average_flag == TRUE)
             {
-                moving_average(period_counter, freq_his, load_his, temp_his, voltage_his, power_his);   
+                compute_moving_average(history_cntr, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
             // draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
@@ -185,7 +185,7 @@ int main (int argc, char **argv)
         printw("\n");
         if (display_power_config_flag == TRUE)
         {
-            power_config(running_with_privileges, cpu_designer);
+            get_power_config(running_with_privileges, cpu_designer);
         } 
 
         // if (running_with_privileges == TRUE)

@@ -86,7 +86,7 @@ int acc_cmdln(char *cmd){
 }
 
 
-void  moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power){
+void  compute_moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power){
 
     i += 1;
     double freq_total = 0;
@@ -110,13 +110,13 @@ void  moving_average(int i, float * freq, float *load, float *temp, float *volta
     }
 }
 
-float runtime_avg(long poll_cycle_counter, float *samples_cumulative, float *sample_next){
+float get_runtime_avg(long period_cntr, float *samples_cumulative, float *sample_next){
     
     float avg = 0;
     *samples_cumulative += *sample_next;
-    if (poll_cycle_counter != 0) 
+    if (period_cntr != 0) 
     {
-        avg = *samples_cumulative / (float) poll_cycle_counter;
+        avg = *samples_cumulative / (float) period_cntr;
     }
 
     return avg;
