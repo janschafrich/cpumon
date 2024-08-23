@@ -54,14 +54,19 @@ void *init_sensor(int core_count);
 void *init_sensor_battery();
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
 
-void read_sensors(    sensor_s* freq, 
-                            sensor_s *load, 
-                            sensor_s* temperature, 
-                            sensor_s *voltage, 
-                            float *power_per_domain, 
-                            power_s *power, 
-                            battery_s *battery,
-                            cpu_designer_e designer);
+void read_sensors(  sensor_s* freq, 
+                    sensor_s *temperature,
+                    sensor_s *voltage, 
+                    power_s *power, 
+                    battery_s *battery,
+                    cpu_designer_e designer);
+
+int update_statistics(  sensor_s* freq, 
+                        sensor_s* temperature, 
+                        sensor_s *voltage, 
+                        power_s *power, 
+                        battery_s *battery,
+                        cpu_designer_e designer);
 
 int print_fanspeed(void);
 

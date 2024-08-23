@@ -102,7 +102,7 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        read_sensors(freq, load, temperature, voltage, power_per_domain, power, battery, cpu_designer);
+        read_sensors(freq, temperature, voltage, power, battery, cpu_designer);
 
         get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
         load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
@@ -118,7 +118,7 @@ int main (int argc, char **argv)
         }
         period_cntr += 1;
         
-        
+        update_statistics(freq, temperature, voltage, power, battery, cpu_designer);
 
         // ------------------  output to terminal ------------------------------
         
