@@ -52,10 +52,9 @@ int main (int argc, char **argv)
 {   
     init_environment();
 
-    float power_per_domain[POWER_DOMAIN_COUNT];
+    // float power_per_domain[POWER_DOMAIN_COUNT];
 
     sensor_s *freq = init_sensor(core_count);
-    sensor_s *load = init_sensor(core_count);
     sensor_s *temperature = init_sensor(core_count);
     sensor_s *voltage = init_sensor(core_count); 
     
@@ -63,6 +62,7 @@ int main (int argc, char **argv)
 
     power_s *power = init_sensor_power(AMD, core_count);
     
+    load_s *load = init_sensor_load(core_count);
     long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
     long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
@@ -104,7 +104,8 @@ int main (int argc, char **argv)
         
         read_sensors(freq, temperature, voltage, power, battery, cpu_designer);
 
-        get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count);
+        // get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
+        get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count); // backup
         load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
         load_his[history_cntr] = load->cpu_avg;
         
@@ -129,6 +130,8 @@ int main (int argc, char **argv)
         printw("Core 0 E after = %.2f J\n", power->core_energy_after[0]);
         printw("Core 0 P = %.2f W\n", power->per_core[0]);
         printw("All Core P = %.2f W\n", power->cores);
+        // printw("Work Jiffies before = %lld\n", load->work_jiffies_before[0]);
+        // printw("Total Jiffies before = %lld\n", load->total_jiffies_before[0]);
 #endif
 
         attron(A_BOLD);
@@ -156,7 +159,7 @@ int main (int argc, char **argv)
             // draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
             draw_power(power->per_domain, power->n_domains, power->pkg_runtime_avg, cpu_designer);
             printw("\n");
-            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power_per_domain[2]);
+            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power->per_domain[GPU]);
             printw("\n");
             // if (print_fanspeed() != 0)
             // {

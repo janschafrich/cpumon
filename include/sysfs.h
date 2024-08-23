@@ -11,6 +11,8 @@ void reset_if_status_changed(float *cumulative, char *status, char *status_befor
 
 void get_sysfs_freq_ghz(float *, float *, int core_count); 
 void get_cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
+int get_cpucore_load_new(load_s *load, int core_count);
+
 int read_gpu(void);
 
 

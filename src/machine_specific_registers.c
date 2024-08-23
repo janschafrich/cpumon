@@ -197,20 +197,20 @@ void get_intel_msr_power_w(float * power_w)
     static long long energy_uj_before[POWER_DOMAIN_COUNT];
     long long energy_uj_after[POWER_DOMAIN_COUNT];
 
-    char *power_domains[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
+    char *domain_paths[] = {"/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj",                   // package domain
                             "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:0/energy_uj",     // cores domain
                             "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:1/energy_uj"};    // GPU domain
 
     for (int i = 0; i < POWER_DOMAIN_COUNT; i++) {
-        fp = fopen(power_domains[i],"r");
+        fp = fopen(domain_paths[i],"r");
 				if (fp==NULL) {
-					fprintf(stderr,"\tError opening %s", power_domains[i]);
+					fprintf(stderr,"\tError opening %s", domain_paths[i]);
                     perror("");
 				}
 				else {
 					if (fscanf(fp,"%lld",&energy_uj_after[i]) == EOF)
                     {
-                        printf("couldnt read from energy counter form %s \n", power_domains[i]);
+                        printf("couldnt read from energy counter form %s \n", domain_paths[i]);
                     }
 					fclose(fp);
                 }

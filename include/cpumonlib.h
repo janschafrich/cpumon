@@ -10,10 +10,9 @@
 #define POLL_INTERVAL_S 1
 
 
-#define DEBUG_ENABLE 0
+#define DEBUG_ENABLE 1
 
 typedef struct sensor_s {
-
     float cpu_avg;
     float runtime_avg;
     float cumulative;
@@ -35,6 +34,16 @@ typedef struct power_s {
     float per_core[];
 } power_s;
 
+typedef struct load_s {
+    long long *work_jiffies_before;
+    long long *total_jiffies_before;
+    float cpu_avg;
+    float runtime_avg;
+    float cumulative;
+    float min;
+    float max;
+    float per_core[];
+} load_s;
 
 typedef struct battery_s {
     float power_now;
@@ -53,8 +62,11 @@ void init_environment(void);
 void *init_sensor(int core_count);
 void *init_sensor_battery();
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
+void *init_sensor_load(int core_count);
+
 
 void read_sensors(  sensor_s* freq, 
+                    // load_s *load,
                     sensor_s *temperature,
                     sensor_s *voltage, 
                     power_s *power, 
@@ -62,6 +74,7 @@ void read_sensors(  sensor_s* freq,
                     cpu_designer_e designer);
 
 int update_statistics(  sensor_s* freq, 
+                        // load_s *load,
                         sensor_s* temperature, 
                         sensor_s *voltage, 
                         power_s *power, 

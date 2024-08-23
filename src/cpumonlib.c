@@ -67,9 +67,23 @@ void *init_sensor(int core_count)
     return sensor;
 }
 
+void *init_sensor_load(int core_count)
+{
+    load_s *load = malloc( sizeof(load_s) + core_count * sizeof(load->per_core[0]) );
+    if (load == NULL)
+    {
+        fprintf(stderr, "Memory allocation for \"load\" failed\n");
+    }   
+    load->work_jiffies_before = malloc(sizeof(load->work_jiffies_before) * core_count);
+    load->total_jiffies_before = malloc(sizeof(load->total_jiffies_before) * core_count);
+
+    *load = (load_s) {.min = 1000, .max = 0}; 
+
+    return load;
+}
+
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
 {
-    
     power_s *power;
     float *core_enrgy_bfr, *core_enrgy_aftr, *domains;
     switch (cpu_designer)
@@ -108,8 +122,9 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
             
             break;
     }
-    domains = malloc( sizeof(*domains) * power->n_domains);
-    power->per_domain = domains;
+    // domains = malloc( sizeof(*domains) * power->n_domains);
+    // power->per_domain = domains;
+    power->per_domain = malloc( sizeof(*domains) * power->n_domains);
     if (running_with_privileges == TRUE)
     {
         get_msr_core_units(power, cpu_designer);
@@ -133,6 +148,7 @@ void *init_sensor_battery()
 
 
 void read_sensors(  sensor_s* freq, 
+                    // load_s *load,
                     sensor_s *temperature,
                     sensor_s *voltage, 
                     power_s *power, 
@@ -140,14 +156,16 @@ void read_sensors(  sensor_s* freq,
                     cpu_designer_e designer)
 {   
     get_sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
+    // get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
+    // get_cpucore_load_new(load, core_count);
+
     get_sysfs_power_battery_w(&battery->power_now);
     get_battery_status(battery->status);
-
-    voltage_v(voltage->per_core, &voltage->cpu_avg, core_count, designer);
     
     if (running_with_privileges == TRUE && designer == INTEL)
     {
         msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
+        voltage_v(voltage->per_core, &voltage->cpu_avg, core_count, designer);
         get_intel_msr_power_w(power->per_domain);
     }
 
@@ -159,6 +177,7 @@ void read_sensors(  sensor_s* freq,
 }
 
 int update_statistics(  sensor_s* freq, 
+                        // load_s *load,
                         sensor_s* temperature, 
                         sensor_s *voltage, 
                         power_s *power, 
@@ -169,6 +188,9 @@ int update_statistics(  sensor_s* freq,
     freq->max = get_max_value(freq->max, freq->per_core, core_count);
     freq->runtime_avg = get_runtime_avg(period_cntr, &freq->cumulative, &freq->cpu_avg);
     freq_his[history_cntr] = freq->cpu_avg;
+
+    // load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
+    // load_his[history_cntr] = load->cpu_avg;
 
     reset_if_status_changed(&battery->power_cumulative, battery->status, charging_status_before);
     battery->power_runtime_avg = get_runtime_avg(period_cntr, &battery->power_cumulative, &battery->power_now);
