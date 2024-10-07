@@ -102,22 +102,49 @@ void get_power_config(bool running_with_privileges, cpu_designer_e designer)
         file = read_chars("/sys/devices/system/cpu/amd_pstate/prefcore");
         printw("AMD Preferential Core: \t\t%s \n", file);
     }
-       
 }
+
+// int get_sysfs_power_battery_w(float *battery_power)
+// {
+//     char read_value[12];
+//     char read_value2[12];
+    
+//     if (read_string(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
+//     {
+//         long power_uw = 0;
+//         sscanf(read_value, "%ld", &power_uw);
+//         *battery_power = (float)power_uw * 1e-6;
+//         return 0;
+//     }
+//     if ((read_string(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_string(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+//     {
+//         long voltage_uv = 0;
+//         sscanf(read_value, "%ld", &voltage_uv);
+//         long current_ua = 0;
+//         sscanf(read_value2, "%ld", &current_ua);
+//         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
+//         return 0;
+//     }
+    
+//     return -1;
+// }
+
+
 
 int get_sysfs_power_battery_w(float *battery_power)
 {
     char read_value[12];
     char read_value2[12];
     
-    if (read_string(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
+    if (read_chars_new(read_value, 12, "/sys/class/power_supply/BAT0/power_now") == 0)
     {
         long power_uw = 0;
         sscanf(read_value, "%ld", &power_uw);
         *battery_power = (float)power_uw * 1e-6;
         return 0;
     }
-    if ((read_string(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_string(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
+    if ((read_chars_new(read_value, 12, "/sys/class/power_supply/BAT1/voltage_now") == 0)  && 
+        (read_chars_new(read_value2, 12, "/sys/class/power_supply/BAT1/current_now") == 0))
     {
         long voltage_uv = 0;
         sscanf(read_value, "%ld", &voltage_uv);
@@ -133,11 +160,11 @@ int get_sysfs_power_battery_w(float *battery_power)
 int get_battery_status(char *status)
 {
     // check for battery under multiple paths
-    if (read_string(status, "/sys/class/power_supply/BAT0/status") == 0)
+    if (read_chars_new(status, 13, "/sys/class/power_supply/BAT0/status") == 0)
     {
         return 0;
     } 
-    if  (read_string(status, "/sys/class/power_supply/BAT1/status") == 0)
+    if  (read_chars_new(status, 13, "/sys/class/power_supply/BAT1/status") == 0)
     {
         return 0;
     }
@@ -145,6 +172,32 @@ int get_battery_status(char *status)
     strcpy(status, "Status unknown");
     return -1;
 }
+
+
+// int get_battery_status(char *status)
+// {
+//     // check for battery under multiple paths
+//     FILE *fp = 0;
+//     if (open_file(fp, "r", "/sys/class/power_supply/BAT0/status") != 0)
+//     {
+//         return -1;
+//     } 
+//     if  (open_file(fp, "r", "/sys/class/power_supply/BAT1/status") != 0)
+//     {
+//         return -1;
+//     }
+
+//     if (read_chars_modular(status, 14, fp) == 0)
+//     {
+// #if DEBUG_ENABLE
+//     printf("Reading from battery path");
+// #endif
+//         return 0;
+//     }
+
+//     strcpy(status, "Status unknown");
+//     return -1;
+// }
 
 void reset_if_status_changed(float *cumulative, char *status, char *status_before)
 {
@@ -166,7 +219,7 @@ void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 
     for (int i = 0; i < core_count; i++){
         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
-        if (read_string(file_buf, path) == 0)
+        if (read_chars_new(file_buf, 15, path) == 0)
         {
             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
             total += freq_ghz[i];
@@ -311,7 +364,7 @@ int read_gpu(void){
     char file_buf[BUFSIZE];
     int freq_mhz = 0;
 
-    int return_val = read_string(file_buf, "/sys/class/drm/card0/gt_cur_freq_mhz");
+    int return_val = read_chars_new(file_buf, 12, "/sys/class/drm/card0/gt_cur_freq_mhz");
 
     if (return_val == 0)
     {

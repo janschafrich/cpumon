@@ -33,33 +33,107 @@ char *read_chars(const char *filepath)     // function from data type pointer
     return file_buf;                    // return address to file
 }
 
-int read_string(char *return_string, const char *filepath) 
+
+int read_chars_new(char *return_string, const int n, const char *filepath)     // function from data type pointer
 {     
 #if DEBUG_ENABLE
-        printf("read_string filepath = %s\n", filepath);
+        printf("read_chars filepath = %s\n", filepath);
 #endif
     FILE *fp = fopen(filepath, "r");
 
     if(fp == NULL) {
         perror("Error opening file\n");
         return -1;
-    } 
-    if (fscanf(fp, "%s", return_string) == 1)
-    {
-        fclose(fp);
-        return 0;
-    }
-    if (fscanf(fp, "%s", return_string) == EOF)
-    {
-        //printf("Couldnt read data from \"%s\"\n", filepath);
-        fclose(fp);
-        return -1;
     }
 
+    int i = 0;
+    int single_character;
+
+    while ((single_character = fgetc(fp)) != EOF && i < (n) ){
+        if(single_character == '\n'){
+            continue;           // skip newline characters
+        } else 
+        {
+            return_string[i] = single_character;
+        }
+        i++;
+    }
+
+    return_string[i] = '\0';                 // terminate string
     fclose(fp);
-    return -1;
-        
+
+    return 0;                           
 }
+
+
+
+// int open_file(FILE *fp, const char *filepath)
+// {
+//     fp = fopen(filepath, "r");
+
+//     if (fp == NULL)
+//     {
+// #if DEBUG_ENABLE
+//         printf("Error open_file filepath = %s\n", filepath);
+// #endif    
+//         return -1;
+//     } else
+//     {
+//         return 0;
+//     }
+// }
+
+
+// int read_chars_modular(char *return_string, const int n, FILE *fp)     // function from data type pointer
+// {     
+//     int i = 0;
+//     int single_character;
+
+//     while ((single_character = fgetc(fp)) != EOF && i < (n + 1) ){
+//         if(single_character == '\n'){
+//             continue;           // skip newline characters
+//         } else 
+//         {
+//             return_string[i] = single_character;
+//         }
+//         i++;
+//     }
+
+//     return_string[i] = '\0';                 // terminate string
+//     fclose(fp);
+
+//     return 0;                           
+// }
+
+
+
+// int read_string(char *return_string, const char *filepath) 
+// {     
+// #if DEBUG_ENABLE
+//         printf("read_string filepath = %s\n", filepath);
+// #endif
+//     FILE *fp = fopen(filepath, "r");
+
+//     if(fp == NULL) {
+//         perror("Error opening file\n");
+//         return -1;
+//     } 
+//     if (fscanf(fp, "%s", return_string) == 1)
+//     {
+//         fclose(fp);
+//         return 0;
+//     }
+//     if (fscanf(fp, "%s", return_string) == EOF)
+//     {
+//         //printf("Couldnt read data from \"%s\"\n", filepath);
+//         fclose(fp);
+//         return -1;
+//     }
+
+//     fclose(fp);
+//     return -1;
+        
+// }
 
 
 // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output
