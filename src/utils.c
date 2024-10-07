@@ -3,10 +3,10 @@
 
 
 
-char *read_string(const char *filepath)     // function from data type pointer
+char *read_chars(const char *filepath)     // function from data type pointer
 {     
 #if DEBUG_ENABLE
-        printf("read_string filepath = %s\n", filepath);
+        printf("read_chars filepath = %s\n", filepath);
 #endif
     FILE *fp = fopen(filepath, "r");
     static char file_buf[BUFSIZE];          // allocate memory on the heap to store file content 
@@ -33,10 +33,10 @@ char *read_string(const char *filepath)     // function from data type pointer
     return file_buf;                    // return address to file
 }
 
-int read_line(char *return_string, const char *filepath) 
+int read_string(char *return_string, const char *filepath) 
 {     
 #if DEBUG_ENABLE
-        printf("read_line filepath = %s\n", filepath);
+        printf("read_string filepath = %s\n", filepath);
 #endif
     FILE *fp = fopen(filepath, "r");
 

@@ -10,7 +10,8 @@
 #define POLL_INTERVAL_S 1
 
 
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
+
 
 typedef struct sensor_s {
     float cpu_avg;
