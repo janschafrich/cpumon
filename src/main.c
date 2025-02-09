@@ -140,11 +140,11 @@ int main (int argc, char **argv)
         
         if (running_with_privileges == TRUE)
         {
-            printw("Core    f/GHz \tC0%%   Temp/°C\t U/V\t P/W\n");
-            printw("--------------------------------------------\n");
+            printw("Core    f/GHz \tC0%%   Temp/°C\t U/V\n");
+            printw("------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {   
-                printw("%d \t%.1f\t%.f\t%.f\t%.2f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core] , power->per_core[core]);
+                printw("%2d \t%.1f\t%2.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
             }
             printw("\n");
             //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 

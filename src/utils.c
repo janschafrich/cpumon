@@ -107,35 +107,6 @@ int read_chars_new(char *return_string, const int n, const char *filepath)     /
 
 
 
-// int read_string(char *return_string, const char *filepath) 
-// {     
-// #if DEBUG_ENABLE
-//         printf("read_string filepath = %s\n", filepath);
-// #endif
-//     FILE *fp = fopen(filepath, "r");
-
-//     if(fp == NULL) {
-//         perror("Error opening file\n");
-//         return -1;
-//     } 
-//     if (fscanf(fp, "%s", return_string) == 1)
-//     {
-//         fclose(fp);
-//         return 0;
-//     }
-//     if (fscanf(fp, "%s", return_string) == EOF)
-//     {
-//         //printf("Couldnt read data from \"%s\"\n", filepath);
-//         fclose(fp);
-//         return -1;
-//     }
-
-//     fclose(fp);
-//     return -1;
-        
-// }
-
-
 // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output
 int acc_cmdln(char *cmd){
     char buf[BUFSIZE];  // response buffer
