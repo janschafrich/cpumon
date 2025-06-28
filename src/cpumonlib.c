@@ -61,23 +61,42 @@ void *init_sensor(int core_count)
     if (sensor == NULL)
     {
         fprintf(stderr, "Memory allocation for \"sensor\" failed\n");
+        return NULL;
     }
-    *sensor = (sensor_s) {.min = 1000, .max = 0}; 
+    sensor->cpu_avg = 0;
+    sensor->runtime_avg = 0;
+    sensor->cumulative = 0;
+    sensor->min = 1000;
+    sensor->max = 0; 
     
     return sensor;
 }
 
 void *init_sensor_load(int core_count)
 {
+    // Allocate memory for load_s + the flexible array member per_core
     load_s *load = malloc( sizeof(load_s) + core_count * sizeof(load->per_core[0]) );
     if (load == NULL)
     {
         fprintf(stderr, "Memory allocation for \"load\" failed\n");
-    }   
+        return NULL;
+    }  
+    // Allocate memory for the jiffies arrays
     load->work_jiffies_before = malloc(sizeof(load->work_jiffies_before) * core_count);
     load->total_jiffies_before = malloc(sizeof(load->total_jiffies_before) * core_count);
 
-    *load = (load_s) {.min = 1000, .max = 0}; 
+    if (load->work_jiffies_before == NULL || load->total_jiffies_before == NULL) {
+        fprintf(stderr, "Memory allocation for jiffies arrays failed\n");
+        free(load->work_jiffies_before);
+        free(load->total_jiffies_before);
+        free(load);
+        return NULL;
+    }
+    load->cpu_avg = 0;
+    load->runtime_avg = 0;
+    load->cumulative = 0;
+    load->min = 1000;
+    load->max = 0;
 
     return load;
 }
@@ -97,6 +116,8 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
             if (power == NULL)
             {
                 fprintf(stderr, "Memory allocation for power failed\n");
+                free(power);
+                return NULL;
             }
 
             core_enrgy_bfr = malloc( sizeof(*core_enrgy_bfr) * core_count/2);
@@ -104,6 +125,7 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
             {
                 fprintf(stderr, "Memory allocation for core_energy_before failed\n");
                 free(power); // Clean up previously allocated memory
+                return NULL;
             }
 
             core_enrgy_aftr = malloc( sizeof(*core_enrgy_aftr) * core_count/2);
@@ -112,6 +134,7 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
                 fprintf(stderr, "Memory allocation for core_energy_after failed\n");
                 free(core_enrgy_bfr); // Clean up previously allocated memory
                 free(power);
+                return NULL;
             }
             power->core_energy_before = core_enrgy_bfr;
             power->core_energy_after = core_enrgy_aftr;
@@ -140,8 +163,15 @@ void *init_sensor_battery()
     if (battery == NULL)
     {
         fprintf(stderr, "Memory allocation for \"battery\" failed\n");
+        free(battery);
+        return NULL;
     }
-    *battery = (battery_s) {.min = 1000, .max = 0};
+    battery->power_now = 0;
+    battery->power_cumulative = 0;
+    battery->power_runtime_avg = 0;
+    battery->min = 1000;  
+    battery->max = 0;     
+    battery->status[0] = '\0';  // Initialize status to an empty string 
     
     return battery;
 }
@@ -218,8 +248,6 @@ int update_statistics(  sensor_s* freq,
         if (!power_initialized)
         {
             // Power values are based on energy differences, hence the first value is not correct
-            // power_his[history_cntr] = power->per_domain[PKG]; // Replace first spike value second real power affect the avg as much
-            // power->pkg_cumulative = power->per_domain[PKG]; // Reset cumulative to avoid spike
             power_initialized = 1;
             return 0;
         }

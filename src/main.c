@@ -59,12 +59,8 @@ int main (int argc, char **argv)
     sensor_s *voltage = init_sensor(core_count); 
     
     battery_s *battery = init_sensor_battery();
-
     power_s *power = init_sensor_power(AMD, core_count);
-    
     load_s *load = init_sensor_load(core_count);
-    long long *work_jiffies_before = malloc((core_count) * sizeof(*work_jiffies_before));                  // store for next interval
-    long long *total_jiffies_before = malloc((core_count) * sizeof(*total_jiffies_before));
 
     char *cpu_model = identifiy_cpu();
     
@@ -104,8 +100,7 @@ int main (int argc, char **argv)
         
         read_sensors(freq, load, temperature, voltage, power, battery, cpu_designer);
 
-        // get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
-        get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count); // backup
+        get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
         load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
         load_his[history_cntr] = load->cpu_avg;
         
@@ -130,8 +125,6 @@ int main (int argc, char **argv)
         printw("Core 0 E after = %.2f J\n", power->core_energy_after[0]);
         printw("Core 0 P = %.2f W\n", power->per_core[0]);
         printw("All Core P = %.2f W\n", power->cores);
-        // printw("Work Jiffies before = %lld\n", load->work_jiffies_before[0]);
-        // printw("Total Jiffies before = %lld\n", load->total_jiffies_before[0]);
 #endif
 
         attron(A_BOLD);
