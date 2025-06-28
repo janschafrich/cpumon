@@ -67,7 +67,7 @@ void *init_sensor_load(int core_count);
 
 
 void read_sensors(  sensor_s* freq, 
-                    // load_s *load,
+                    load_s *load,
                     sensor_s *temperature,
                     sensor_s *voltage, 
                     power_s *power, 
@@ -75,7 +75,7 @@ void read_sensors(  sensor_s* freq,
                     cpu_designer_e designer);
 
 int update_statistics(  sensor_s* freq, 
-                        // load_s *load,
+                        load_s *load,
                         sensor_s* temperature, 
                         sensor_s *voltage, 
                         power_s *power, 

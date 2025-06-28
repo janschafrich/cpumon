@@ -1,5 +1,5 @@
 
-/* cpumon
+/* cpumon (c) Jan-Eric Schäfrich
  * a tool to read current processors values continously and print them to the terminal
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -102,7 +102,7 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        read_sensors(freq, temperature, voltage, power, battery, cpu_designer);
+        read_sensors(freq, load, temperature, voltage, power, battery, cpu_designer);
 
         // get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
         get_cpucore_load(load->per_core, &load->cpu_avg, work_jiffies_before, total_jiffies_before, core_count); // backup
@@ -119,7 +119,7 @@ int main (int argc, char **argv)
         }
         period_cntr += 1;
         
-        update_statistics(freq, temperature, voltage, power, battery, cpu_designer);
+        update_statistics(freq, load, temperature, voltage, power, battery, cpu_designer);
 
         // ------------------  output to terminal ------------------------------
         

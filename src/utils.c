@@ -84,26 +84,26 @@ int read_chars_new(char *return_string, const int n, const char *filepath)     /
 // }
 
 
-// int read_chars_modular(char *return_string, const int n, FILE *fp)     // function from data type pointer
-// {     
-//     int i = 0;
-//     int single_character;
+int read_chars_modular(char *return_string, const int n, FILE *fp)     // function from data type pointer
+{     
+    int i = 0;
+    int single_character;
 
-//     while ((single_character = fgetc(fp)) != EOF && i < (n + 1) ){
-//         if(single_character == '\n'){
-//             continue;           // skip newline characters
-//         } else 
-//         {
-//             return_string[i] = single_character;
-//         }
-//         i++;
-//     }
+    while ((single_character = fgetc(fp)) != EOF && i < (n + 1) ){
+        if(single_character == '\n'){
+            continue;           // skip newline characters
+        } else 
+        {
+            return_string[i] = single_character;
+        }
+        i++;
+    }
 
-//     return_string[i] = '\0';                 // terminate string
-//     fclose(fp);
+    return_string[i] = '\0';                 // terminate string
+    fclose(fp);
 
-//     return 0;                           
-// }
+    return 0;                           
+}
 
 
 

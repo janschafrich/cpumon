@@ -148,7 +148,7 @@ void *init_sensor_battery()
 
 
 void read_sensors(  sensor_s* freq, 
-                    // load_s *load,
+                    load_s *load,
                     sensor_s *temperature,
                     sensor_s *voltage, 
                     power_s *power, 
@@ -177,7 +177,7 @@ void read_sensors(  sensor_s* freq,
 }
 
 int update_statistics(  sensor_s* freq, 
-                        // load_s *load,
+                        load_s *load,
                         sensor_s* temperature, 
                         sensor_s *voltage, 
                         power_s *power, 
@@ -189,8 +189,11 @@ int update_statistics(  sensor_s* freq,
     freq->runtime_avg = get_runtime_avg(period_cntr, &freq->cumulative, &freq->cpu_avg);
     freq_his[history_cntr] = freq->cpu_avg;
 
-    // load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
-    // load_his[history_cntr] = load->cpu_avg;
+    // Report min / max for the total CPU (all cores combined)
+    load->min = get_min_value(load->min, &load->cpu_avg, 1); // Pass address of cpu_avg and count as 1
+    load->max = get_max_value(load->max, &load->cpu_avg, 1);
+    load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
+    load_his[history_cntr] = load->cpu_avg;
 
     reset_if_status_changed(&battery->power_cumulative, battery->status, charging_status_before);
     battery->power_runtime_avg = get_runtime_avg(period_cntr, &battery->power_cumulative, &battery->power_now);
@@ -255,4 +258,3 @@ int print_fanspeed(void){  // based on this example: https://stackoverflow.com/q
 
     return 0;
 }
-

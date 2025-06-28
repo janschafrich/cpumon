@@ -292,69 +292,69 @@ void get_cpucore_load(float *load_per_core, float * average, long long *work_jif
     }
 }
 
-
-int get_cpucore_load_new(load_s *load, int core_count) {
+// // cleaner function interface
+// int get_cpucore_load_new(load_s *load, int core_count) {
     
-    FILE *fp = fopen("/proc/stat", "r");
-    if (fp == NULL) {
-        perror("Error opening file /proc/stat");
-        return -1;
-    }
+//     FILE *fp = fopen("/proc/stat", "r");
+//     if (fp == NULL) {
+//         perror("Error opening file /proc/stat");
+//         return -1;
+//     }
 
-    char file_buf[BUFSIZ];
-    char *line;
-    long long user, nice, system, idle, iowait, irq, softirq;
-    long long work_jiffies_after[core_count];
-    long long total_jiffies_after[core_count];
-    char comparator[16];
-    float total = 0;
+//     char file_buf[BUFSIZ];
+//     char *line;
+//     long long user, nice, system, idle, iowait, irq, softirq;
+//     long long work_jiffies_after[core_count];
+//     long long total_jiffies_after[core_count];
+//     char comparator[16];
+//     float total = 0;
 
-        line = fgets(file_buf, BUFSIZ, fp);
-        if (line == NULL) {
-            printf("Error %s\n", file_buf);
-            return -1;
-        }
+//         line = fgets(file_buf, BUFSIZ, fp);
+//         if (line == NULL) {
+//             printf("Error %s\n", file_buf);
+//             return -1;
+//         }
         
-        for (int core = 0; core < core_count; core++)
-        {
-            line = fgets(file_buf, BUFSIZ, fp);
-            if (line == NULL) {
-                break;
-            }
+//         for (int core = 0; core < core_count; core++)
+//         {
+//             line = fgets(file_buf, BUFSIZ, fp);
+//             if (line == NULL) {
+//                 break;
+//             }
             
-            sprintf(comparator,"cpu%d ", core);
+//             sprintf(comparator,"cpu%d ", core);
             
-            if (!strncmp(line, comparator, 5)) 
-            {   
-                sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
+//             if (!strncmp(line, comparator, 5)) 
+//             {   
+//                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
                 
-                work_jiffies_after[core] = user + nice + system;
-                total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-            } 
-        }
-    fclose(fp);
+//                 work_jiffies_after[core] = user + nice + system;
+//                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+//             } 
+//         }
+//     fclose(fp);
 
-    // calculate the load
-    for (int core = 0; core < (core_count); core++)
-    {
-        if (total_jiffies_after[core] - load->total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-            load->per_core[core] = (float)(100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / (float)(total_jiffies_after[core] - load->total_jiffies_before[core]);
-        } else {
-            load->per_core[core] = (100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-        }
-        total += load->per_core[core];
-    }
+//     // calculate the load
+//     for (int core = 0; core < (core_count); core++)
+//     {
+//         if (total_jiffies_after[core] - load->total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
+//             load->per_core[core] = (float)(100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / (float)(total_jiffies_after[core] - load->total_jiffies_before[core]);
+//         } else {
+//             load->per_core[core] = (100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+//         }
+//         total += load->per_core[core];
+//     }
 
-    load->cpu_avg = total / core_count;
+//     load->cpu_avg = total / core_count;
 
-    // save the jiffy count for the next interval
-    for (int i = 0; i < (core_count); i++)
-    {
-        load->work_jiffies_before[i] = work_jiffies_after[i];
-        load->total_jiffies_before[i] = total_jiffies_after[i];
-    }
-    return 0;
-}
+//     // save the jiffy count for the next interval
+//     for (int i = 0; i < (core_count); i++)
+//     {
+//         load->work_jiffies_before[i] = work_jiffies_after[i];
+//         load->total_jiffies_before[i] = total_jiffies_after[i];
+//     }
+//     return 0;
+// }
 
 
 
