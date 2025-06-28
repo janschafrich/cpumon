@@ -111,7 +111,7 @@ int main (int argc, char **argv)
         
         gpu_freq = read_gpu();      
 
-        if (history_cntr < AVG_WINDOW/POLL_INTERVAL_S)    // for last minute history
+        if (history_cntr < (AVG_WINDOW/POLL_INTERVAL_S - 1) )    // for last minute history
         {   
             history_cntr++;                     // use as array index
         } else {

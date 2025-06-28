@@ -84,8 +84,8 @@ void *init_sensor_load(int core_count)
 
 void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
 {
-    power_s *power;
-    float *core_enrgy_bfr, *core_enrgy_aftr, *domains;
+    power_s *power = NULL;
+    float *core_enrgy_bfr, *core_enrgy_aftr, *domains = NULL;
     switch (cpu_designer)
     {
         case INTEL: 
@@ -93,7 +93,7 @@ void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
             power->n_domains = 3;      // PKG, CORES, GPU
             break;
         case AMD : 
-            power = malloc( sizeof(power_s)    + core_count * sizeof(power->per_core[0]) );
+            power = malloc( sizeof(power_s) + core_count * sizeof(power->per_core[0]) );
             if (power == NULL)
             {
                 fprintf(stderr, "Memory allocation for power failed\n");
@@ -156,9 +156,6 @@ void read_sensors(  sensor_s* freq,
                     cpu_designer_e designer)
 {   
     get_sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
-    // get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
-    // get_cpucore_load_new(load, core_count);
-
     get_sysfs_power_battery_w(&battery->power_now);
     get_battery_status(battery->status);
     
@@ -212,13 +209,26 @@ int update_statistics(  sensor_s* freq,
         voltage->runtime_avg = get_runtime_avg(period_cntr, &voltage->cumulative, &voltage->cpu_avg);
         voltage_his[history_cntr] = voltage->cpu_avg;
 
-        if (history_cntr == 1)
-        {
-            power_his[0] = *power->per_domain;      // over write the first (wrong) power calculation, so that it doesnt affect the avg as much
-        }
+    }
 
-        power_his[history_cntr] = *power->per_domain;
-        power->pkg_runtime_avg = get_runtime_avg(period_cntr, &power->pkg_cumulative, &power->per_domain[PKG]);      
+    static int power_initialized = 0;
+
+    if (running_with_privileges == TRUE && (designer == INTEL || designer == AMD))  // add AMD case
+    {
+        if (!power_initialized)
+        {
+            // Power values are based on energy differences, hence the first value is not correct
+            // power_his[history_cntr] = power->per_domain[PKG]; // Replace first spike value second real power affect the avg as much
+            // power->pkg_cumulative = power->per_domain[PKG]; // Reset cumulative to avoid spike
+            power_initialized = 1;
+            return 0;
+        }
+        #if DEBUG_ENABLE
+            printf("Setting power_his[%ld] = %f\n", history_cntr, power->per_domain[PKG]);
+        #endif
+
+        power_his[history_cntr] = power->per_domain[PKG];
+        power->pkg_runtime_avg = get_runtime_avg(period_cntr - 1 , &power->pkg_cumulative, &power->per_domain[PKG]);      
     }
 
     return 0;
