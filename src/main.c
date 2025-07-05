@@ -57,6 +57,7 @@ int main (int argc, char **argv)
     sensor_s *freq = init_sensor(core_count);
     sensor_s *temperature = init_sensor(core_count);
     sensor_s *voltage = init_sensor(core_count); 
+    sensor_s *gpu_freq = init_sensor(1);
     
     battery_s *battery = init_sensor_battery();
     power_s *power = init_sensor_power(AMD, core_count);
@@ -85,7 +86,7 @@ int main (int argc, char **argv)
     init_gui();
 
 
-    int gpu_freq;
+    // int gpu_freq;
   
     // ------------------------------ run infinitely ------------------------------------------ //
     while (1) {
@@ -98,13 +99,20 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        read_sensors(freq, load, temperature, voltage, power, battery, cpu_designer);
+        read_sensors(freq = freq, 
+                    load = load, 
+                    temperature = temperature, 
+                    voltage = voltage, 
+                    power = power, 
+                    battery = battery, 
+                    gpu_freq = gpu_freq,
+                    cpu_designer = cpu_designer);
 
         get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
         load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
         load_his[history_cntr] = load->cpu_avg;
         
-        gpu_freq = read_gpu();      
+        // gpu_freq = read_gpu();      
 
         if (history_cntr < (AVG_WINDOW/POLL_INTERVAL_S - 1) )    // for last minute history
         {   
@@ -114,17 +122,14 @@ int main (int argc, char **argv)
         }
         period_cntr += 1;
         
-        update_statistics(freq, load, temperature, voltage, power, battery, cpu_designer);
+        update_statistics(freq, load, temperature, voltage, power, battery, gpu_freq, cpu_designer);
 
         // ------------------  output to terminal ------------------------------
         
         clear();
 
 #if DEBUG_ENABLE
-        printw("Core 0 E bef = %.2f J\n", power->core_energy_before[0]);
-        printw("Core 0 E after = %.2f J\n", power->core_energy_after[0]);
-        printw("Core 0 P = %.2f W\n", power->per_core[0]);
-        printw("All Core P = %.2f W\n", power->cores);
+        // printw("GPU Freq = %.2f W\n", gpu_freq->per_core[0]);
 #endif
 
         attron(A_BOLD);
@@ -152,7 +157,7 @@ int main (int argc, char **argv)
             // draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
             draw_power(power->per_domain, power->n_domains, power->pkg_runtime_avg, cpu_designer);
             printw("\n");
-            printw("GPU\t%d MHz\t\t%.2f W\n", gpu_freq, power->per_domain[GPU]);
+            printw("GPU\t%.0f MHz\t\t%.2f W\n", gpu_freq->per_core[0], power->per_domain[GPU]);
             printw("\n");
             // if (print_fanspeed() != 0)
             // {

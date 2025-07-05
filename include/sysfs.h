@@ -13,6 +13,7 @@ void get_sysfs_freq_ghz(float *, float *, int core_count);
 void get_cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
 int get_cpucore_load_new(load_s *load, int core_count);
 
+int get_sysfs_gpu_freq_mhz(float *); 
 int read_gpu(void);
 
 

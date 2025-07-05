@@ -309,6 +309,55 @@ int get_amd_msr_core_power_w(power_s *my_power, int total_cores)
 	return 0;
 }
 
+// int get_amd_core_frequency_mhz(sensor_s *freq, int total_cores)
+// {
+//     int *fd = (int*)malloc(sizeof(int)*total_cores);
+//     if (!fd) return -1;
+	
+// 	for (int i = 0; i < total_cores; i++) {
+// 		fd[i] = open_msr(i);
+// 	}
+
+//     uint64_t mperf[16], aperf[16];
+//     static uint64_t mperf_init[16] = {0};
+//     static uint64_t aperf_init[16] = {0};
+
+//     int p0 = get_p0_frequency_mhz(); // Read from sysfs
+    
+//     for (int i + 0; i < total_cores; i++) 
+//     {
+//         mperf[i] = read_msr(fd[i], AMD_MSR_MAXIMUM_PERFORMANCE_FREQUENCY_COUNT);
+//         aperf[i] = read_msr(fd[i], AMD_MSR_ACTUAL_PERFORMANCE_FREQUENCY_COUNT);
+        
+//         uint64_t delta_mperf = mperf[i] - mperf_init[i];
+//         uint64_t delta_aperf = aperf[i] - aperf_init[i];
+        
+//         if (delta_mperf == 0) {
+//             freq->per_core[i] = 0;
+//         } else {
+//             freq->per_core[i] = (float)p0 * ((float)delta_aperf / (float)delta_mperf);
+//         }  
+        
+//         mperf_init[i] = mperf[i]; 
+//         aperf_init[i] = aperf[i];
+//         close(fd[i]);
+//     }
+
+//     free(fd);
+//     return 0;
+// }
+
+// Add this function to read P0 frequency in MHz
+// int get_p0_frequency_mhz() {
+//     FILE *fp = fopen("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq", "r");
+//     if (!fp) return -1;
+//     int khz = 0;
+//     fscanf(fp, "%d", &khz);
+//     fclose(fp);
+//     return khz / 1000; // Convert kHz to MHz
+// }
+
+
 
 
 
@@ -361,5 +410,9 @@ void get_msr_power_limits_w(int core_count){
     if (max_turbo_limit == 1) printw("MC_TURBO\n"); 
     if (turbo_transition_attenuation == 1) printw("TRANSITION ATTENUATION\n"); 
 }
+
+
+
+
 
 

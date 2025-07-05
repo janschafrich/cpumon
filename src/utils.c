@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "../include/cpumonlib.h"
 
 
@@ -67,23 +68,6 @@ int read_chars_new(char *return_string, const int n, const char *filepath)     /
 
 
 
-// int open_file(FILE *fp, const char *filepath)
-// {
-//     fp = fopen(filepath, "r");
-
-//     if (fp == NULL)
-//     {
-// #if DEBUG_ENABLE
-//         printf("Error open_file filepath = %s\n", filepath);
-// #endif    
-//         return -1;
-//     } else
-//     {
-//         return 0;
-//     }
-// }
-
-
 int read_chars_modular(char *return_string, const int n, FILE *fp)     // function from data type pointer
 {     
     int i = 0;
@@ -103,6 +87,20 @@ int read_chars_modular(char *return_string, const int n, FILE *fp)     // functi
     fclose(fp);
 
     return 0;                           
+}
+
+char *read_sysfs_string(const char *filepath, char *buf, size_t buflen) {
+    FILE *fp = fopen(filepath, "r");
+    if (!fp) return NULL;
+    if (fgets(buf, buflen, fp) == NULL) {
+        fclose(fp);
+        return NULL;
+    }
+    // Remove trailing newline if present
+    size_t len = strlen(buf);
+    if (len > 0 && buf[len-1] == '\n') buf[len-1] = '\0';
+    fclose(fp);
+    return buf;
 }
 
 

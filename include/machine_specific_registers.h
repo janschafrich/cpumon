@@ -52,7 +52,8 @@
 #define AMD_MSR_PSTATE_C5 0xC0010069
 #define AMD_MSR_PSTATE_C6 0xC001006A
 #define AMD_MSR_PSTATE_C7 0xC001006B
-
+#define AMD_MSR_ACTUAL_PERFORMANCE_FREQUENCY_COUNT 0x000000E8           // AMD64 Arch Programmers Manual Vol 2 Systems Programming
+#define AMD_MSR_MAXIMUM_PERFORMANCE_FREQUENCY_COUNT 0x000000E7
 
 
 #define AMD_TIME_UNIT_MASK 0xF0000
@@ -76,6 +77,9 @@ void get_intel_msr_power_w(float * power_w);
 int get_msr_core_units(power_s *my_power, cpu_designer_e designer);
 int get_amd_pkg_power_w(float *pkg, float energy_unit);
 int get_amd_msr_core_power_w(power_s *my_power, int total_cores);
+int get_amd_core_frequency_mhz(sensor_s *freq, int total_cores);
+int get_p0_frequency_mhz();
+
 
 
 #endif

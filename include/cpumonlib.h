@@ -10,7 +10,8 @@
 #define POLL_INTERVAL_S 1
 
 
-#define DEBUG_ENABLE 0
+#define DEBUG_ENABLE 1
+#define LOG_ENABLE 1
 
 
 typedef struct sensor_s {
@@ -72,6 +73,7 @@ void read_sensors(  sensor_s* freq,
                     sensor_s *voltage, 
                     power_s *power, 
                     battery_s *battery,
+                    sensor_s *gpu_freq,
                     cpu_designer_e designer);
 
 int update_statistics(  sensor_s* freq, 
@@ -80,9 +82,10 @@ int update_statistics(  sensor_s* freq,
                         sensor_s *voltage, 
                         power_s *power, 
                         battery_s *battery,
+                        sensor_s *gpu_freq,
                         cpu_designer_e designer);
 
 int print_fanspeed(void);
 
 
-#endif
+#endif // CPUMONLIB

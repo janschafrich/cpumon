@@ -174,31 +174,6 @@ int get_battery_status(char *status)
 }
 
 
-// int get_battery_status(char *status)
-// {
-//     // check for battery under multiple paths
-//     FILE *fp = 0;
-//     if (open_file(fp, "r", "/sys/class/power_supply/BAT0/status") != 0)
-//     {
-//         return -1;
-//     } 
-//     if  (open_file(fp, "r", "/sys/class/power_supply/BAT1/status") != 0)
-//     {
-//         return -1;
-//     }
-
-//     if (read_chars_modular(status, 14, fp) == 0)
-//     {
-// #if DEBUG_ENABLE
-//     printf("Reading from battery path");
-// #endif
-//         return 0;
-//     }
-
-//     strcpy(status, "Status unknown");
-//     return -1;
-// }
-
 void reset_if_status_changed(float *cumulative, char *status, char *status_before)
 {
     if (strcmp(status, status_before) != 0)
@@ -292,72 +267,6 @@ void get_cpucore_load(float *load_per_core, float * average, long long *work_jif
     }
 }
 
-// // cleaner function interface
-// int get_cpucore_load_new(load_s *load, int core_count) {
-    
-//     FILE *fp = fopen("/proc/stat", "r");
-//     if (fp == NULL) {
-//         perror("Error opening file /proc/stat");
-//         return -1;
-//     }
-
-//     char file_buf[BUFSIZ];
-//     char *line;
-//     long long user, nice, system, idle, iowait, irq, softirq;
-//     long long work_jiffies_after[core_count];
-//     long long total_jiffies_after[core_count];
-//     char comparator[16];
-//     float total = 0;
-
-//         line = fgets(file_buf, BUFSIZ, fp);
-//         if (line == NULL) {
-//             printf("Error %s\n", file_buf);
-//             return -1;
-//         }
-        
-//         for (int core = 0; core < core_count; core++)
-//         {
-//             line = fgets(file_buf, BUFSIZ, fp);
-//             if (line == NULL) {
-//                 break;
-//             }
-            
-//             sprintf(comparator,"cpu%d ", core);
-            
-//             if (!strncmp(line, comparator, 5)) 
-//             {   
-//                 sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-                
-//                 work_jiffies_after[core] = user + nice + system;
-//                 total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-//             } 
-//         }
-//     fclose(fp);
-
-//     // calculate the load
-//     for (int core = 0; core < (core_count); core++)
-//     {
-//         if (total_jiffies_after[core] - load->total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-//             load->per_core[core] = (float)(100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / (float)(total_jiffies_after[core] - load->total_jiffies_before[core]);
-//         } else {
-//             load->per_core[core] = (100 * (work_jiffies_after[core] - load->work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
-//         }
-//         total += load->per_core[core];
-//     }
-
-//     load->cpu_avg = total / core_count;
-
-//     // save the jiffy count for the next interval
-//     for (int i = 0; i < (core_count); i++)
-//     {
-//         load->work_jiffies_before[i] = work_jiffies_after[i];
-//         load->total_jiffies_before[i] = total_jiffies_after[i];
-//     }
-//     return 0;
-// }
-
-
-
 
 int read_gpu(void){
     
@@ -388,3 +297,74 @@ int read_gpu(void){
     fclose(fp); */
 
 }
+
+
+int get_amd_gpu_hwmon_id() 
+{
+    uint8_t n_hwmon = 15;
+    char file_buf[20];
+    char path[70];
+
+    for (int i = 0; i < n_hwmon; i++){
+        sprintf(path, "/sys/class/hwmon/hwmon%d/name", i);
+
+        if (read_sysfs_string(path, file_buf, 20) != NULL)
+        {
+            if (strncmp(file_buf, "amdgpu", 6) == 0)
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+
+
+int get_sysfs_gpu_freq_mhz(float *freq_mhz) 
+{
+    char file_buf[20];
+    char path[70];
+
+    uint8_t hwmon_id = get_amd_gpu_hwmon_id();
+    
+    if (hwmon_id >= 0)
+    {
+        sprintf(path, "/sys/class/hwmon/hwmon%d/in0_input", hwmon_id);
+        if (read_sysfs_string(path, file_buf, 20) != NULL)
+        {
+            *freq_mhz = strtof(file_buf, NULL); // Convert string to float
+            return 0;
+        }
+    }
+    return -1;
+}
+
+
+int get_sysfs_gpu_temp_c(float *temp_c) 
+{
+    char file_buf[20];
+    char path[70];
+
+    uint8_t hwmon_id = get_amd_gpu_hwmon_id();
+    
+    if (hwmon_id >= 0)
+    {
+        sprintf(path, "/sys/class/hwmon/hwmon%d/temp1_input", hwmon_id);
+        if (read_sysfs_string(path, file_buf, 20) != NULL)
+        {
+            *temp_c = strtof(file_buf, NULL); // Convert string to float
+            return 0;
+        }
+    }
+    return -1;
+}
+
+
+
+    // FILE *log = fopen("/tmp/cpumon_debug.log", "a");
+    // if (log) {
+    //     fprintf(log, "get_amd_gpu_hwmon_id: returned %d\n", hwmon_id);
+    // }
+    // fclose(log);
+

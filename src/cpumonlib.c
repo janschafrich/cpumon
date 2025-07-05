@@ -177,17 +177,19 @@ void *init_sensor_battery()
 }
 
 
-void read_sensors(  sensor_s* freq, 
+void read_sensors(  sensor_s *freq, 
                     load_s *load,
                     sensor_s *temperature,
                     sensor_s *voltage, 
                     power_s *power, 
                     battery_s *battery, 
+                    sensor_s *gpu_freq,
                     cpu_designer_e designer)
 {   
     get_sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
     get_sysfs_power_battery_w(&battery->power_now);
     get_battery_status(battery->status);
+    get_sysfs_gpu_freq_mhz(gpu_freq->per_core);
     
     if (running_with_privileges == TRUE && designer == INTEL)
     {
@@ -209,6 +211,7 @@ int update_statistics(  sensor_s* freq,
                         sensor_s *voltage, 
                         power_s *power, 
                         battery_s *battery,
+                        sensor_s *gpu_freq,
                         cpu_designer_e designer)
 {
     freq->min = get_min_value(freq->min, freq->per_core, core_count);
