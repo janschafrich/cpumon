@@ -240,18 +240,20 @@ int get_amd_pkg_power_w(float *my_power, float energy_unit)
     long long package_raw = read_msr(fp, AMD_MSR_PACKAGE_ENERGY);
     close(fp);
 #if DEBUG_ENABLE
-    printf("Received raw energy Reading = %lld\n", package_raw);
+
 #endif
-	
+
     package_after = (float)package_raw * energy_unit;
     *my_power = package_after - package_before;
     package_before = package_after;
 
-	return 0;
+    return 0;
 }
 
-int get_msr_core_units(power_s *my_power, cpu_designer_e designer)
+int get_msr_core_units(cpu_power_t *my_power, cpu_designer_e designer)
 {
+    
+
     switch (designer)
     {
         case AMD:
@@ -264,16 +266,24 @@ int get_msr_core_units(power_s *my_power, cpu_designer_e designer)
             my_power->time_unit = pow(0.5,(float)(time_unit_raw));
 	        my_power->energy_unit = pow(0.5,(float)(energy_unit_raw));
 	        my_power->power_unit = pow(0.5,(float)(power_unit_raw));
+
+    //             FILE *log = fopen("/tmp/cpumon_debug.log", "a");
+    // if (log) {
+    // fprintf(log, "Energy unit Raw = %d\n", energy_unit_raw);
+    // fprintf(log, "my_power->energy_unit = %lf\n", my_power->energy_unit);
+    // }
+    // fclose(log);
             break;
         default:
             break;
             	
     }
+
     return 0;
 }
 
 
-int get_amd_msr_core_power_w(power_s *my_power, int total_cores)
+int get_amd_msr_core_power_w(cpu_power_t *my_power, int total_cores)
 {
 	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
 	
@@ -297,9 +307,9 @@ int get_amd_msr_core_power_w(power_s *my_power, int total_cores)
     int j = 0;
     my_power->per_domain[CORES] = 0;
 	for(int i = 0; i < total_cores; i += 2) {
-		my_power->per_core[i] = my_power->core_energy_after[i-j] - my_power->core_energy_before[i-j];
-        my_power->per_core[i+1] = 0;        // report power per core as power per first thread, second thread P = 0 W
-		my_power->per_domain[CORES] += my_power->per_core[i];
+		my_power->stats->present[i] = my_power->core_energy_after[i-j] - my_power->core_energy_before[i-j];
+        my_power->stats->present[i+1] = 0;        // report power per core as power per first thread, second thread P = 0 W
+		my_power->per_domain[CORES] += my_power->stats->present[i];
         my_power->core_energy_before[i-j] = my_power->core_energy_after[i-j];
         j++;
     }

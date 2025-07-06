@@ -52,16 +52,11 @@ int main (int argc, char **argv)
 {   
     init_environment();
 
-    // float power_per_domain[POWER_DOMAIN_COUNT];
-
-    sensor_s *freq = init_sensor(core_count);
-    sensor_s *temperature = init_sensor(core_count);
-    sensor_s *voltage = init_sensor(core_count); 
-    sensor_s *gpu_freq = init_sensor(1);
-    
-    battery_s *battery = init_sensor_battery();
-    power_s *power = init_sensor_power(AMD, core_count);
-    load_s *load = init_sensor_load(core_count);
+    sensor_suite_t *sensors = init_sensor_suite(cpu_designer, core_count);
+    if (!sensors) {
+        fprintf(stderr, "Failed to initialize sensor suite\n");
+        exit(EXIT_FAILURE);
+    }
 
     char *cpu_model = identifiy_cpu();
     
@@ -99,20 +94,7 @@ int main (int argc, char **argv)
                 sleep(POLL_INTERVAL_S);
         }
         
-        read_sensors(freq = freq, 
-                    load = load, 
-                    temperature = temperature, 
-                    voltage = voltage, 
-                    power = power, 
-                    battery = battery, 
-                    gpu_freq = gpu_freq,
-                    cpu_designer = cpu_designer);
-
-        get_cpucore_load(load->per_core, &load->cpu_avg, load->work_jiffies_before, load->total_jiffies_before, core_count);
-        load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
-        load_his[history_cntr] = load->cpu_avg;
-        
-        // gpu_freq = read_gpu();      
+        read_sensors(sensors);
 
         if (history_cntr < (AVG_WINDOW/POLL_INTERVAL_S - 1) )    // for last minute history
         {   
@@ -122,14 +104,16 @@ int main (int argc, char **argv)
         }
         period_cntr += 1;
         
-        update_statistics(freq, load, temperature, voltage, power, battery, gpu_freq, cpu_designer);
+        update_sensor_suite_statistics(sensors);
 
         // ------------------  output to terminal ------------------------------
         
         clear();
 
 #if DEBUG_ENABLE
-        // printw("GPU Freq = %.2f W\n", gpu_freq->per_core[0]);
+        printw("CPU Time Uint = %f W\n", sensors->cpu->power->time_unit);
+        printw("CPU Energy Uint = %f W\n", sensors->cpu->power->energy_unit);
+        printw("CPU POWER Uint = %f W\n", sensors->cpu->power->power_unit);
 #endif
 
         attron(A_BOLD);
@@ -138,26 +122,30 @@ int main (int argc, char **argv)
         
         if (running_with_privileges == TRUE)
         {
-            printw("Core    f/GHz \tC0%%   Temp/°C\t U/V\n");
+            printw("Core    f/MHz \tC0%%   Temp/°C\t U/V\n");
             printw("------------------------------------\n");
             for (int core = 0; core < core_count; core++)
             {   
-                printw("%2d \t%.1f\t%2.f\t%.f\t%.2f\n", core, freq->per_core[core], load->per_core[core], temperature->per_core[core], voltage->per_core[core]);
+                printw("%2d \t%.0f\t%2.f\t%.f\t%.2f\n", 
+                    core, 1000*sensors->cpu->freq->stats->present[core], sensors->cpu->load->stats->present[core], sensors->cpu->temperature->stats->present[core], sensors->cpu->voltage->stats->present[core]);
             }
             printw("\n");
-            //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg, temperature->cpu_avg, voltage->cpu_avg); 
-            printw("avg\t%.2f\t%.2f\t%.1f\t%.2f\n", freq->runtime_avg, load->runtime_avg, temperature->runtime_avg, voltage->runtime_avg);
-            printw("min\t%.2f\t%.2f\t%.0f\t%.2f\n", freq->min, load->min, temperature->min, voltage->min);
-            printw("max\t%.2f\t%.2f\t%.0f\t%.2f\n", freq->max, load->max, temperature->max, voltage->max);
+            //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", sensors->cpu->->stats->cpu_avg, sensors->cpu->load->stats->cpu_avg, sensors->cpu->temperature->stats->cpu_avg, sensors->cpu->voltage->stats->cpu_avg); 
+            printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\n", 
+                1000*sensors->cpu->freq->stats->runtime_avg, sensors->cpu->load->stats->runtime_avg, sensors->cpu->temperature->stats->runtime_avg, sensors->cpu->voltage->stats->runtime_avg);
+            printw("min\t%.0f\t%.2f\t%.0f\t%.2f\n", 
+                1000*sensors->cpu->freq->stats->min, sensors->cpu->load->stats->min, sensors->cpu->temperature->stats->min, sensors->cpu->voltage->stats->min);
+            printw("max\t%.0f\t%.2f\t%.0f\t%.2f\n", 
+                1000*sensors->cpu->freq->stats->max, sensors->cpu->load->stats->max, sensors->cpu->temperature->stats->max, sensors->cpu->voltage->stats->max);
             if (display_moving_average_flag == TRUE)
             {
                 compute_moving_average(history_cntr, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
-            // draw_power(power_per_domain, power->pkg_runtime_avg, cpu_designer);
-            draw_power(power->per_domain, power->n_domains, power->pkg_runtime_avg, cpu_designer);
+            // draw_power(power_per_domain, power->stats->pkg_runtime_avg, cpu_designer);
+            draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains, sensors->cpu->power->stats->runtime_avg, cpu_designer);
             printw("\n");
-            printw("GPU\t%.0f MHz\t\t%.2f W\n", gpu_freq->per_core[0], power->per_domain[GPU]);
+            printw("GPU\t%.0f MHz\t\t%.2f W\n", sensors->gpu->freq->stats->present[0], sensors->cpu->power->per_domain[GPU]);
             printw("\n");
             // if (print_fanspeed() != 0)
             // {
@@ -170,23 +158,23 @@ int main (int argc, char **argv)
 
             printw("Core\tf/GHz \tC0%% \n");
             for (int i = 0; i < core_count; i++){   
-                printw("%d \t%.1f\t%.f\n", i, freq->per_core[i], load->per_core[i]);
+                printw("%d \t%.1f\t%.f\n", i, sensors->cpu->freq->stats->present[i], sensors->cpu->load->stats->present[i]);
             }
             printw("\n");
-            printw("avg\t%.2f\t%.2f\n", freq->runtime_avg, load->runtime_avg);
-            printw("min\t%.2f\t\n", freq->min);
-            printw("max\t%.2f\t\n", freq->max);
-            //printw("\nCPU\t%.2f\t%.2f\t60-s-avg\n", freq->cpu_avg, load->cpu_avg);
+            printw("avg\t%.2f\t%.2f\n", sensors->cpu->freq->stats->runtime_avg, sensors->cpu->load->stats->runtime_avg);
+            printw("min\t%.2f\t\n", sensors->cpu->freq->stats->min);
+            printw("max\t%.2f\t\n", sensors->cpu->freq->stats->max);
+            //printw("\nCPU\t%.2f\t%.2f\t60-s-avg\n", sensors->cpu->freq->cpu_avg, sensors->cpu->->stats->cpu_avg);
         }
 
         printw("\n");
-        printw("---------- Battery (%s) ----------\n", battery->status);
+        printw("---------- Battery (%s) ----------\n", sensors->battery->status);
         printw("    now      avg      min      max\n");
-        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", battery->power_now, battery->power_runtime_avg, battery->min, battery->max);
+        printw("  %.2f W   %.2f W   %.2f W   %.2f W\n", sensors->battery->stats->present[0], sensors->battery->stats->runtime_avg, sensors->battery->stats->min, sensors->battery->stats->max);
         printw("\n");
         if (display_power_config_flag == TRUE)
         {
-            get_power_config(running_with_privileges, cpu_designer);
+            get_power_config(running_with_privileges, sensors->cpu->designer);
         } 
 
         // if (running_with_privileges == TRUE)

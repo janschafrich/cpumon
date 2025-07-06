@@ -31,6 +31,9 @@ extern float temp_his[AVG_WINDOW];
 extern float voltage_his[AVG_WINDOW];
 extern float power_his[AVG_WINDOW];
 
+/////////////////////////////////////////
+// Init functions
+////////////////////////////////////////
 
 void init_environment(void)
 {
@@ -55,15 +58,17 @@ void init_environment(void)
     } 
 }
 
-void *init_sensor(int core_count)
+
+
+statistics_t *init_statistics(int core_count)
 {
-    sensor_s *sensor = malloc( sizeof(sensor_s) + core_count * sizeof(sensor->per_core[0]) );
+    statistics_t *sensor = malloc( sizeof(statistics_t) + core_count * sizeof(sensor->present[0]) );
     if (sensor == NULL)
     {
         fprintf(stderr, "Memory allocation for \"sensor\" failed\n");
         return NULL;
     }
-    sensor->cpu_avg = 0;
+    sensor->structural_avg = 0;
     sensor->runtime_avg = 0;
     sensor->cumulative = 0;
     sensor->min = 1000;
@@ -72,181 +77,301 @@ void *init_sensor(int core_count)
     return sensor;
 }
 
-void *init_sensor_load(int core_count)
+frequency_t *init_frequency(int core_count) {
+    frequency_t *freq = malloc(sizeof(frequency_t));
+    if (!freq) return NULL;
+    freq->stats = init_statistics(core_count);
+    if (!freq->stats) { free(freq); return NULL; }
+    return freq;
+}
+
+temperature_t *init_temperature(int core_count) {
+    temperature_t *temp = malloc(sizeof(temperature_t));
+    if (!temp) return NULL;
+    temp->stats = init_statistics(core_count);
+    if (!temp->stats) { free(temp); return NULL; }
+    return temp;
+}
+
+voltage_t *init_voltage(int core_count) {
+    voltage_t *volt = malloc(sizeof(voltage_t));
+    if (!volt) return NULL;
+    volt->stats = init_statistics(core_count);
+    if (!volt->stats) { free(volt); return NULL; }
+    return volt;
+}
+
+cpu_load_t *init_sensor_load(int core_count)
 {
-    // Allocate memory for load_s + the flexible array member per_core
-    load_s *load = malloc( sizeof(load_s) + core_count * sizeof(load->per_core[0]) );
+    cpu_load_t *load = malloc(sizeof(cpu_load_t));
     if (load == NULL)
     {
         fprintf(stderr, "Memory allocation for \"load\" failed\n");
         return NULL;
-    }  
+    }
+
+    // Allocate statistics struct for per-core values
+    load->stats = malloc(sizeof(statistics_t) + core_count * sizeof(load->stats->present[0]));
+    if (load->stats == NULL)
+    {
+        fprintf(stderr, "Memory allocation for load->stats failed\n");
+        free(load);
+        return NULL;
+    }
+
     // Allocate memory for the jiffies arrays
-    load->work_jiffies_before = malloc(sizeof(load->work_jiffies_before) * core_count);
-    load->total_jiffies_before = malloc(sizeof(load->total_jiffies_before) * core_count);
+    load->work_jiffies_before = malloc(sizeof(long long) * core_count);
+    load->total_jiffies_before = malloc(sizeof(long long) * core_count);
 
     if (load->work_jiffies_before == NULL || load->total_jiffies_before == NULL) {
         fprintf(stderr, "Memory allocation for jiffies arrays failed\n");
+        free(load->stats);
         free(load->work_jiffies_before);
         free(load->total_jiffies_before);
         free(load);
         return NULL;
     }
-    load->cpu_avg = 0;
-    load->runtime_avg = 0;
-    load->cumulative = 0;
-    load->min = 1000;
-    load->max = 0;
 
     return load;
 }
 
-void *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
+cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
 {
-    power_s *power = NULL;
-    float *core_enrgy_bfr, *core_enrgy_aftr, *domains = NULL;
+    cpu_power_t *power = malloc(sizeof(cpu_power_t));
+    if (!power) {
+        fprintf(stderr, "Memory allocation for power failed\n");
+        return NULL;
+    }
+
+    power->stats = malloc(sizeof(statistics_t));
+    if (!power->stats) {
+        fprintf(stderr, "Memory allocation for power->stats failed\n");
+        free(power);
+        return NULL;
+    }
+
+    get_msr_core_units(power, cpu_designer);
+
+    // FILE *log = fopen("/tmp/cpumon_debug.log", "a");
+    // if (log) {
+    // fprintf(log, "power->energy_unit = %f\n", power->energy_unit);
+    // fprintf(log, "power->time_unit = %f\n", power->time_unit);
+    // }
+    // fclose(log);
+
     switch (cpu_designer)
     {
-        case INTEL: 
-            power = malloc(sizeof(power_s)); 
-            power->n_domains = 3;      // PKG, CORES, GPU
+        case INTEL:
+            power->n_domains = 3; // PKG, CORES, GPU
             break;
-        case AMD : 
-            power = malloc( sizeof(power_s) + core_count * sizeof(power->per_core[0]) );
-            if (power == NULL)
-            {
-                fprintf(stderr, "Memory allocation for power failed\n");
+        case AMD:
+            power->n_domains = 2; // PKG, CORES
+            // Allocate per-core energy arrays for AMD
+            power->core_energy_before = malloc(sizeof(float) * (core_count/2));
+            power->core_energy_after  = malloc(sizeof(float) * (core_count/2));
+            if (!power->core_energy_before || !power->core_energy_after) {
+                fprintf(stderr, "Memory allocation for AMD core energy arrays failed\n");
+                free(power->stats);
+                free(power->core_energy_before);
+                free(power->core_energy_after);
                 free(power);
                 return NULL;
             }
-
-            core_enrgy_bfr = malloc( sizeof(*core_enrgy_bfr) * core_count/2);
-            if (core_enrgy_bfr == NULL)
-            {
-                fprintf(stderr, "Memory allocation for core_energy_before failed\n");
-                free(power); // Clean up previously allocated memory
-                return NULL;
-            }
-
-            core_enrgy_aftr = malloc( sizeof(*core_enrgy_aftr) * core_count/2);
-            if (core_enrgy_aftr == NULL)
-            {
-                fprintf(stderr, "Memory allocation for core_energy_after failed\n");
-                free(core_enrgy_bfr); // Clean up previously allocated memory
-                free(power);
-                return NULL;
-            }
-            power->core_energy_before = core_enrgy_bfr;
-            power->core_energy_after = core_enrgy_aftr;
-            power->n_domains = 2;      // PKG, CORES
             break;
-        default: 
-            power = malloc(sizeof(power_s)); 
-            
+        default:
+            power->n_domains = 1;
             break;
     }
-    // domains = malloc( sizeof(*domains) * power->n_domains);
-    // power->per_domain = domains;
-    power->per_domain = malloc( sizeof(*domains) * power->n_domains);
-    if (running_with_privileges == TRUE)
-    {
-        get_msr_core_units(power, cpu_designer);
+
+    power->per_domain = malloc(sizeof(float) * power->n_domains);
+    if (!power->per_domain) {
+        fprintf(stderr, "Memory allocation for per_domain failed\n");
+        free(power->stats);
+        if (cpu_designer == AMD) {
+            free(power->core_energy_before);
+            free(power->core_energy_after);
+        }
+        free(power);
+        return NULL;
     }
-    
+
+    // Optionally initialize stats and per_domain to zero
+    memset(power->stats, 0, sizeof(statistics_t));
+    for (int i = 0; i < power->n_domains; ++i) power->per_domain[i] = 0.0f;
+
+    if (cpu_designer == AMD) {
+        for (int i = 0; i < core_count/2; ++i) {
+            power->core_energy_before[i] = 0.0f;
+            power->core_energy_after[i] = 0.0f;
+        }
+    }
+
     return power;
 }
 
-
-void *init_sensor_battery()
+battery_t *init_sensor_battery()
 {
-    battery_s *battery = malloc(sizeof(battery_s));
+    battery_t *battery = malloc(sizeof(battery_t));
+    // battery->stats = malloc(sizeof(statistics_t));
+    battery->stats = init_statistics(0);
+    
     if (battery == NULL)
     {
         fprintf(stderr, "Memory allocation for \"battery\" failed\n");
         free(battery);
         return NULL;
     }
-    battery->power_now = 0;
-    battery->power_cumulative = 0;
-    battery->power_runtime_avg = 0;
-    battery->min = 1000;  
-    battery->max = 0;     
-    battery->status[0] = '\0';  // Initialize status to an empty string 
     
     return battery;
 }
 
 
-void read_sensors(  sensor_s *freq, 
-                    load_s *load,
-                    sensor_s *temperature,
-                    sensor_s *voltage, 
-                    power_s *power, 
-                    battery_s *battery, 
-                    sensor_s *gpu_freq,
-                    cpu_designer_e designer)
-{   
-    get_sysfs_freq_ghz(freq->per_core, &freq->cpu_avg, core_count);
-    get_sysfs_power_battery_w(&battery->power_now);
-    get_battery_status(battery->status);
-    get_sysfs_gpu_freq_mhz(gpu_freq->per_core);
-    
-    if (running_with_privileges == TRUE && designer == INTEL)
-    {
-        msr_temperature_c(temperature->per_core, &temperature->cpu_avg, core_count);
-        voltage_v(voltage->per_core, &voltage->cpu_avg, core_count, designer);
-        get_intel_msr_power_w(power->per_domain);
-    }
 
-    if (running_with_privileges == TRUE && designer == AMD)
-    {
-        get_amd_pkg_power_w(&power->per_domain[PKG], power->energy_unit);
-        get_amd_msr_core_power_w(power, core_count);
+sensor_suite_t *init_sensor_suite(cpu_designer_e designer, int core_count) {
+    sensor_suite_t *sensors = malloc(sizeof(sensor_suite_t));
+    if (!sensors) return NULL;
+
+    sensors->cpu = malloc(sizeof(cpu_sensors_t));
+    sensors->gpu = malloc(sizeof(gpu_sensors_t));
+    sensors->battery = init_sensor_battery();
+
+    if (!sensors->cpu || !sensors->gpu || !sensors->battery) goto fail;
+
+    // CPU sensors
+    sensors->cpu->freq = init_frequency(core_count);
+    sensors->cpu->load = init_sensor_load(core_count);
+    sensors->cpu->temperature = init_temperature(core_count);
+    sensors->cpu->voltage = init_voltage(core_count);
+    sensors->cpu->power = init_sensor_power(designer, core_count);
+    sensors->cpu->designer = designer;
+    sensors->cpu->core_count = core_count;
+
+    // GPU sensors
+    sensors->gpu->freq = init_frequency(1);
+    sensors->gpu->load = NULL; // or init_sensor_load(1) if you implement GPU load
+    sensors->gpu->temperature = init_temperature(1);
+    sensors->gpu->power = NULL; // or init_sensor_power(...) if you implement GPU power
+
+    // Check for allocation failures
+    if (!sensors->cpu->freq || !sensors->cpu->load || !sensors->cpu->temperature ||
+        !sensors->cpu->voltage || !sensors->cpu->power ||
+        !sensors->gpu->freq || !sensors->gpu->temperature) goto fail;
+
+    return sensors;
+
+fail:
+    // Free all previously allocated memory
+    if (sensors->cpu) {
+        if (sensors->cpu->freq) { free(sensors->cpu->freq->stats); free(sensors->cpu->freq); }
+        if (sensors->cpu->load) free(sensors->cpu->load);
+        if (sensors->cpu->temperature) { free(sensors->cpu->temperature->stats); free(sensors->cpu->temperature); }
+        if (sensors->cpu->voltage) { free(sensors->cpu->voltage->stats); free(sensors->cpu->voltage); }
+        if (sensors->cpu->power) free(sensors->cpu->power);
+        free(sensors->cpu);
     }
+    if (sensors->gpu) {
+        if (sensors->gpu->freq) { free(sensors->gpu->freq->stats); free(sensors->gpu->freq); }
+        if (sensors->gpu->temperature) { free(sensors->gpu->temperature->stats); free(sensors->gpu->temperature); }
+        free(sensors->gpu);
+    }
+    if (sensors->battery) free(sensors->battery);
+    free(sensors);
+    return NULL;
 }
 
-int update_statistics(  sensor_s* freq, 
-                        load_s *load,
-                        sensor_s* temperature, 
-                        sensor_s *voltage, 
-                        power_s *power, 
-                        battery_s *battery,
-                        sensor_s *gpu_freq,
-                        cpu_designer_e designer)
+///////////////////////////////////////
+// Reading functions
+//////////////////////////////////////
+
+
+int read_sensors( sensor_suite_t *sensors)
 {
-    freq->min = get_min_value(freq->min, freq->per_core, core_count);
-    freq->max = get_max_value(freq->max, freq->per_core, core_count);
-    freq->runtime_avg = get_runtime_avg(period_cntr, &freq->cumulative, &freq->cpu_avg);
-    freq_his[history_cntr] = freq->cpu_avg;
+    read_cpu_sensors(sensors->cpu);
+    read_gpu_sensors(sensors->gpu);
+    read_battery_sensors(sensors->battery);
+    return 0;
+}
 
-    // Report min / max for the total CPU (all cores combined)
-    load->min = get_min_value(load->min, &load->cpu_avg, 1); // Pass address of cpu_avg and count as 1
-    load->max = get_max_value(load->max, &load->cpu_avg, 1);
-    load->runtime_avg = get_runtime_avg(period_cntr, &load->cumulative, &load->cpu_avg);
-    load_his[history_cntr] = load->cpu_avg;
+int read_cpu_sensors(cpu_sensors_t *cpu)
+{
+    get_sysfs_freq_ghz( cpu->freq->stats->present, 
+                        &cpu->freq->stats->structural_avg, 
+                        cpu->core_count);
 
-    reset_if_status_changed(&battery->power_cumulative, battery->status, charging_status_before);
-    battery->power_runtime_avg = get_runtime_avg(period_cntr, &battery->power_cumulative, &battery->power_now);
-    battery->min = get_min_value(battery->min, &battery->power_now, 1);
-    battery->max = get_max_value(battery->max, &battery->power_now, 1);
-
-    if (running_with_privileges == TRUE && designer == INTEL)
+    get_cpucore_load(cpu->load->stats->present, &cpu->load->stats->structural_avg, cpu->load->work_jiffies_before, cpu->load->total_jiffies_before, cpu->core_count);
+    
+    if (running_with_privileges == TRUE && cpu->designer == INTEL)
     {
-        temperature->min = get_min_value(temperature->min, temperature->per_core, core_count);
-        temperature->max = get_max_value(temperature->max, temperature->per_core, core_count);
-        temperature->runtime_avg = get_runtime_avg(period_cntr, &temperature->cumulative, &temperature->cpu_avg);
-        temp_his[history_cntr] = temperature->cpu_avg;
-        
-        voltage->min = get_min_value(voltage->min, voltage->per_core, core_count);
-        voltage->max = get_max_value(voltage->max, voltage->per_core, core_count);
-        voltage->runtime_avg = get_runtime_avg(period_cntr, &voltage->cumulative, &voltage->cpu_avg);
-        voltage_his[history_cntr] = voltage->cpu_avg;
+        msr_temperature_c(  cpu->temperature->stats->present, 
+                            &cpu->temperature->stats->structural_avg, 
+                            cpu->core_count);
+        voltage_v(cpu->voltage->stats->present, 
+                &cpu->voltage->stats->structural_avg, 
+                cpu->core_count, 
+                cpu->designer);
+        get_intel_msr_power_w(cpu->power->per_domain);
+    }
 
+    if (running_with_privileges == TRUE && cpu->designer == AMD)
+    {
+        get_amd_pkg_power_w(&cpu->power->per_domain[PKG], cpu->power->energy_unit);
+        get_amd_msr_core_power_w(cpu->power, cpu->core_count);
+    }
+    return 0;
+}
+
+
+int read_gpu_sensors(gpu_sensors_t *gpu)
+{
+    get_sysfs_gpu_freq_mhz(gpu->freq->stats->present);
+    return 0;
+
+}
+
+
+int read_battery_sensors(battery_t *battery)
+{
+    get_sysfs_power_battery_w(&battery->stats->present[0]);
+    get_battery_status(battery->status);
+    return 0;
+}
+
+
+
+int update_sensor_statistics(statistics_t *sensor, uint8_t core_count)
+{
+    sensor->min = get_min_value(sensor->min, sensor->present, core_count);
+    sensor->max = get_max_value(sensor->max, sensor->present, core_count);
+    sensor->runtime_avg = get_runtime_avg(period_cntr, &sensor->cumulative, &sensor->structural_avg);
+    
+    return 0;
+}
+
+
+
+int update_sensor_suite_statistics(sensor_suite_t *sensors)
+{
+    update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count);
+    freq_his[history_cntr] = sensors->cpu->freq->stats->structural_avg;
+    
+    update_sensor_statistics(sensors->cpu->load->stats, sensors->cpu->core_count);
+    load_his[history_cntr] = sensors->cpu->load->stats->structural_avg;
+    
+    reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, charging_status_before);
+    update_sensor_statistics(sensors->battery->stats, 0);
+    
+    if (running_with_privileges == TRUE && sensors->cpu->designer == INTEL)
+    {
+        update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count);
+        temp_his[history_cntr] = sensors->cpu->temperature->stats->structural_avg;
+        
+        update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count);
+        voltage_his[history_cntr] = sensors->cpu->voltage->stats->structural_avg;
     }
 
     static int power_initialized = 0;
 
-    if (running_with_privileges == TRUE && (designer == INTEL || designer == AMD))  // add AMD case
+    if (running_with_privileges == TRUE && (sensors->cpu->designer == INTEL || sensors->cpu->designer == AMD))  // add AMD case
     {
         if (!power_initialized)
         {
@@ -255,11 +380,11 @@ int update_statistics(  sensor_s* freq,
             return 0;
         }
         #if DEBUG_ENABLE
-            printf("Setting power_his[%ld] = %f\n", history_cntr, power->per_domain[PKG]);
+            printf("Setting power_his[%ld] = %f\n", history_cntr, sensors->cpu->power->per_domain[PKG]);
         #endif
 
-        power_his[history_cntr] = power->per_domain[PKG];
-        power->pkg_runtime_avg = get_runtime_avg(period_cntr - 1 , &power->pkg_cumulative, &power->per_domain[PKG]);      
+        power_his[history_cntr] = sensors->cpu->power->per_domain[PKG];
+        sensors->cpu->power->stats->runtime_avg = get_runtime_avg(period_cntr - 1 , &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);      
     }
 
     return 0;
