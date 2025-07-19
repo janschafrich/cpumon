@@ -2,4 +2,3 @@
 test/
 build/
 build/CMakeFiles/
-src/ryzen.c

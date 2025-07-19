@@ -225,6 +225,28 @@ battery_t *init_sensor_battery()
 }
 
 
+gpu_power_t *init_gpu_power(int core_count) {
+    gpu_power_t *power = malloc(sizeof(gpu_power_t));
+    if (!power) return NULL;
+    power->stats = init_statistics(core_count);
+    if (!power->stats) { 
+        free(power); 
+        return NULL;
+    }
+    return power;
+}
+
+gpu_voltage_t *init_gpu_voltage(int core_count) {
+    gpu_voltage_t *voltage = malloc(sizeof(gpu_voltage_t));
+    if (!voltage) return NULL;
+    voltage->stats = init_statistics(core_count);
+    if (!voltage->stats) { 
+        free(voltage); 
+        return NULL;
+    }
+    return voltage;
+}
+
 
 sensor_suite_t *init_sensor_suite(cpu_designer_e designer, int core_count) {
     sensor_suite_t *sensors = malloc(sizeof(sensor_suite_t));
@@ -249,12 +271,13 @@ sensor_suite_t *init_sensor_suite(cpu_designer_e designer, int core_count) {
     sensors->gpu->freq = init_frequency(1);
     sensors->gpu->load = NULL; // or init_sensor_load(1) if you implement GPU load
     sensors->gpu->temperature = init_temperature(1);
-    sensors->gpu->power = NULL; // or init_sensor_power(...) if you implement GPU power
+    sensors->gpu->power = init_gpu_power(1);
+    sensors->gpu->voltage = init_gpu_voltage(1);
 
     // Check for allocation failures
     if (!sensors->cpu->freq || !sensors->cpu->load || !sensors->cpu->temperature ||
         !sensors->cpu->voltage || !sensors->cpu->power ||
-        !sensors->gpu->freq || !sensors->gpu->temperature) goto fail;
+        !sensors->gpu->freq || !sensors->gpu->temperature || !sensors->gpu->voltage) goto fail;
 
     return sensors;
 
@@ -271,6 +294,8 @@ fail:
     if (sensors->gpu) {
         if (sensors->gpu->freq) { free(sensors->gpu->freq->stats); free(sensors->gpu->freq); }
         if (sensors->gpu->temperature) { free(sensors->gpu->temperature->stats); free(sensors->gpu->temperature); }
+        if (sensors->gpu->voltage) { free(sensors->gpu->voltage->stats); free(sensors->gpu->voltage); }
+        if (sensors->gpu->power) { free(sensors->gpu->power->stats); free(sensors->gpu->power); };
         free(sensors->gpu);
     }
     if (sensors->battery) free(sensors->battery);
@@ -322,7 +347,10 @@ int read_cpu_sensors(cpu_sensors_t *cpu)
 
 int read_gpu_sensors(gpu_sensors_t *gpu)
 {
-    get_sysfs_gpu_freq_mhz(gpu->freq->stats->present);
+    get_amdgpu_voltage_mV(gpu->voltage->stats->present);
+    get_amdgpu_northbridge_mV(&gpu->voltage->northbridge);
+    get_amdgpu_soc_power_uW(gpu->power->stats->present);
+    get_amdgpu_temperature_mC(gpu->temperature->stats->present);
     return 0;
 
 }

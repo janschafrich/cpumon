@@ -79,10 +79,23 @@ typedef struct {
 
 
 typedef struct {
+    statistics_t *stats;
+} gpu_power_t;
+
+
+typedef struct {
+    float northbridge;
+    statistics_t *stats;
+} gpu_voltage_t;
+
+
+
+typedef struct {
     frequency_t *freq;
     cpu_load_t *load;
     temperature_t *temperature;
-    cpu_power_t *power;
+    gpu_power_t *power;
+    gpu_voltage_t *voltage;
 } gpu_sensors_t; 
 
 

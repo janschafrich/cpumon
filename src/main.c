@@ -153,7 +153,11 @@ int main (int argc, char **argv)
                 sensors->cpu->power->per_domain[PKG], sensors->cpu->power->stats->runtime_avg);
             draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains, sensors->cpu->power->stats->runtime_avg, cpu_designer);
             printw("\n");
-            printw("GPU\t%.0f MHz\t\t%.2f W\n", sensors->gpu->freq->stats->present[0], sensors->cpu->power->per_domain[GPU]);
+            printw("GPU\t\t%.0f mV\t%.2f W\t%0.f °C\n", 
+                sensors->gpu->voltage->stats->present[0], 
+                sensors->gpu->power->stats->present[0]/1e6,
+                sensors->gpu->temperature->stats->present[0]/1e3);
+            printw("Northbridge\t%0.f mV", sensors->gpu->voltage->northbridge);
             printw("\n");
             // if (print_fanspeed() != 0)
             // {

@@ -299,38 +299,48 @@ int read_gpu(void){
 }
 
 
-int get_amd_gpu_hwmon_id() 
+int get_amdgpu_hwmon_id() 
 {
-    uint8_t n_hwmon = 15;
+    uint8_t n_hwmon = 15;   // random guess
     char file_buf[20];
     char path[70];
 
-    for (int i = 0; i < n_hwmon; i++){
-        sprintf(path, "/sys/class/hwmon/hwmon%d/name", i);
+    static int8_t hwmon_id;
+    static bool initialized = FALSE;
+    
+    if (!initialized)
+    {
+        for (int i = 0; i < n_hwmon; i++){
+            sprintf(path, "/sys/class/hwmon/hwmon%d/name", i);
 
-        if (read_sysfs_string(path, file_buf, 20) != NULL)
-        {
-            if (strncmp(file_buf, "amdgpu", 6) == 0)
+            hwmon_id = -1;
+            if (read_sysfs_string(path, file_buf, 20) != NULL)
             {
-                return i;
+                if (strncmp(file_buf, "amdgpu", 6) == 0)
+                {
+                    hwmon_id = i;
+                    initialized = TRUE;
+                    break;
+                }
             }
         }
     }
-    return -1;
+
+    return hwmon_id;
 }
 
 
 
-int get_sysfs_gpu_freq_mhz(float *freq_mhz) 
+int get_amdgpu_value(float *freq_mhz, char *interface) 
 {
     char file_buf[20];
     char path[70];
-
-    uint8_t hwmon_id = get_amd_gpu_hwmon_id();
+        
+    int8_t hwmon_id = get_amdgpu_hwmon_id();
     
     if (hwmon_id >= 0)
     {
-        sprintf(path, "/sys/class/hwmon/hwmon%d/in0_input", hwmon_id);
+        sprintf(path, "/sys/class/hwmon/hwmon%d/%s", hwmon_id, interface);
         if (read_sysfs_string(path, file_buf, 20) != NULL)
         {
             *freq_mhz = strtof(file_buf, NULL); // Convert string to float
@@ -341,24 +351,47 @@ int get_sysfs_gpu_freq_mhz(float *freq_mhz)
 }
 
 
-int get_sysfs_gpu_temp_c(float *temp_c) 
+int get_amdgpu_voltage_mV(float *voltage)
 {
-    char file_buf[20];
-    char path[70];
-
-    uint8_t hwmon_id = get_amd_gpu_hwmon_id();
-    
-    if (hwmon_id >= 0)
+    // According to the kernel documentation in0_input is the GPU voltage in millivolts.
+    if (get_amdgpu_value(voltage, "in0_input") == 0) 
     {
-        sprintf(path, "/sys/class/hwmon/hwmon%d/temp1_input", hwmon_id);
-        if (read_sysfs_string(path, file_buf, 20) != NULL)
-        {
-            *temp_c = strtof(file_buf, NULL); // Convert string to float
-            return 0;
-        }
+        return 0;
     }
     return -1;
 }
+
+int get_amdgpu_northbridge_mV(float *value)
+{
+    // According to the kernel documentation this is the SoC power in microwatts.
+    if (get_amdgpu_value(value, "in1_input") == 0) 
+    {
+        return 0;
+    }
+    return -1;
+}
+
+int get_amdgpu_soc_power_uW(float *power)
+{
+    // According to the kernel documentation this is the SoC power in microwatts.
+    if (get_amdgpu_value(power, "power1_input") == 0) 
+    {
+        return 0;
+    }
+    return -1;
+}
+
+int get_amdgpu_temperature_mC(float *value)
+{
+    // According to the kernel documentation this is the GPU temperature in millicelsius.
+    if (get_amdgpu_value(value, "temp1_input") == 0) 
+    {
+        return 0;
+    }
+    return -1;
+}
+
+
 
 
 

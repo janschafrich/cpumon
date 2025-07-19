@@ -11,9 +11,11 @@ void reset_if_status_changed(float *cumulative, char *status, char *status_befor
 
 void get_sysfs_freq_ghz(float *, float *, int core_count); 
 void get_cpucore_load(float *load, float *, long long *work_jiffies_before, long long *total_jiffies_before, int core_count);
-int get_cpucore_load_new(cpu_load_t *load, int core_count);
 
-int get_sysfs_gpu_freq_mhz(float *); 
+int get_amdgpu_voltage_mV(float *); 
+int get_amdgpu_soc_power_uW(float *); 
+int get_amdgpu_northbridge_mV(float*);
+int get_amdgpu_temperature_mC(float *);
 int read_gpu(void);
 
 
