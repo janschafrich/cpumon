@@ -239,9 +239,6 @@ int get_amd_pkg_power_w(float *my_power, float energy_unit)
 #endif
     long long package_raw = read_msr(fp, AMD_MSR_PACKAGE_ENERGY);
     close(fp);
-#if DEBUG_ENABLE
-
-#endif
 
     package_after = (float)package_raw * energy_unit;
     *my_power = package_after - package_before;
@@ -304,14 +301,14 @@ int get_amd_msr_core_power_w(cpu_power_t *my_power, int total_cores)
         close(fd[i]);
     }
 
-    int j = 0;
     my_power->per_domain[CORES] = 0;
-	for(int i = 0; i < total_cores; i += 2) {
-		my_power->stats->present[i] = my_power->core_energy_after[i-j] - my_power->core_energy_before[i-j];
-        my_power->stats->present[i+1] = 0;        // report power per core as power per first thread, second thread P = 0 W
-		my_power->per_domain[CORES] += my_power->stats->present[i];
-        my_power->core_energy_before[i-j] = my_power->core_energy_after[i-j];
-        j++;
+    // Process each physical core, which has 2 threads
+	for(int i = 0; i < total_cores/2; i++) {
+		float core_power = my_power->core_energy_after[i] - my_power->core_energy_before[i];
+		my_power->stats->present[i*2] = core_power;     // First thread
+        my_power->stats->present[i*2+1] = 0;            // Second thread
+		my_power->per_domain[CORES] += core_power;
+        my_power->core_energy_before[i] = my_power->core_energy_after[i];
     }
 	
 	free(fd);

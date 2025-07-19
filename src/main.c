@@ -132,17 +132,25 @@ int main (int argc, char **argv)
             printw("\n");
             //printw("CPU\t%.2f\t%.2f\t%.1f\t%.2f\t60-s-avg\n", sensors->cpu->->stats->cpu_avg, sensors->cpu->load->stats->cpu_avg, sensors->cpu->temperature->stats->cpu_avg, sensors->cpu->voltage->stats->cpu_avg); 
             printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\n", 
-                1000*sensors->cpu->freq->stats->runtime_avg, sensors->cpu->load->stats->runtime_avg, sensors->cpu->temperature->stats->runtime_avg, sensors->cpu->voltage->stats->runtime_avg);
+                sensors->cpu->freq->stats->runtime_avg*1000, 
+                sensors->cpu->load->stats->runtime_avg, sensors->cpu->temperature->stats->runtime_avg, sensors->cpu->voltage->stats->runtime_avg);
             printw("min\t%.0f\t%.2f\t%.0f\t%.2f\n", 
-                1000*sensors->cpu->freq->stats->min, sensors->cpu->load->stats->min, sensors->cpu->temperature->stats->min, sensors->cpu->voltage->stats->min);
+                sensors->cpu->freq->stats->min*1000, 
+                sensors->cpu->load->stats->min, 
+                sensors->cpu->temperature->stats->min, 
+                sensors->cpu->voltage->stats->min);
             printw("max\t%.0f\t%.2f\t%.0f\t%.2f\n", 
-                1000*sensors->cpu->freq->stats->max, sensors->cpu->load->stats->max, sensors->cpu->temperature->stats->max, sensors->cpu->voltage->stats->max);
+                sensors->cpu->freq->stats->max*1000, 
+                sensors->cpu->load->stats->max, 
+                sensors->cpu->temperature->stats->max, 
+                sensors->cpu->voltage->stats->max);
             if (display_moving_average_flag == TRUE)
             {
                 compute_moving_average(history_cntr, freq_his, load_his, temp_his, voltage_his, power_his);   
             }
             printw("\n");
-            // draw_power(power_per_domain, power->stats->pkg_runtime_avg, cpu_designer);
+            printw("\tPkg Power: %.2f W, avg: %.2f W\n",
+                sensors->cpu->power->per_domain[PKG], sensors->cpu->power->stats->runtime_avg);
             draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains, sensors->cpu->power->stats->runtime_avg, cpu_designer);
             printw("\n");
             printw("GPU\t%.0f MHz\t\t%.2f W\n", sensors->gpu->freq->stats->present[0], sensors->cpu->power->per_domain[GPU]);

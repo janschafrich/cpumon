@@ -111,12 +111,12 @@ cpu_load_t *init_sensor_load(int core_count)
     }
 
     // Allocate statistics struct for per-core values
-    load->stats = malloc(sizeof(statistics_t) + core_count * sizeof(load->stats->present[0]));
-    if (load->stats == NULL)
+    load->stats = init_statistics(core_count);
+    if (!load->stats) 
     {
         fprintf(stderr, "Memory allocation for load->stats failed\n");
-        free(load);
-        return NULL;
+        free(load); 
+        return NULL; 
     }
 
     // Allocate memory for the jiffies arrays
@@ -143,7 +143,7 @@ cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
         return NULL;
     }
 
-    power->stats = malloc(sizeof(statistics_t));
+    power->stats = init_statistics(core_count);
     if (!power->stats) {
         fprintf(stderr, "Memory allocation for power->stats failed\n");
         free(power);
@@ -200,7 +200,7 @@ cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
     for (int i = 0; i < power->n_domains; ++i) power->per_domain[i] = 0.0f;
 
     if (cpu_designer == AMD) {
-        for (int i = 0; i < core_count/2; ++i) {
+        for (int i = 0; i < core_count; ++i) {
             power->core_energy_before[i] = 0.0f;
             power->core_energy_after[i] = 0.0f;
         }
@@ -212,7 +212,6 @@ cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
 battery_t *init_sensor_battery()
 {
     battery_t *battery = malloc(sizeof(battery_t));
-    // battery->stats = malloc(sizeof(statistics_t));
     battery->stats = init_statistics(0);
     
     if (battery == NULL)

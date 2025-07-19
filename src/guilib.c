@@ -29,7 +29,7 @@ int kbhit(void)
     }
 }
 
-void draw_power(float* values, int n_domains,float avg, cpu_designer_e cpu_designer){
+void draw_power(float* values, int n_domains, float avg, cpu_designer_e cpu_designer){
 
     float total_power = values[PKG];
     int width = 48;     // choose highly composite number
@@ -46,7 +46,6 @@ void draw_power(float* values, int n_domains,float avg, cpu_designer_e cpu_desig
         rest_of_pkg = values[PKG] - values[CORES];
     }
 
-    printw("\tPkg Power: %.2f W, avg: %.2f W\n", values[PKG], avg);
     values[0] = rest_of_pkg;      // subtract cpu and uncore power from package power to get "rest of chip power"
     for (int i = 0; i < n_domains; i++){
         switch (i) {

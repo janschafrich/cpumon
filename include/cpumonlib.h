@@ -11,22 +11,13 @@
 #define POLL_INTERVAL_S 1
 
 
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
 #define LOG_ENABLE 1
 
 typedef enum { INTEL, AMD } cpu_designer_e;
 typedef enum { PKG, CORES, GPU} power_domains_e;
 typedef enum { CHARGING, DISCHARGING, NOT_CHARGING } battery_status_t;
 
-
-// typedef struct sensor_s {
-//     float cpu_avg;
-//     float runtime_avg;
-//     float cumulative;
-//     float min;
-//     float max;
-//     float per_core[];
-// } sensor_s;
 
 typedef struct {
     float min;
