@@ -27,7 +27,6 @@
 #include "../include/utils.h"
 #include "../include/cpumonlib.h"
 #include "../include/guilib.h"
-#include "../include/machine_specific_registers.h"
 #include "../include/sysfs.h"
 
 

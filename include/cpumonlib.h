@@ -55,8 +55,6 @@ typedef struct {
 
 
 typedef struct load_s {
-    long long *work_jiffies_before;
-    long long *total_jiffies_before;
     statistics_t *stats;
 } cpu_load_t;
 

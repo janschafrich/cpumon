@@ -209,62 +209,97 @@ void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 }
 
 
-void get_cpucore_load(float *load_per_core, float * average, long long *work_jiffies_before, long long *total_jiffies_before, int core_count) {
+void get_cpucore_load(float *load_per_core, float *average, int core_count) {
+
+    //  load is calculated as a difference between two jiffy counts at different time stampts
+    static long long *work_jiffies_before = NULL;
+    static long long *total_jiffies_before = NULL;
+    static int initialized_core_count = 0;
     
+    char file_buf[BUFSIZ];
+    long long user, nice, system, idle, iowait, irq, softirq;
+    
+    long long work_jiffies_after[initialized_core_count];
+    long long total_jiffies_after[initialized_core_count];
+    
+    // read load per logical core
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
         perror("Error opening file /proc/stat");
     }
-
-    char file_buf[BUFSIZ];
-    char *line;
-    long long user, nice, system, idle, iowait, irq, softirq;
-    long long work_jiffies_after[core_count];
-    long long total_jiffies_after[core_count];
-    char comparator[16];
-    float total = 0;
-
+    
+    char *line = fgets(file_buf, BUFSIZ, fp);
+    if (line == NULL) {
+        printf("Error %s\n", file_buf);
+    }
+    
+    for (int core = 0; core < initialized_core_count; core++) {
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
-            printf("Error %s\n", file_buf);
+            break;
         }
         
-        for (int core = 0; core < core_count; core++)
-        {
-            line = fgets(file_buf, BUFSIZ, fp);
-            if (line == NULL) {
-                break;
-            }
+        char comparator[16];
+        sprintf(comparator,"cpu%d ", core);
+        
+        if (!strncmp(line, comparator, 5)) {
             
-            sprintf(comparator,"cpu%d ", core);
+            sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
             
-            if (!strncmp(line, comparator, 5)) {
-                
-                sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-                
-                work_jiffies_after[core] = user + nice + system;
-                total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-            } 
-        }
+            work_jiffies_after[core] = user + nice + system;
+            total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
+        } 
+    }
     fclose(fp);
 
-    // calculate the load
-    for (int core = 0; core < (core_count); core++){
-        if (total_jiffies_after[core] - total_jiffies_before[core] != 0) {        // only divide if we sure divisor is non zero
-        load_per_core[core] = (float)(100 * (work_jiffies_after[core] - work_jiffies_before[core])) / (float)(total_jiffies_after[core] - total_jiffies_before[core]);
-        } else {
-            load_per_core[core] = (100 * (work_jiffies_after[core] - work_jiffies_before[core])) / 1;     // pick the next closest difference to zero
+    // only initiliaze after the load calculation - 
+    if (work_jiffies_before == NULL || total_jiffies_before == NULL) {
+        initialized_core_count = core_count;
+        work_jiffies_before = malloc(sizeof(long long) * initialized_core_count);
+        total_jiffies_before = malloc(sizeof(long long) * initialized_core_count);
+        // Init to zero on the first invocation
+        // Save jiffy count since boot
+        for (int i = 0; i < (initialized_core_count); i++) {
+            work_jiffies_before[i] = work_jiffies_after[i];
+            total_jiffies_before[i] = total_jiffies_after[i];
         }
+        return;
+    }
+
+    // save the jiffy count for the next invocation
+    static int first_measurement = 1;
+    if (first_measurement) {
+        first_measurement = 0; 
+        for (int i = 0; i < (initialized_core_count); i++) {
+            work_jiffies_before[i] = work_jiffies_after[i];
+            total_jiffies_before[i] = total_jiffies_after[i];
+        }
+        return;
+    }
+        
+
+    // Calculate load for each core (from third call onwards)
+    float total = 0;
+    for (int core = 0; core < initialized_core_count; core++) {
+        long long work_diff = work_jiffies_after[core] - work_jiffies_before[core];
+        long long total_diff = total_jiffies_after[core] - total_jiffies_before[core];
+        
+        if (total_diff > 0) {
+            load_per_core[core] = (float)(100.0 * work_diff) / (float)total_diff;
+        } else {
+            load_per_core[core] = 0.0; // No time passed, assume 0% load
+        }
+        
         total += load_per_core[core];
     }
 
-    *average = total / core_count;
+    *average = total / (float)initialized_core_count;
 
-    // save the jiffy count for the next interval
-    for (int i = 0; i < (core_count); i++){
+    for (int i = 0; i < initialized_core_count; i++) {
         work_jiffies_before[i] = work_jiffies_after[i];
         total_jiffies_before[i] = total_jiffies_after[i];
     }
+
 }
 
 

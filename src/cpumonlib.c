@@ -104,32 +104,17 @@ voltage_t *init_voltage(int core_count) {
 cpu_load_t *init_sensor_load(int core_count)
 {
     cpu_load_t *load = malloc(sizeof(cpu_load_t));
-    if (load == NULL)
-    {
+    if (load == NULL) {
         fprintf(stderr, "Memory allocation for \"load\" failed\n");
         return NULL;
     }
 
     // Allocate statistics struct for per-core values
     load->stats = init_statistics(core_count);
-    if (!load->stats) 
-    {
+    if (!load->stats) {
         fprintf(stderr, "Memory allocation for load->stats failed\n");
         free(load); 
         return NULL; 
-    }
-
-    // Allocate memory for the jiffies arrays
-    load->work_jiffies_before = malloc(sizeof(long long) * core_count);
-    load->total_jiffies_before = malloc(sizeof(long long) * core_count);
-
-    if (load->work_jiffies_before == NULL || load->total_jiffies_before == NULL) {
-        fprintf(stderr, "Memory allocation for jiffies arrays failed\n");
-        free(load->stats);
-        free(load->work_jiffies_before);
-        free(load->total_jiffies_before);
-        free(load);
-        return NULL;
     }
 
     return load;
@@ -322,7 +307,7 @@ int read_cpu_sensors(cpu_sensors_t *cpu)
                         &cpu->freq->stats->structural_avg, 
                         cpu->core_count);
 
-    get_cpucore_load(cpu->load->stats->present, &cpu->load->stats->structural_avg, cpu->load->work_jiffies_before, cpu->load->total_jiffies_before, cpu->core_count);
+    get_cpucore_load(cpu->load->stats->present, &cpu->load->stats->structural_avg, cpu->core_count);
     
     if (running_with_privileges == TRUE && cpu->designer == INTEL)
     {
