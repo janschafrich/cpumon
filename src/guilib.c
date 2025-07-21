@@ -29,7 +29,7 @@ int kbhit(void)
     }
 }
 
-void draw_power(float* values, int n_domains, float avg, cpu_designer_e cpu_designer){
+void draw_power(float* values, int n_domains, float avg, enum cpu_designer cpu_designer){
 
     float total_power = values[PKG];
     int width = 48;     // choose highly composite number

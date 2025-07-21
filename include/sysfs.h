@@ -4,7 +4,7 @@
 
 char *identifiy_cpu(void);
 int * get_sysfs_power_limits_w(void);
-void get_power_config(bool running_with_privileges, cpu_designer_e);
+void get_power_config(bool running_with_privileges, enum cpu_designer);
 int get_sysfs_power_battery_w(float *battery_power);
 int get_battery_status(char *status);
 void reset_if_status_changed(float *cumulative, char *status, char *status_before);

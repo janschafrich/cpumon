@@ -3,127 +3,108 @@
 #ifndef CPUMONLIB
 #define CPUMONLIB
 
-
 #define AVG_WINDOW 60
 #define BATTERY_STATUS_BUF_SIZE     20
 #define POWER_LIMIT_COUNT 2
 #define BUFSIZE     64
 #define POLL_INTERVAL_S 1
 
-
 #define DEBUG_ENABLE 0
 #define LOG_ENABLE 1
 
-typedef enum { INTEL, AMD } cpu_designer_e;
-typedef enum { PKG, CORES, GPU} power_domains_e;
-typedef enum { CHARGING, DISCHARGING, NOT_CHARGING } battery_status_t;
+enum cpu_designer { INTEL, AMD };
+enum power_domains { PKG, CORES, GPU };
+enum battery_status { CHARGING, DISCHARGING, NOT_CHARGING };
 
-
-typedef struct {
+struct statistics {
     float min;
     float max;
     float structural_avg;
     float runtime_avg;
     float cumulative;
     float present[];
-} statistics_t;
+};
 
-
-typedef struct power_s {
+struct cpu_power {
     float *core_energy_before;
     float *core_energy_after;
     float *per_domain;
     int n_domains;
     float time_unit, energy_unit, power_unit;
-    statistics_t *stats;
-} cpu_power_t;
+    struct statistics *stats;
+};
 
+struct frequency {
+    struct statistics *stats;
+};
 
-typedef struct {
-    statistics_t *stats;
-} frequency_t;
+struct voltage {
+    struct statistics *stats;
+};
 
+struct temperature {
+    struct statistics *stats;
+};
 
-typedef struct {
-    statistics_t *stats;
-} voltage_t;
+struct cpu_load {
+    struct statistics *stats;
+};
 
-
-typedef struct {
-    statistics_t *stats;
-} temperature_t;
-
-
-typedef struct load_s {
-    statistics_t *stats;
-} cpu_load_t;
-
-
-typedef struct battery_s {
-    statistics_t *stats;
+struct battery {
+    struct statistics *stats;
     char status[BATTERY_STATUS_BUF_SIZE];
-} battery_t;
+};
 
-
-typedef struct {
-    frequency_t *freq;
-    cpu_load_t *load;
-    temperature_t *temperature;
-    voltage_t *voltage;
-    cpu_power_t *power;
-    cpu_designer_e designer;
+struct cpu_sensors {
+    struct frequency *freq;
+    struct cpu_load *load;
+    struct temperature *temperature;
+    struct voltage *voltage;
+    struct cpu_power *power;
+    enum cpu_designer designer;
     uint8_t core_count;
-} cpu_sensors_t;
+};
 
+struct gpu_power {
+    struct statistics *stats;
+};
 
-typedef struct {
-    statistics_t *stats;
-} gpu_power_t;
-
-
-typedef struct {
+struct gpu_voltage {
     float northbridge;
-    statistics_t *stats;
-} gpu_voltage_t;
+    struct statistics *stats;
+};
 
+struct gpu_sensors {
+    struct frequency *freq;
+    struct cpu_load *load;
+    struct temperature *temperature;
+    struct gpu_power *power;
+    struct gpu_voltage *voltage;
+}; 
 
-
-typedef struct {
-    frequency_t *freq;
-    cpu_load_t *load;
-    temperature_t *temperature;
-    gpu_power_t *power;
-    gpu_voltage_t *voltage;
-} gpu_sensors_t; 
-
-
-typedef struct {
-    cpu_sensors_t *cpu;
-    gpu_sensors_t *gpu;
-    battery_t *battery;
-} sensor_suite_t;
-
-
-
+struct sensor_suite {
+    struct cpu_sensors *cpu;
+    struct gpu_sensors *gpu;
+    struct battery *battery;
+};
 
 void init_environment(void);
-statistics_t *init_statistics(int core_count);
-frequency_t *init_frequency(int core_count);
-temperature_t *init_temperature(int core_count);
-voltage_t *init_voltage(int core_count);
-cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count);
-cpu_load_t *init_sensor_load(int core_count);
-battery_t *init_sensor_battery();
-sensor_suite_t *init_sensor_suite(cpu_designer_e designer, int core_count);
+struct statistics *init_statistics(int core_count);
+struct frequency *init_frequency(int core_count);
+struct temperature *init_temperature(int core_count);
+struct voltage *init_voltage(int core_count);
+struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count);
+struct cpu_load *init_sensor_load(int core_count);
+struct battery *init_sensor_battery(void);
+struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_count);
 
-int read_sensors(sensor_suite_t *);
-int read_cpu_sensors(cpu_sensors_t *cpu);
-int read_gpu_sensors(gpu_sensors_t *cpu);
-int read_battery_sensors(battery_t *battery);
-int update_sensor_statistics(statistics_t *sensor, uint8_t);
-int update_sensor_suite_statistics(sensor_suite_t *);
+int read_sensors(struct sensor_suite *);
+int read_cpu_sensors(struct cpu_sensors *cpu);
+int read_gpu_sensors(struct gpu_sensors *gpu);
+int read_battery_sensors(struct battery *battery);
+int update_sensor_statistics(struct statistics *sensor, uint8_t);
+int update_sensor_suite_statistics(struct sensor_suite *);
 
 int print_fanspeed(void);
-
 
 #endif // CPUMONLIB

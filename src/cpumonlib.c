@@ -1,6 +1,4 @@
-
 // General functions that answer requests from main
-
 
 #include <stdio.h>                   // printf
 #include <stdlib.h>                 // malloc
@@ -14,7 +12,6 @@
 #include "../include/cpumonlib.h"
 #include "../include/machine_specific_registers.h"
 #include "../include/sysfs.h"
-
 
 extern long history_cntr;
 extern long period_cntr;
@@ -58,11 +55,9 @@ void init_environment(void)
     } 
 }
 
-
-
-statistics_t *init_statistics(int core_count)
+struct statistics *init_statistics(int core_count)
 {
-    statistics_t *sensor = malloc( sizeof(statistics_t) + core_count * sizeof(sensor->present[0]) );
+    struct statistics *sensor = malloc( sizeof(struct statistics) + core_count * sizeof(sensor->present[0]) );
     if (sensor == NULL)
     {
         fprintf(stderr, "Memory allocation for \"sensor\" failed\n");
@@ -77,33 +72,33 @@ statistics_t *init_statistics(int core_count)
     return sensor;
 }
 
-frequency_t *init_frequency(int core_count) {
-    frequency_t *freq = malloc(sizeof(frequency_t));
+struct frequency *init_frequency(int core_count) {
+    struct frequency *freq = malloc(sizeof(struct frequency));
     if (!freq) return NULL;
     freq->stats = init_statistics(core_count);
     if (!freq->stats) { free(freq); return NULL; }
     return freq;
 }
 
-temperature_t *init_temperature(int core_count) {
-    temperature_t *temp = malloc(sizeof(temperature_t));
+struct temperature *init_temperature(int core_count) {
+    struct temperature *temp = malloc(sizeof(struct temperature));
     if (!temp) return NULL;
     temp->stats = init_statistics(core_count);
     if (!temp->stats) { free(temp); return NULL; }
     return temp;
 }
 
-voltage_t *init_voltage(int core_count) {
-    voltage_t *volt = malloc(sizeof(voltage_t));
+struct voltage *init_voltage(int core_count) {
+    struct voltage *volt = malloc(sizeof(struct voltage));
     if (!volt) return NULL;
     volt->stats = init_statistics(core_count);
     if (!volt->stats) { free(volt); return NULL; }
     return volt;
 }
 
-cpu_load_t *init_sensor_load(int core_count)
+struct cpu_load *init_sensor_load(int core_count)
 {
-    cpu_load_t *load = malloc(sizeof(cpu_load_t));
+    struct cpu_load *load = malloc(sizeof(struct cpu_load));
     if (load == NULL) {
         fprintf(stderr, "Memory allocation for \"load\" failed\n");
         return NULL;
@@ -120,9 +115,9 @@ cpu_load_t *init_sensor_load(int core_count)
     return load;
 }
 
-cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
+struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count)
 {
-    cpu_power_t *power = malloc(sizeof(cpu_power_t));
+    struct cpu_power *power = malloc(sizeof(struct cpu_power));
     if (!power) {
         fprintf(stderr, "Memory allocation for power failed\n");
         return NULL;
@@ -181,7 +176,7 @@ cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
     }
 
     // Optionally initialize stats and per_domain to zero
-    memset(power->stats, 0, sizeof(statistics_t));
+    memset(power->stats, 0, sizeof(struct statistics));
     for (int i = 0; i < power->n_domains; ++i) power->per_domain[i] = 0.0f;
 
     if (cpu_designer == AMD) {
@@ -194,9 +189,9 @@ cpu_power_t *init_sensor_power(cpu_designer_e cpu_designer, int core_count)
     return power;
 }
 
-battery_t *init_sensor_battery()
+struct battery *init_sensor_battery()
 {
-    battery_t *battery = malloc(sizeof(battery_t));
+    struct battery *battery = malloc(sizeof(struct battery));
     battery->stats = init_statistics(0);
     
     if (battery == NULL)
@@ -209,9 +204,8 @@ battery_t *init_sensor_battery()
     return battery;
 }
 
-
-gpu_power_t *init_gpu_power(int core_count) {
-    gpu_power_t *power = malloc(sizeof(gpu_power_t));
+struct gpu_power *init_gpu_power(int core_count) {
+    struct gpu_power *power = malloc(sizeof(struct gpu_power));
     if (!power) return NULL;
     power->stats = init_statistics(core_count);
     if (!power->stats) { 
@@ -221,8 +215,8 @@ gpu_power_t *init_gpu_power(int core_count) {
     return power;
 }
 
-gpu_voltage_t *init_gpu_voltage(int core_count) {
-    gpu_voltage_t *voltage = malloc(sizeof(gpu_voltage_t));
+struct gpu_voltage *init_gpu_voltage(int core_count) {
+    struct gpu_voltage *voltage = malloc(sizeof(struct gpu_voltage));
     if (!voltage) return NULL;
     voltage->stats = init_statistics(core_count);
     if (!voltage->stats) { 
@@ -232,13 +226,12 @@ gpu_voltage_t *init_gpu_voltage(int core_count) {
     return voltage;
 }
 
-
-sensor_suite_t *init_sensor_suite(cpu_designer_e designer, int core_count) {
-    sensor_suite_t *sensors = malloc(sizeof(sensor_suite_t));
+struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_count) {
+    struct sensor_suite *sensors = malloc(sizeof(struct sensor_suite));
     if (!sensors) return NULL;
 
-    sensors->cpu = malloc(sizeof(cpu_sensors_t));
-    sensors->gpu = malloc(sizeof(gpu_sensors_t));
+    sensors->cpu = malloc(sizeof(struct cpu_sensors));
+    sensors->gpu = malloc(sizeof(struct gpu_sensors));
     sensors->battery = init_sensor_battery();
 
     if (!sensors->cpu || !sensors->gpu || !sensors->battery) goto fail;
@@ -292,8 +285,7 @@ fail:
 // Reading functions
 //////////////////////////////////////
 
-
-int read_sensors( sensor_suite_t *sensors)
+int read_sensors(struct sensor_suite *sensors)
 {
     read_cpu_sensors(sensors->cpu);
     read_gpu_sensors(sensors->gpu);
@@ -301,7 +293,7 @@ int read_sensors( sensor_suite_t *sensors)
     return 0;
 }
 
-int read_cpu_sensors(cpu_sensors_t *cpu)
+int read_cpu_sensors(struct cpu_sensors *cpu)
 {
     get_sysfs_freq_ghz( cpu->freq->stats->present, 
                         &cpu->freq->stats->structural_avg, 
@@ -329,28 +321,23 @@ int read_cpu_sensors(cpu_sensors_t *cpu)
     return 0;
 }
 
-
-int read_gpu_sensors(gpu_sensors_t *gpu)
+int read_gpu_sensors(struct gpu_sensors *gpu)
 {
     get_amdgpu_voltage_mV(gpu->voltage->stats->present);
     get_amdgpu_northbridge_mV(&gpu->voltage->northbridge);
     get_amdgpu_soc_power_uW(gpu->power->stats->present);
     get_amdgpu_temperature_mC(gpu->temperature->stats->present);
     return 0;
-
 }
 
-
-int read_battery_sensors(battery_t *battery)
+int read_battery_sensors(struct battery *battery)
 {
     get_sysfs_power_battery_w(&battery->stats->present[0]);
     get_battery_status(battery->status);
     return 0;
 }
 
-
-
-int update_sensor_statistics(statistics_t *sensor, uint8_t core_count)
+int update_sensor_statistics(struct statistics *sensor, uint8_t core_count)
 {
     sensor->min = get_min_value(sensor->min, sensor->present, core_count);
     sensor->max = get_max_value(sensor->max, sensor->present, core_count);
@@ -359,9 +346,7 @@ int update_sensor_statistics(statistics_t *sensor, uint8_t core_count)
     return 0;
 }
 
-
-
-int update_sensor_suite_statistics(sensor_suite_t *sensors)
+int update_sensor_suite_statistics(struct sensor_suite *sensors)
 {
     update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count);
     freq_his[history_cntr] = sensors->cpu->freq->stats->structural_avg;
@@ -401,7 +386,6 @@ int update_sensor_suite_statistics(sensor_suite_t *sensors)
 
     return 0;
 }
-
 
 // requires ectool, a programm to communicate with the embedded controller build from this repository: https://github.com/DHowett/framework-ec
 int print_fanspeed(void){  // based on this example: https://stackoverflow.com/questions/43116/how-can-i-run-an-external-program-from-c-and-parse-its-output

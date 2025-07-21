@@ -34,7 +34,7 @@ long history_cntr = 0;
 long period_cntr = 0;
 bool display_power_config_flag = 1;
 bool display_moving_average_flag = 0;
-cpu_designer_e cpu_designer = AMD;
+enum cpu_designer cpu = AMD;
 
 extern int core_count;
 extern bool running_with_privileges;
@@ -51,7 +51,7 @@ int main (int argc, char **argv)
 {   
     init_environment();
 
-    sensor_suite_t *sensors = init_sensor_suite(cpu_designer, core_count);
+    struct sensor_suite *sensors = init_sensor_suite(cpu, core_count);
     if (!sensors) {
         fprintf(stderr, "Failed to initialize sensor suite\n");
         exit(EXIT_FAILURE);
@@ -138,7 +138,7 @@ int main (int argc, char **argv)
                 sensors->cpu->load->stats->min, 
                 sensors->cpu->temperature->stats->min, 
                 sensors->cpu->voltage->stats->min);
-            printw("max\t%.0f\t%.2f\t%.0f\t%.2f\n", 
+            printw("max\t%.0f\t%.1f\t%.0f\t%.2f\n", 
                 sensors->cpu->freq->stats->max*1000, 
                 sensors->cpu->load->stats->max, 
                 sensors->cpu->temperature->stats->max, 
@@ -150,7 +150,7 @@ int main (int argc, char **argv)
             printw("\n");
             printw("\tPkg Power: %.2f W, avg: %.2f W\n",
                 sensors->cpu->power->per_domain[PKG], sensors->cpu->power->stats->runtime_avg);
-            draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains, sensors->cpu->power->stats->runtime_avg, cpu_designer);
+            draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains, sensors->cpu->power->stats->runtime_avg, cpu);
             printw("\n");
             printw("GPU\t\t%.0f mV\t%.2f W\t%0.f °C\n", 
                 sensors->gpu->voltage->stats->present[0], 

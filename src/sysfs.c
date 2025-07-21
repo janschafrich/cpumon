@@ -71,7 +71,7 @@ int * get_sysfs_power_limits_w(void)
     return power_limits;
 }
 
-void get_power_config(bool running_with_privileges, cpu_designer_e designer)
+void get_power_config(bool running_with_privileges, enum cpu_designer designer)
 {
     if (running_with_privileges == TRUE && designer == INTEL)
     {

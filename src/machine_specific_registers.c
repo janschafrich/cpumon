@@ -65,7 +65,7 @@ long long read_msr(int fd, unsigned int offset)
 }
 
 
-void voltage_v(float *voltage, float *average, int core_count, cpu_designer_e cpu_designer)
+void voltage_v(float *voltage, float *average, int core_count, enum cpu_designer cpu_designer)
 {
     int fd;
     uint64_t result_raw[core_count/2];
@@ -247,7 +247,7 @@ int get_amd_pkg_power_w(float *my_power, float energy_unit)
     return 0;
 }
 
-int get_msr_core_units(cpu_power_t *my_power, cpu_designer_e designer)
+int get_msr_core_units(struct cpu_power *my_power, enum cpu_designer designer)
 {
     
 
@@ -280,7 +280,7 @@ int get_msr_core_units(cpu_power_t *my_power, cpu_designer_e designer)
 }
 
 
-int get_amd_msr_core_power_w(cpu_power_t *my_power, int total_cores)
+int get_amd_msr_core_power_w(struct cpu_power *my_power, int total_cores)
 {
 	int *fd = (int*)malloc(sizeof(int)*total_cores/2);
 	
