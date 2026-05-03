@@ -46,14 +46,17 @@ void draw_power(float* values, int n_domains, float avg, enum cpu_designer cpu_d
         rest_of_pkg = values[PKG] - values[CORES];
     }
 
-    values[0] = rest_of_pkg;      // subtract cpu and uncore power from package power to get "rest of chip power"
+    float bar_values[n_domains];
+    for (int i = 0; i < n_domains; i++) bar_values[i] = values[i];
+    bar_values[PKG] = rest_of_pkg;
+
     for (int i = 0; i < n_domains; i++){
         switch (i) {
             case PKG: attron(COLOR_PAIR(BLUE)); break;
             case CORES: attron(COLOR_PAIR(RED)); break;
             case GPU: attron(COLOR_PAIR(GREEN)); break;
         }
-        for (int j = 0; j < (int)( (values[i] * width ) / total_power ); j++ ){
+        for (int j = 0; j < (int)( (bar_values[i] * width ) / total_power ); j++ ){
             printw("#");
         }
     }

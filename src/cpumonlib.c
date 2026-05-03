@@ -180,7 +180,7 @@ struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_cou
     for (int i = 0; i < power->n_domains; ++i) power->per_domain[i] = 0.0f;
 
     if (cpu_designer == AMD) {
-        for (int i = 0; i < core_count; ++i) {
+        for (int i = 0; i < core_count/2; ++i) {
             power->core_energy_before[i] = 0.0f;
             power->core_energy_after[i] = 0.0f;
         }

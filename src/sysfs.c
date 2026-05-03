@@ -20,19 +20,30 @@ char *identifiy_cpu(void)
     } 
 
     char file_buf[BUFSIZ];
-    char *model = malloc ((sizeof *model) * 15);
+    char *model = malloc(128);
     char *line;
-    
-    
+
+    if (!model) {
+        fclose(fp);
+        return NULL;
+    }
+    model[0] = '\0';
+
     while(1) {
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) break;
-    
+
         if(!strncmp(line, "model name", 10)) {
-            sscanf(line,"%*s%*s%*s%*s%*s%*s%*s%s", model);         // every whitespace starts a new string, asterisk = ignore
+            char *colon = strchr(line, ':');
+            if (colon) {
+                colon++;
+                while (*colon == ' ') colon++;
+                strncpy(model, colon, 127);
+                model[127] = '\0';
+                char *nl = strchr(model, '\n');
+                if (nl) *nl = '\0';
+            }
             break;
-        //} else {
-        //    printf("Error reading CPU model name from /proc/cpuinfo\n");
         }
     }
 
@@ -218,22 +229,22 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count) {
     
     char file_buf[BUFSIZ];
     long long user, nice, system, idle, iowait, irq, softirq;
-    
-    long long work_jiffies_after[initialized_core_count];
-    long long total_jiffies_after[initialized_core_count];
-    
+
+    long long work_jiffies_after[core_count];
+    long long total_jiffies_after[core_count];
+
     // read load per logical core
     FILE *fp = fopen("/proc/stat", "r");
     if (fp == NULL) {
         perror("Error opening file /proc/stat");
     }
-    
+
     char *line = fgets(file_buf, BUFSIZ, fp);
     if (line == NULL) {
         printf("Error %s\n", file_buf);
     }
-    
-    for (int core = 0; core < initialized_core_count; core++) {
+
+    for (int core = 0; core < core_count; core++) {
         line = fgets(file_buf, BUFSIZ, fp);
         if (line == NULL) {
             break;
