@@ -13,46 +13,28 @@
 #include "../include/machine_specific_registers.h"
 #include "../include/sysfs.h"
 
-extern long history_cntr;
-extern long period_cntr;
-extern bool display_power_config_flag;
-extern bool display_moving_average_flag;
-
-int core_count = 0;
-char charging_status_before[BATTERY_STATUS_BUF_SIZE];
-bool running_with_privileges;
-
-extern float freq_his[AVG_WINDOW];
-extern float load_his[AVG_WINDOW];
-extern float temp_his[AVG_WINDOW];
-extern float voltage_his[AVG_WINDOW];
-extern float power_his[AVG_WINDOW];
 
 /////////////////////////////////////////
 // Init functions
 ////////////////////////////////////////
 
-void init_environment(void)
+void init_environment(struct app_context *ctx)
 {
     FILE *fp;
     if ((fp = popen("sudo modprobe msr", "r")) == NULL)
     {
         printf("Error modprobe msr\n");
     }
-    
+
     setlocale(LC_NUMERIC, "");
 
-    core_count = sysconf(_SC_NPROCESSORS_ONLN);
-    if (core_count == -1)
+    ctx->core_count = sysconf(_SC_NPROCESSORS_ONLN);
+    if (ctx->core_count == -1)
     {
         fprintf(stderr, "Could not determine CPU core count from sysconf\n");
     }
 
-    running_with_privileges = FALSE;
-    if (geteuid() == 0)
-    {
-        running_with_privileges = TRUE; 
-    } 
+    ctx->running_with_privileges = (geteuid() == 0) ? TRUE : FALSE;
 }
 
 struct statistics *init_statistics(int core_count)
@@ -189,18 +171,20 @@ struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_cou
     return power;
 }
 
-struct battery *init_sensor_battery()
+struct battery *init_sensor_battery(void)
 {
     struct battery *battery = malloc(sizeof(struct battery));
-    battery->stats = init_statistics(0);
-    
-    if (battery == NULL)
-    {
+    if (battery == NULL) {
         fprintf(stderr, "Memory allocation for \"battery\" failed\n");
+        return NULL;
+    }
+
+    battery->stats = init_statistics(0);
+    if (battery->stats == NULL) {
         free(battery);
         return NULL;
     }
-    
+
     return battery;
 }
 
@@ -285,30 +269,30 @@ fail:
 // Reading functions
 //////////////////////////////////////
 
-int read_sensors(struct sensor_suite *sensors)
+int read_sensors(struct sensor_suite *sensors, struct app_context *ctx)
 {
-    read_cpu_sensors(sensors->cpu);
+    read_cpu_sensors(sensors->cpu, ctx->running_with_privileges);
     read_gpu_sensors(sensors->gpu);
     read_battery_sensors(sensors->battery);
     return 0;
 }
 
-int read_cpu_sensors(struct cpu_sensors *cpu)
+int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
 {
-    get_sysfs_freq_ghz( cpu->freq->stats->present, 
-                        &cpu->freq->stats->structural_avg, 
+    get_sysfs_freq_ghz( cpu->freq->stats->present,
+                        &cpu->freq->stats->structural_avg,
                         cpu->core_count);
 
     get_cpucore_load(cpu->load->stats->present, &cpu->load->stats->structural_avg, cpu->core_count);
-    
+
     if (running_with_privileges == TRUE && cpu->designer == INTEL)
     {
-        msr_temperature_c(  cpu->temperature->stats->present, 
-                            &cpu->temperature->stats->structural_avg, 
+        msr_temperature_c(  cpu->temperature->stats->present,
+                            &cpu->temperature->stats->structural_avg,
                             cpu->core_count);
-        voltage_v(cpu->voltage->stats->present, 
-                &cpu->voltage->stats->structural_avg, 
-                cpu->core_count, 
+        voltage_v(cpu->voltage->stats->present,
+                &cpu->voltage->stats->structural_avg,
+                cpu->core_count,
                 cpu->designer);
         get_intel_msr_power_w(cpu->power->per_domain);
     }
@@ -337,51 +321,49 @@ int read_battery_sensors(struct battery *battery)
     return 0;
 }
 
-int update_sensor_statistics(struct statistics *sensor, uint8_t core_count)
+int update_sensor_statistics(struct statistics *sensor, uint8_t core_count, long period_cntr)
 {
     sensor->min = get_min_value(sensor->min, sensor->present, core_count);
     sensor->max = get_max_value(sensor->max, sensor->present, core_count);
     sensor->runtime_avg = get_runtime_avg(period_cntr, &sensor->cumulative, &sensor->structural_avg);
-    
     return 0;
 }
 
-int update_sensor_suite_statistics(struct sensor_suite *sensors)
+int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_context *ctx)
 {
-    update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count);
-    freq_his[history_cntr] = sensors->cpu->freq->stats->structural_avg;
-    
-    update_sensor_statistics(sensors->cpu->load->stats, sensors->cpu->core_count);
-    load_his[history_cntr] = sensors->cpu->load->stats->structural_avg;
-    
-    reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, charging_status_before);
-    update_sensor_statistics(sensors->battery->stats, 0);
-    
-    if (running_with_privileges == TRUE && sensors->cpu->designer == INTEL)
+    update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count, ctx->period_cntr);
+    ctx->freq_his[ctx->history_cntr] = sensors->cpu->freq->stats->structural_avg;
+
+    update_sensor_statistics(sensors->cpu->load->stats, sensors->cpu->core_count, ctx->period_cntr);
+    ctx->load_his[ctx->history_cntr] = sensors->cpu->load->stats->structural_avg;
+
+    reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, ctx->charging_status_before);
+    update_sensor_statistics(sensors->battery->stats, 0, ctx->period_cntr);
+
+    if (ctx->running_with_privileges == TRUE && sensors->cpu->designer == INTEL)
     {
-        update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count);
-        temp_his[history_cntr] = sensors->cpu->temperature->stats->structural_avg;
-        
-        update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count);
-        voltage_his[history_cntr] = sensors->cpu->voltage->stats->structural_avg;
+        update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count, ctx->period_cntr);
+        ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->structural_avg;
+
+        update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count, ctx->period_cntr);
+        ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->structural_avg;
     }
 
     static int power_initialized = 0;
 
-    if (running_with_privileges == TRUE && (sensors->cpu->designer == INTEL || sensors->cpu->designer == AMD))  // add AMD case
+    if (ctx->running_with_privileges == TRUE && (sensors->cpu->designer == INTEL || sensors->cpu->designer == AMD))
     {
         if (!power_initialized)
         {
-            // Power values are based on energy differences, hence the first value is not correct
             power_initialized = 1;
             return 0;
         }
         #if DEBUG_ENABLE
-            printf("Setting power_his[%ld] = %f\n", history_cntr, sensors->cpu->power->per_domain[PKG]);
+            printf("Setting power_his[%ld] = %f\n", ctx->history_cntr, sensors->cpu->power->per_domain[PKG]);
         #endif
 
-        power_his[history_cntr] = sensors->cpu->power->per_domain[PKG];
-        sensors->cpu->power->stats->runtime_avg = get_runtime_avg(period_cntr - 1 , &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);      
+        ctx->power_his[ctx->history_cntr] = sensors->cpu->power->per_domain[PKG];
+        sensors->cpu->power->stats->runtime_avg = get_runtime_avg(ctx->period_cntr - 1, &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);
     }
 
     return 0;

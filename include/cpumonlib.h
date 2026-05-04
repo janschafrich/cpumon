@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifndef CPUMONLIB
 #define CPUMONLIB
@@ -88,7 +89,20 @@ struct sensor_suite {
     struct battery *battery;
 };
 
-void init_environment(void);
+struct app_context {
+    int core_count;
+    bool running_with_privileges;
+    long history_cntr;
+    long period_cntr;
+    char charging_status_before[BATTERY_STATUS_BUF_SIZE];
+    float freq_his[AVG_WINDOW];
+    float load_his[AVG_WINDOW];
+    float temp_his[AVG_WINDOW];
+    float voltage_his[AVG_WINDOW];
+    float power_his[AVG_WINDOW];
+};
+
+void init_environment(struct app_context *ctx);
 struct statistics *init_statistics(int core_count);
 struct frequency *init_frequency(int core_count);
 struct temperature *init_temperature(int core_count);
@@ -98,12 +112,12 @@ struct cpu_load *init_sensor_load(int core_count);
 struct battery *init_sensor_battery(void);
 struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_count);
 
-int read_sensors(struct sensor_suite *);
-int read_cpu_sensors(struct cpu_sensors *cpu);
+int read_sensors(struct sensor_suite *, struct app_context *ctx);
+int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges);
 int read_gpu_sensors(struct gpu_sensors *gpu);
 int read_battery_sensors(struct battery *battery);
-int update_sensor_statistics(struct statistics *sensor, uint8_t);
-int update_sensor_suite_statistics(struct sensor_suite *);
+int update_sensor_statistics(struct statistics *sensor, uint8_t, long period_cntr);
+int update_sensor_suite_statistics(struct sensor_suite *, struct app_context *ctx);
 
 int print_fanspeed(void);
 

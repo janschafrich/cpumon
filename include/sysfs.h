@@ -2,7 +2,7 @@
 #define SYSFS
 
 
-char *identifiy_cpu(void);
+char *identify_cpu(void);
 int * get_sysfs_power_limits_w(void);
 void get_power_config(bool running_with_privileges, enum cpu_designer);
 int get_sysfs_power_battery_w(float *battery_power);

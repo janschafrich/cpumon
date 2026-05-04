@@ -11,7 +11,7 @@
 
 
 
-char *identifiy_cpu(void)
+char *identify_cpu(void)
 {
     FILE *fp = fopen("/proc/cpuinfo", "r");
     if (fp == NULL) {
@@ -84,62 +84,29 @@ int * get_sysfs_power_limits_w(void)
 
 void get_power_config(bool running_with_privileges, enum cpu_designer designer)
 {
+    char buf[BUFSIZE];
+
     if (running_with_privileges == TRUE && designer == INTEL)
     {
         int *power_limits = get_sysfs_power_limits_w();
         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
     }
 
+    if (read_sysfs_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference", buf, sizeof(buf)))
+        printw("Energy-Performance-Preference: \t%s \n", buf);
 
-    char *file = read_chars("/sys/devices/system/cpu/intel_pstate/no_turbo");
+    if (read_sysfs_string("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver", buf, sizeof(buf)))
+        printw("Scaling Driver: \t\t%s \n", buf);
 
-    // if (strncmp(file, "0", 1) == 0) {
-    //     printw("Turbo: \t\t\t\tenabled\n");     
-    // } else {
-    //     printw("Turbo: \t\t\t\tdisabled\n");
-    // }
-    
-    file = read_chars("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference");
-    printw("Energy-Performance-Preference: \t%s \n", file);
-
-    file = read_chars("/sys/devices/system/cpu/cpufreq/policy0/scaling_driver");
-    printw("Scaling Driver: \t\t%s \n",file);
-    
-    file = read_chars("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-    printw("CPU Frequency Scaling Governor: %s \n", file);   
+    if (read_sysfs_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", buf, sizeof(buf)))
+        printw("CPU Frequency Scaling Governor: %s \n", buf);
 
     if (designer == AMD)
     {
-        file = read_chars("/sys/devices/system/cpu/amd_pstate/prefcore");
-        printw("AMD Preferential Core: \t\t%s \n", file);
+        if (read_sysfs_string("/sys/devices/system/cpu/amd_pstate/prefcore", buf, sizeof(buf)))
+            printw("AMD Preferential Core: \t\t%s \n", buf);
     }
 }
-
-// int get_sysfs_power_battery_w(float *battery_power)
-// {
-//     char read_value[12];
-//     char read_value2[12];
-    
-//     if (read_string(read_value, "/sys/class/power_supply/BAT0/power_now") == 0)
-//     {
-//         long power_uw = 0;
-//         sscanf(read_value, "%ld", &power_uw);
-//         *battery_power = (float)power_uw * 1e-6;
-//         return 0;
-//     }
-//     if ((read_string(read_value,"/sys/class/power_supply/BAT1/voltage_now") == 0)  && (read_string(read_value2,"/sys/class/power_supply/BAT1/current_now") == 0))
-//     {
-//         long voltage_uv = 0;
-//         sscanf(read_value, "%ld", &voltage_uv);
-//         long current_ua = 0;
-//         sscanf(read_value2, "%ld", &current_ua);
-//         *battery_power = (float)(voltage_uv * current_ua * 1e-12);
-//         return 0;
-//     }
-    
-//     return -1;
-// }
-
 
 
 int get_sysfs_power_battery_w(float *battery_power)
@@ -147,15 +114,15 @@ int get_sysfs_power_battery_w(float *battery_power)
     char read_value[12];
     char read_value2[12];
     
-    if (read_chars_new(read_value, 12, "/sys/class/power_supply/BAT0/power_now") == 0)
+    if (read_sysfs_string("/sys/class/power_supply/BAT0/power_now", read_value, sizeof(read_value)))
     {
         long power_uw = 0;
         sscanf(read_value, "%ld", &power_uw);
         *battery_power = (float)power_uw * 1e-6;
         return 0;
     }
-    if ((read_chars_new(read_value, 12, "/sys/class/power_supply/BAT1/voltage_now") == 0)  && 
-        (read_chars_new(read_value2, 12, "/sys/class/power_supply/BAT1/current_now") == 0))
+    if (read_sysfs_string("/sys/class/power_supply/BAT1/voltage_now", read_value, sizeof(read_value)) &&
+        read_sysfs_string("/sys/class/power_supply/BAT1/current_now", read_value2, sizeof(read_value2)))
     {
         long voltage_uv = 0;
         sscanf(read_value, "%ld", &voltage_uv);
@@ -171,14 +138,10 @@ int get_sysfs_power_battery_w(float *battery_power)
 int get_battery_status(char *status)
 {
     // check for battery under multiple paths
-    if (read_chars_new(status, 13, "/sys/class/power_supply/BAT0/status") == 0)
-    {
+    if (read_sysfs_string("/sys/class/power_supply/BAT0/status", status, 13))
         return 0;
-    } 
-    if  (read_chars_new(status, 13, "/sys/class/power_supply/BAT1/status") == 0)
-    {
+    if (read_sysfs_string("/sys/class/power_supply/BAT1/status", status, 13))
         return 0;
-    }
 
     strcpy(status, "Status unknown");
     return -1;
@@ -205,7 +168,7 @@ void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 
     for (int i = 0; i < core_count; i++){
         sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
-        if (read_chars_new(file_buf, 15, path) == 0)
+        if (read_sysfs_string(path, file_buf, sizeof(file_buf)))
         {
             freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
             total += freq_ghz[i];
@@ -263,25 +226,17 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count) {
     }
     fclose(fp);
 
-    // only initiliaze after the load calculation - 
-    if (work_jiffies_before == NULL || total_jiffies_before == NULL) {
+    if (work_jiffies_before == NULL) {
         initialized_core_count = core_count;
         work_jiffies_before = malloc(sizeof(long long) * initialized_core_count);
         total_jiffies_before = malloc(sizeof(long long) * initialized_core_count);
-        // Init to zero on the first invocation
-        // Save jiffy count since boot
-        for (int i = 0; i < (initialized_core_count); i++) {
-            work_jiffies_before[i] = work_jiffies_after[i];
-            total_jiffies_before[i] = total_jiffies_after[i];
-        }
-        return;
     }
 
-    // save the jiffy count for the next invocation
-    static int first_measurement = 1;
-    if (first_measurement) {
-        first_measurement = 0; 
-        for (int i = 0; i < (initialized_core_count); i++) {
+    // two baseline readings needed before deltas are meaningful
+    static int warmup = 2;
+    if (warmup > 0) {
+        --warmup;
+        for (int i = 0; i < initialized_core_count; i++) {
             work_jiffies_before[i] = work_jiffies_after[i];
             total_jiffies_before[i] = total_jiffies_after[i];
         }
@@ -317,18 +272,10 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count) {
 int read_gpu(void){
     
     char file_buf[BUFSIZE];
-    int freq_mhz = 0;
 
-    int return_val = read_chars_new(file_buf, 12, "/sys/class/drm/card0/gt_cur_freq_mhz");
-
-    if (return_val == 0)
-    {
-        return freq_mhz = atoi(file_buf);
-    } 
-    else 
-    {
-        return return_val;
-    }
+    if (read_sysfs_string("/sys/class/drm/card0/gt_cur_freq_mhz", file_buf, sizeof(file_buf)))
+        return atoi(file_buf);
+    return -1;
     
 
 /*     FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
@@ -441,9 +388,4 @@ int get_amdgpu_temperature_mC(float *value)
 
 
 
-    // FILE *log = fopen("/tmp/cpumon_debug.log", "a");
-    // if (log) {
-    //     fprintf(log, "get_amd_gpu_hwmon_id: returned %d\n", hwmon_id);
-    // }
-    // fclose(log);
 
