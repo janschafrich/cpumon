@@ -15,8 +15,92 @@
 
 
 /////////////////////////////////////////
+// CPU ops implementations
+////////////////////////////////////////
+
+static int intel_read_power(struct cpu_sensors *cpu) {
+    get_intel_msr_power_w(cpu->power->per_domain);
+    return 0;
+}
+
+static int intel_read_temperature(struct cpu_sensors *cpu) {
+    msr_temperature_c(cpu->temperature->stats->per_core,
+                      &cpu->temperature->stats->core_avg,
+                      cpu->core_count);
+    return 0;
+}
+
+static int intel_read_voltage(struct cpu_sensors *cpu) {
+    intel_voltage_v(cpu->voltage->stats->per_core,
+                    &cpu->voltage->stats->core_avg,
+                    cpu->physical_core_count);
+    return 0;
+}
+
+static void intel_display_power_config(bool privileged) {
+    if (!privileged) return;
+    int power_limits[POWER_LIMIT_COUNT];
+    get_sysfs_power_limits_w(power_limits);
+    printw("Power Limits: \t\tPL1 = %d W, PL2 = %d W\n",
+           power_limits[0], power_limits[1]);
+}
+
+static const struct cpu_ops intel_ops = {
+    .read_power            = intel_read_power,
+    .read_temperature      = intel_read_temperature,
+    .read_voltage          = intel_read_voltage,
+    .display_power_config  = intel_display_power_config,
+};
+
+static int amd_read_power(struct cpu_sensors *cpu) {
+    get_amd_pkg_power_w(&cpu->power->per_domain[PKG], cpu->power->energy_unit);
+    get_amd_msr_core_power_w(cpu->power, cpu->physical_core_count);
+    return 0;
+}
+
+static void amd_display_power_config(bool privileged) {
+    (void)privileged;
+    char buf[BUFSIZE];
+    if (read_sysfs_string("/sys/devices/system/cpu/amd_pstate/prefcore", buf, sizeof(buf)))
+        printw("AMD Preferential Core: \t\t%s \n", buf);
+}
+
+static const struct cpu_ops amd_ops = {
+    .read_power            = amd_read_power,
+    .read_temperature      = NULL,
+    .read_voltage          = NULL,
+    .display_power_config  = amd_display_power_config,
+};
+
+/////////////////////////////////////////
 // Init functions
 ////////////////////////////////////////
+
+static int detect_physical_core_count(int logical_count)
+{
+    char buf[256];
+    if (!read_sysfs_string("/sys/devices/system/cpu/cpu0/topology/thread_siblings_list",
+                           buf, sizeof(buf)))
+        return logical_count;
+
+    // Format: "0" (no SMT), "0,8" (SMT-2 comma form), "0-1" (SMT-2 range form)
+    int threads = 0;
+    char *p = buf;
+    while (*p && *p != '\n') {
+        char *endp;
+        long a = strtol(p, &endp, 10);
+        p = endp;
+        threads++;
+        if (*p == '-') {
+            p++;
+            long b = strtol(p, &endp, 10);
+            p = endp;
+            threads += (int)(b - a);
+        }
+        if (*p == ',') p++;
+    }
+    return (threads > 0) ? logical_count / threads : logical_count;
+}
 
 void init_environment(struct app_context *ctx)
 {
@@ -97,7 +181,7 @@ struct cpu_load *init_sensor_load(int core_count)
     return load;
 }
 
-struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count)
+struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count, int physical_core_count)
 {
     struct cpu_power *power = malloc(sizeof(struct cpu_power));
     if (!power) {
@@ -129,8 +213,8 @@ struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_cou
         case AMD:
             power->n_domains = 2; // PKG, CORES
             // Allocate per-core energy arrays for AMD
-            power->core_energy_before = malloc(sizeof(float) * (core_count/2));
-            power->core_energy_after  = malloc(sizeof(float) * (core_count/2));
+            power->core_energy_before = malloc(sizeof(float) * physical_core_count);
+            power->core_energy_after  = malloc(sizeof(float) * physical_core_count);
             if (!power->core_energy_before || !power->core_energy_after) {
                 fprintf(stderr, "Memory allocation for AMD core energy arrays failed\n");
                 free(power->stats);
@@ -162,7 +246,7 @@ struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_cou
     for (int i = 0; i < power->n_domains; ++i) power->per_domain[i] = 0.0f;
 
     if (cpu_designer == AMD) {
-        for (int i = 0; i < core_count/2; ++i) {
+        for (int i = 0; i < physical_core_count; ++i) {
             power->core_energy_before[i] = 0.0f;
             power->core_energy_after[i] = 0.0f;
         }
@@ -220,14 +304,18 @@ struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_coun
 
     if (!sensors->cpu || !sensors->gpu || !sensors->battery) goto fail;
 
+    int physical_core_count = detect_physical_core_count(core_count);
+
     // CPU sensors
     sensors->cpu->freq = init_frequency(core_count);
     sensors->cpu->load = init_sensor_load(core_count);
     sensors->cpu->temperature = init_temperature(core_count);
     sensors->cpu->voltage = init_voltage(core_count);
-    sensors->cpu->power = init_sensor_power(designer, core_count);
+    sensors->cpu->power = init_sensor_power(designer, core_count, physical_core_count);
     sensors->cpu->designer = designer;
-    sensors->cpu->core_count = core_count;
+    sensors->cpu->core_count = (uint8_t)core_count;
+    sensors->cpu->physical_core_count = (uint8_t)physical_core_count;
+    sensors->cpu->ops = (designer == INTEL) ? &intel_ops : &amd_ops;
 
     // GPU sensors
     sensors->gpu->freq = init_frequency(1);
@@ -285,22 +373,10 @@ int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
 
     get_cpucore_load(cpu->load->stats->per_core, &cpu->load->stats->core_avg, cpu->core_count);
 
-    if (running_with_privileges == TRUE && cpu->designer == INTEL)
-    {
-        msr_temperature_c(  cpu->temperature->stats->per_core,
-                            &cpu->temperature->stats->core_avg,
-                            cpu->core_count);
-        voltage_v(cpu->voltage->stats->per_core,
-                &cpu->voltage->stats->core_avg,
-                cpu->core_count,
-                cpu->designer);
-        get_intel_msr_power_w(cpu->power->per_domain);
-    }
-
-    if (running_with_privileges == TRUE && cpu->designer == AMD)
-    {
-        get_amd_pkg_power_w(&cpu->power->per_domain[PKG], cpu->power->energy_unit);
-        get_amd_msr_core_power_w(cpu->power, cpu->core_count);
+    if (running_with_privileges == TRUE && cpu->ops) {
+        if (cpu->ops->read_temperature) cpu->ops->read_temperature(cpu);
+        if (cpu->ops->read_voltage)     cpu->ops->read_voltage(cpu);
+        if (cpu->ops->read_power)       cpu->ops->read_power(cpu);
     }
     return 0;
 }
@@ -340,18 +416,20 @@ int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_cont
     reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, ctx->charging_status_before);
     update_sensor_statistics(sensors->battery->stats, 0, ctx->period_cntr);
 
-    if (ctx->running_with_privileges == TRUE && sensors->cpu->designer == INTEL)
-    {
-        update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count, ctx->period_cntr);
-        ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->core_avg;
-
-        update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count, ctx->period_cntr);
-        ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->core_avg;
+    if (ctx->running_with_privileges == TRUE && sensors->cpu->ops) {
+        if (sensors->cpu->ops->read_temperature) {
+            update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count, ctx->period_cntr);
+            ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->core_avg;
+        }
+        if (sensors->cpu->ops->read_voltage) {
+            update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count, ctx->period_cntr);
+            ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->core_avg;
+        }
     }
 
     static int power_initialized = 0;
 
-    if (ctx->running_with_privileges == TRUE && (sensors->cpu->designer == INTEL || sensors->cpu->designer == AMD))
+    if (ctx->running_with_privileges == TRUE && sensors->cpu->ops && sensors->cpu->ops->read_power)
     {
         if (!power_initialized)
         {

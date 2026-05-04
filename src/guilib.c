@@ -29,43 +29,37 @@ int kbhit(void)
     }
 }
 
-void draw_power(float* values, int n_domains, float avg, enum cpu_designer cpu_designer){
-
+void draw_power(float *values, int n_domains, float avg)
+{
     float total_power = values[PKG];
-    int width = 48;     // choose highly composite number
+    int width = 48;
 
-    float rest_of_pkg = 0;
-
-    if (cpu_designer == INTEL)
-    {
-        rest_of_pkg = values[PKG] - values[CORES] - values[GPU];
-    }
-
-    if (cpu_designer == AMD)
-    {
-        rest_of_pkg = values[PKG] - values[CORES];
-    }
+    float rest_of_pkg = values[PKG];
+    for (int i = CORES; i < n_domains; i++)
+        rest_of_pkg -= values[i];
 
     float bar_values[n_domains];
     for (int i = 0; i < n_domains; i++) bar_values[i] = values[i];
     bar_values[PKG] = rest_of_pkg;
 
-    for (int i = 0; i < n_domains; i++){
+    for (int i = 0; i < n_domains; i++) {
         switch (i) {
-            case PKG: attron(COLOR_PAIR(BLUE)); break;
-            case CORES: attron(COLOR_PAIR(RED)); break;
-            case GPU: attron(COLOR_PAIR(GREEN)); break;
+            case PKG:   attron(COLOR_PAIR(BLUE));  break;
+            case CORES: attron(COLOR_PAIR(RED));   break;
+            case GPU:   attron(COLOR_PAIR(GREEN)); break;
         }
-        for (int j = 0; j < (int)( (bar_values[i] * width ) / total_power ); j++ ){
-            printw("#");
-        }
+        if (total_power > 0)
+            for (int j = 0; j < (int)((bar_values[i] * width) / total_power); j++)
+                printw("#");
     }
     attron(COLOR_PAIR(BLUE));
     printw("\nRest of Pkg: %.2f W", rest_of_pkg);
     attron(COLOR_PAIR(RED));
     printw("  Cores: %.2f W", values[CORES]);
-    attron(COLOR_PAIR(GREEN));
-    printw("  GPU: %.2f W", values[GPU]);
+    if (n_domains > GPU) {
+        attron(COLOR_PAIR(GREEN));
+        printw("  GPU: %.2f W", values[GPU]);
+    }
     attron(COLOR_PAIR(WHITE));
     printw("\n");
 }

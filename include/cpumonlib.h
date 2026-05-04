@@ -56,14 +56,26 @@ struct battery {
     char status[BATTERY_STATUS_BUF_SIZE];
 };
 
+/* Forward declaration so cpu_ops function pointers can reference cpu_sensors */
+struct cpu_sensors;
+
+struct cpu_ops {
+    int  (*read_power)          (struct cpu_sensors *cpu);
+    int  (*read_temperature)    (struct cpu_sensors *cpu);
+    int  (*read_voltage)        (struct cpu_sensors *cpu);
+    void (*display_power_config)(bool privileged);
+};
+
 struct cpu_sensors {
-    struct frequency *freq;
-    struct cpu_load *load;
-    struct temperature *temperature;
-    struct voltage *voltage;
-    struct cpu_power *power;
-    enum cpu_designer designer;
-    uint8_t core_count;
+    struct frequency    *freq;
+    struct cpu_load     *load;
+    struct temperature  *temperature;
+    struct voltage      *voltage;
+    struct cpu_power    *power;
+    enum cpu_designer    designer;
+    uint8_t              core_count;
+    uint8_t              physical_core_count;
+    const struct cpu_ops *ops;
 };
 
 struct gpu_power {
@@ -107,7 +119,7 @@ struct statistics *init_statistics(int core_count);
 struct frequency *init_frequency(int core_count);
 struct temperature *init_temperature(int core_count);
 struct voltage *init_voltage(int core_count);
-struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count);
+struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count, int physical_core_count);
 struct cpu_load *init_sensor_load(int core_count);
 struct battery *init_sensor_battery(void);
 struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_count);

@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <dirent.h>
 #include <ncurses.h>
 #include "../include/utils.h"
 #include "../include/cpumonlib.h"
@@ -77,16 +80,29 @@ void get_sysfs_power_limits_w(int *power_limits)
     }
 }
 
-void get_power_config(bool running_with_privileges, enum cpu_designer designer)
+enum cpu_designer detect_cpu_designer(void)
+{
+    FILE *fp = fopen("/proc/cpuinfo", "r");
+    if (!fp) return AMD;
+
+    char buf[256];
+    enum cpu_designer designer = AMD;
+    while (fgets(buf, sizeof(buf), fp)) {
+        if (strncmp(buf, "vendor_id", 9) == 0) {
+            if (strstr(buf, "GenuineIntel")) designer = INTEL;
+            break;
+        }
+    }
+    fclose(fp);
+    return designer;
+}
+
+void get_power_config(bool running_with_privileges, const struct cpu_ops *ops)
 {
     char buf[BUFSIZE];
 
-    if (running_with_privileges == TRUE && designer == INTEL)
-    {
-        int power_limits[POWER_LIMIT_COUNT];
-        get_sysfs_power_limits_w(power_limits);
-        printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
-    }
+    if (ops && ops->display_power_config)
+        ops->display_power_config(running_with_privileges);
 
     if (read_sysfs_string("/sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference", buf, sizeof(buf)))
         printw("Energy-Performance-Preference: \t%s \n", buf);
@@ -96,12 +112,6 @@ void get_power_config(bool running_with_privileges, enum cpu_designer designer)
 
     if (read_sysfs_string("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", buf, sizeof(buf)))
         printw("CPU Frequency Scaling Governor: %s \n", buf);
-
-    if (designer == AMD)
-    {
-        if (read_sysfs_string("/sys/devices/system/cpu/amd_pstate/prefcore", buf, sizeof(buf)))
-            printw("AMD Preferential Core: \t\t%s \n", buf);
-    }
 }
 
 
@@ -155,22 +165,34 @@ void reset_if_status_changed(float *cumulative, char *status, char *status_befor
 
 
 
-void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count) 
+void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 {
+    static int *fds = NULL;
 
-    char file_buf[BUFSIZE];
-    char path[70];
-    float total = 0;
-
-    for (int i = 0; i < core_count; i++){
-        sprintf(path, "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
-        if (read_sysfs_string(path, file_buf, sizeof(file_buf)))
-        {
-            freq_ghz[i] = (float)strtol(file_buf, NULL, 10) / 1000000;
-            total += freq_ghz[i];
+    if (fds == NULL) {
+        fds = malloc(sizeof(int) * core_count);
+        for (int i = 0; i < core_count; i++) {
+            char path[80];
+            snprintf(path, sizeof(path),
+                     "/sys/devices/system/cpu/cpufreq/policy%d/scaling_cur_freq", i);
+            fds[i] = open(path, O_RDONLY);
         }
-        else
-        {
+    }
+
+    char buf[16];
+    float total = 0;
+    for (int i = 0; i < core_count; i++) {
+        if (fds[i] < 0) {
+            freq_ghz[i] = -1;
+            continue;
+        }
+        lseek(fds[i], 0, SEEK_SET);
+        ssize_t n = read(fds[i], buf, sizeof(buf) - 1);
+        if (n > 0) {
+            buf[n] = '\0';
+            freq_ghz[i] = (float)strtol(buf, NULL, 10) / 1000000.0f;
+            total += freq_ghz[i];
+        } else {
             freq_ghz[i] = -1;
         }
     }
@@ -179,48 +201,54 @@ void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 }
 
 
-void get_cpucore_load(float *load_per_core, float *average, int core_count) {
-
-    //  load is calculated as a difference between two jiffy counts at different time stamps
+void get_cpucore_load(float *load_per_core, float *average, int core_count)
+{
+    // load is calculated as a difference between two jiffy counts at different timestamps
     static long long *work_jiffies_before = NULL;
     static long long *total_jiffies_before = NULL;
     static int initialized_core_count = 0;
-    
-    char file_buf[BUFSIZ];
-    long long user, nice, system, idle, iowait, irq, softirq;
+    static int stat_fd = -1;        // repeated allocations and deallocations scale poorly with higher core counts
 
+    if (stat_fd < 0) {
+        stat_fd = open("/proc/stat", O_RDONLY);
+        if (stat_fd < 0) {
+            perror("Error opening /proc/stat");
+            return;
+        }
+    }
+
+    // Single read pulls the whole file into user space
+    // Rely on kernel to keep the virtual FS up to date
+    char stat_buf[8192];
+    lseek(stat_fd, 0, SEEK_SET);
+    ssize_t bytes_read = read(stat_fd, stat_buf, sizeof(stat_buf) - 1);
+    if (bytes_read <= 0) return;
+    stat_buf[bytes_read] = '\0';
+
+    long long user, nice, system, idle, iowait, irq, softirq;
     long long work_jiffies_after[core_count];
     long long total_jiffies_after[core_count];
 
-    // read load per logical core
-    FILE *fp = fopen("/proc/stat", "r");
-    if (fp == NULL) {
-        perror("Error opening file /proc/stat");
-    }
-
-    char *line = fgets(file_buf, BUFSIZ, fp);
-    if (line == NULL) {
-        printf("Error %s\n", file_buf);
-    }
+    // Skip aggregate "cpu " line, parse one line per logical core
+    char *line = strchr(stat_buf, '\n');
+    if (!line) return;
+    line++;
 
     for (int core = 0; core < core_count; core++) {
-        line = fgets(file_buf, BUFSIZ, fp);
-        if (line == NULL) {
-            break;
-        }
-        
         char comparator[16];
-        sprintf(comparator,"cpu%d ", core);
-        
-        if (!strncmp(line, comparator, 5)) {
-            
-            sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld", &user, &nice, &system, &idle, &iowait, &irq, &softirq);
-            
-            work_jiffies_after[core] = user + nice + system;
+        sprintf(comparator, "cpu%d ", core);
+
+        if (!strncmp(line, comparator, strlen(comparator))) {
+            sscanf(line, "%*s %lld %lld %lld %lld %lld %lld %lld",
+                   &user, &nice, &system, &idle, &iowait, &irq, &softirq);
+            work_jiffies_after[core]  = user + nice + system;
             total_jiffies_after[core] = user + nice + system + idle + iowait + irq + softirq;
-        } 
+        }
+
+        char *nl = strchr(line, '\n');
+        if (!nl) break;
+        line = nl + 1;
     }
-    fclose(fp);
 
     if (work_jiffies_before == NULL) {
         initialized_core_count = core_count;
@@ -266,31 +294,28 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count) {
 
 
 
-int get_amdgpu_hwmon_id() 
+int get_amdgpu_hwmon_id(void)
 {
-    uint8_t n_hwmon = 15;   // random guess
-    char file_buf[20];
-    char path[70];
-
-    static int8_t hwmon_id;
+    static int8_t hwmon_id = -1;
     static bool initialized = FALSE;
-    
-    if (!initialized)
-    {
-        for (int i = 0; i < n_hwmon; i++){
-            sprintf(path, "/sys/class/hwmon/hwmon%d/name", i);
 
-            hwmon_id = -1;
-            if (read_sysfs_string(path, file_buf, 20) != NULL)
-            {
-                if (strncmp(file_buf, "amdgpu", 6) == 0)
-                {
-                    hwmon_id = i;
-                    initialized = TRUE;
-                    break;
-                }
+    if (!initialized) {
+        initialized = TRUE;
+        DIR *dir = opendir("/sys/class/hwmon");
+        if (!dir) return -1;
+
+        struct dirent *entry;
+        char path[280], name[32]; // 280 = len("/sys/class/hwmon/") + NAME_MAX + len("/name")
+        while ((entry = readdir(dir)) != NULL) {
+            if (strncmp(entry->d_name, "hwmon", 5) != 0) continue;
+            snprintf(path, sizeof(path), "/sys/class/hwmon/%s/name", entry->d_name);
+            if (read_sysfs_string(path, name, sizeof(name)) &&
+                strncmp(name, "amdgpu", 6) == 0) {
+                hwmon_id = (int8_t)atoi(entry->d_name + 5);
+                break;
             }
         }
+        closedir(dir);
     }
 
     return hwmon_id;

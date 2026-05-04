@@ -69,14 +69,15 @@ long long read_msr(int fd, unsigned int offset);
 
 
 void msr_temperature_c(float *temperature, float *average, int core_count);
-void voltage_v(float *voltage, float *average, int core_count, enum cpu_designer);
+void intel_voltage_v(float *voltage, float *average, int physical_core_count);
+void amd_voltage_v(float *voltage, float *average, int physical_core_count);
 void get_msr_power_limits_w(int core_count);
 double * core_power_units(void);
 void get_intel_msr_power_w(float * power_w);
 
 int get_msr_core_units(struct cpu_power *my_power, enum cpu_designer designer);
 int get_amd_pkg_power_w(float *pkg, float energy_unit);
-int get_amd_msr_core_power_w(struct cpu_power *my_power, int total_cores);
+int get_amd_msr_core_power_w(struct cpu_power *my_power, int physical_core_count);
 int get_amd_core_frequency_mhz(struct statistics *freq, int total_cores);
 int get_p0_frequency_mhz();
 

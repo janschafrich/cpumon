@@ -96,7 +96,7 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
             sensors->cpu->power->per_domain[PKG],
             sensors->cpu->power->stats->session_avg);
         draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains,
-            sensors->cpu->power->stats->session_avg, sensors->cpu->designer);
+            sensors->cpu->power->stats->session_avg);
         printw("\n");
         printw("GPU\t\t%.0f mV\t%.2f W\t%0.f °C\n",
             sensors->gpu->voltage->stats->per_core[0],
@@ -135,7 +135,7 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
     printw("\n");
     if (display_power_config_flag == TRUE)
     {
-        get_power_config(ctx->running_with_privileges, sensors->cpu->designer);
+        get_power_config(ctx->running_with_privileges, sensors->cpu->ops);
     }
 }
 
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
         }
     }
 
-    struct sensor_suite *sensors = init_sensor_suite(AMD, ctx.core_count);
+    struct sensor_suite *sensors = init_sensor_suite(detect_cpu_designer(), ctx.core_count);
     if (!sensors) {
         fprintf(stderr, "Failed to initialize sensor suite\n");
         exit(EXIT_FAILURE);

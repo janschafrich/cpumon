@@ -65,50 +65,44 @@ long long read_msr(int fd, unsigned int offset)
 }
 
 
-void voltage_v(float *voltage, float *average, int core_count, enum cpu_designer cpu_designer)
+void intel_voltage_v(float *voltage, float *average, int physical_core_count)
 {
     int fd;
-    uint64_t result_raw[core_count/2];
+    uint64_t result_raw[physical_core_count];
     float total = 0;
 
-    uint64_t MSR = 0;
-
-    if (cpu_designer == INTEL)
-    {
-        MSR = MSR_PERF_STATUS;
-    }
-    if (cpu_designer == AMD)
-    {
-        MSR = AMD_MSR_PSTATE_C0;
-    }
-
-    for (int core = 0; core < core_count/2; core++) {
-        fd=open_msr(core);
-        result_raw[core] = read_msr(fd,MSR+core); 
+    for (int core = 0; core < physical_core_count; core++) {
+        fd = open_msr(core);
+        result_raw[core] = read_msr(fd, MSR_PERF_STATUS + core);
         close(fd);
     }
-    // convert results into voltages
-    if (cpu_designer == INTEL)
-    {
-        for (int i= 0; i < core_count/2; i++) {
-        result_raw[i] = result_raw[i]&0xffff00000000;   // remove all bits except 47:32 via bitmask, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-        result_raw[i] = result_raw[i]>>32;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-        voltage[i] = (1.0/8192.0) * result_raw[i];    // correct for scaling according to intel documentation    
+    for (int i = 0; i < physical_core_count; i++) {
+        result_raw[i] = result_raw[i] & 0xffff00000000; // bits 47:32
+        result_raw[i] = result_raw[i] >> 32;
+        voltage[i] = (1.0 / 8192.0) * result_raw[i];   // Intel VID scaling
         total += voltage[i];
-        }
     }
-    if (cpu_designer == AMD)
-    {
-        for (int i= 0; i < core_count/2; i++) {
-        result_raw[i] = result_raw[i]&0x3fc0000;   // extract bit 21:14, thx: https://askubuntu.com/questions/876286/how-to-monitor-the-vcore-voltage
-        result_raw[i] = result_raw[i]>>14;              // correct for positioning of bits so that value is correctly interpreted (Bitshift)
-        voltage[i] = (1.0/8.0) * result_raw[i];    // correct for scaling according to intel documentation    
+    *average = total / physical_core_count;
+}
+
+void amd_voltage_v(float *voltage, float *average, int physical_core_count)
+{
+    int fd;
+    uint64_t result_raw[physical_core_count];
+    float total = 0;
+
+    for (int core = 0; core < physical_core_count; core++) {
+        fd = open_msr(core);
+        result_raw[core] = read_msr(fd, AMD_MSR_PSTATE_C0 + core);
+        close(fd);
+    }
+    for (int i = 0; i < physical_core_count; i++) {
+        result_raw[i] = result_raw[i] & 0x3fc0000; // bits 21:14
+        result_raw[i] = result_raw[i] >> 14;
+        voltage[i] = (1.0 / 8.0) * result_raw[i];  // AMD VID scaling
         total += voltage[i];
-        }
     }
-
-
-    *average = total / core_count;
+    *average = total / physical_core_count;
 }
 
 void msr_temperature_c(float *temperature, float *average, int core_count)
@@ -280,43 +274,32 @@ int get_msr_core_units(struct cpu_power *my_power, enum cpu_designer designer)
 }
 
 
-int get_amd_msr_core_power_w(struct cpu_power *my_power, int total_cores)
+int get_amd_msr_core_power_w(struct cpu_power *my_power, int physical_core_count)
 {
-	// Power is only available per core, not per thread. 
-    int physical_core_count = total_cores / 2;
+    // AMD_MSR_CORE_ENERGY (0xC001029A) is per physical core; read one fd per core.
+    int *fd = malloc(sizeof(int) * physical_core_count);
 
-    int *fd = (int*)malloc(sizeof(int)*physical_core_count/2);
-	
-	for (int i = 0; i < physical_core_count/2; i++) {
-		fd[i] = open_msr(i);
-	}
-	
-	int core_energy_raw;
+    for (int i = 0; i < physical_core_count; i++)
+        fd[i] = open_msr(i);
 
-	// Read per core energy values
-	for (int i = 0; i < physical_core_count/2; i++) {
-		core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
-		my_power->core_energy_after[i] = core_energy_raw * my_power->energy_unit;
-	}
-
-    for (int i = 0; i < physical_core_count/2; i++)
-    {
-        close(fd[i]);
+    for (int i = 0; i < physical_core_count; i++) {
+        long long core_energy_raw = read_msr(fd[i], AMD_MSR_CORE_ENERGY);
+        my_power->core_energy_after[i] = (float)(core_energy_raw & 0xFFFFFFFFLL) * my_power->energy_unit;
     }
+
+    for (int i = 0; i < physical_core_count; i++)
+        close(fd[i]);
 
     my_power->per_domain[CORES] = 0;
-    // Process each physical core, which has 2 threads
-	for(int i = 0; i < physical_core_count/2; i++) {
-		float core_power = my_power->core_energy_after[i] - my_power->core_energy_before[i];
-		my_power->stats->per_core[i*2] = core_power;     // First thread
-        my_power->stats->per_core[i*2+1] = 0;            // Second thread
-		my_power->per_domain[CORES] += core_power;
+    for (int i = 0; i < physical_core_count; i++) {
+        float core_power = my_power->core_energy_after[i] - my_power->core_energy_before[i];
+        my_power->stats->per_core[i] = core_power;
+        my_power->per_domain[CORES] += core_power;
         my_power->core_energy_before[i] = my_power->core_energy_after[i];
     }
-	
-	free(fd);
-	
-	return 0;
+
+    free(fd);
+    return 0;
 }
 
 // int get_amd_core_frequency_mhz(sensor_s *freq, int total_cores)
