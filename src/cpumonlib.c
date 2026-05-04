@@ -20,11 +20,11 @@
 
 void init_environment(struct app_context *ctx)
 {
-    FILE *fp;
-    if ((fp = popen("sudo modprobe msr", "r")) == NULL)
-    {
+    FILE *fp = popen("sudo modprobe msr", "r");
+    if (fp == NULL)
         printf("Error modprobe msr\n");
-    }
+    else
+        pclose(fp);
 
     setlocale(LC_NUMERIC, "");
 
@@ -39,14 +39,14 @@ void init_environment(struct app_context *ctx)
 
 struct statistics *init_statistics(int core_count)
 {
-    struct statistics *sensor = malloc( sizeof(struct statistics) + core_count * sizeof(sensor->present[0]) );
+    struct statistics *sensor = malloc( sizeof(struct statistics) + core_count * sizeof(sensor->per_core[0]) );
     if (sensor == NULL)
     {
         fprintf(stderr, "Memory allocation for \"sensor\" failed\n");
         return NULL;
     }
-    sensor->structural_avg = 0;
-    sensor->runtime_avg = 0;
+    sensor->core_avg = 0;
+    sensor->session_avg = 0;
     sensor->cumulative = 0;
     sensor->min = 1000;
     sensor->max = 0; 
@@ -279,19 +279,19 @@ int read_sensors(struct sensor_suite *sensors, struct app_context *ctx)
 
 int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
 {
-    get_sysfs_freq_ghz( cpu->freq->stats->present,
-                        &cpu->freq->stats->structural_avg,
+    get_sysfs_freq_ghz( cpu->freq->stats->per_core,
+                        &cpu->freq->stats->core_avg,
                         cpu->core_count);
 
-    get_cpucore_load(cpu->load->stats->present, &cpu->load->stats->structural_avg, cpu->core_count);
+    get_cpucore_load(cpu->load->stats->per_core, &cpu->load->stats->core_avg, cpu->core_count);
 
     if (running_with_privileges == TRUE && cpu->designer == INTEL)
     {
-        msr_temperature_c(  cpu->temperature->stats->present,
-                            &cpu->temperature->stats->structural_avg,
+        msr_temperature_c(  cpu->temperature->stats->per_core,
+                            &cpu->temperature->stats->core_avg,
                             cpu->core_count);
-        voltage_v(cpu->voltage->stats->present,
-                &cpu->voltage->stats->structural_avg,
+        voltage_v(cpu->voltage->stats->per_core,
+                &cpu->voltage->stats->core_avg,
                 cpu->core_count,
                 cpu->designer);
         get_intel_msr_power_w(cpu->power->per_domain);
@@ -307,35 +307,35 @@ int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
 
 int read_gpu_sensors(struct gpu_sensors *gpu)
 {
-    get_amdgpu_voltage_mV(gpu->voltage->stats->present);
+    get_amdgpu_voltage_mV(gpu->voltage->stats->per_core);
     get_amdgpu_northbridge_mV(&gpu->voltage->northbridge);
-    get_amdgpu_soc_power_uW(gpu->power->stats->present);
-    get_amdgpu_temperature_mC(gpu->temperature->stats->present);
+    get_amdgpu_soc_power_uW(gpu->power->stats->per_core);
+    get_amdgpu_temperature_mC(gpu->temperature->stats->per_core);
     return 0;
 }
 
 int read_battery_sensors(struct battery *battery)
 {
-    get_sysfs_power_battery_w(&battery->stats->present[0]);
+    get_sysfs_power_battery_w(&battery->stats->per_core[0]);
     get_battery_status(battery->status);
     return 0;
 }
 
 int update_sensor_statistics(struct statistics *sensor, uint8_t core_count, long period_cntr)
 {
-    sensor->min = get_min_value(sensor->min, sensor->present, core_count);
-    sensor->max = get_max_value(sensor->max, sensor->present, core_count);
-    sensor->runtime_avg = get_runtime_avg(period_cntr, &sensor->cumulative, &sensor->structural_avg);
+    sensor->min = get_min_value(sensor->min, sensor->per_core, core_count);
+    sensor->max = get_max_value(sensor->max, sensor->per_core, core_count);
+    sensor->session_avg = get_runtime_avg(period_cntr, &sensor->cumulative, &sensor->core_avg);
     return 0;
 }
 
 int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_context *ctx)
 {
     update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count, ctx->period_cntr);
-    ctx->freq_his[ctx->history_cntr] = sensors->cpu->freq->stats->structural_avg;
+    ctx->freq_his[ctx->history_cntr] = sensors->cpu->freq->stats->core_avg;
 
     update_sensor_statistics(sensors->cpu->load->stats, sensors->cpu->core_count, ctx->period_cntr);
-    ctx->load_his[ctx->history_cntr] = sensors->cpu->load->stats->structural_avg;
+    ctx->load_his[ctx->history_cntr] = sensors->cpu->load->stats->core_avg;
 
     reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, ctx->charging_status_before);
     update_sensor_statistics(sensors->battery->stats, 0, ctx->period_cntr);
@@ -343,10 +343,10 @@ int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_cont
     if (ctx->running_with_privileges == TRUE && sensors->cpu->designer == INTEL)
     {
         update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count, ctx->period_cntr);
-        ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->structural_avg;
+        ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->core_avg;
 
         update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count, ctx->period_cntr);
-        ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->structural_avg;
+        ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->core_avg;
     }
 
     static int power_initialized = 0;
@@ -363,7 +363,7 @@ int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_cont
         #endif
 
         ctx->power_his[ctx->history_cntr] = sensors->cpu->power->per_domain[PKG];
-        sensors->cpu->power->stats->runtime_avg = get_runtime_avg(ctx->period_cntr - 1, &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);
+        sensors->cpu->power->stats->session_avg = get_runtime_avg(ctx->period_cntr - 1, &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);
     }
 
     return 0;

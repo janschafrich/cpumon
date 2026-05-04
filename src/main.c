@@ -37,14 +37,9 @@ static bool display_moving_average_flag = FALSE;
 static void poll_sensors(struct sensor_suite *sensors, struct app_context *ctx)
 {
     read_sensors(sensors, ctx);
-
-    if (ctx->history_cntr < (AVG_WINDOW / POLL_INTERVAL_S - 1))
-        ctx->history_cntr++;
-    else
-        ctx->history_cntr = 0;
     ctx->period_cntr++;
-
     update_sensor_suite_statistics(sensors, ctx);
+    ctx->history_cntr = (ctx->history_cntr + 1) % AVG_WINDOW;
 }
 
 
@@ -70,17 +65,17 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
         {
             printw("%2d \t%.0f\t%2.f\t%.f\t%.2f\n",
                 core,
-                1000 * sensors->cpu->freq->stats->present[core],
-                sensors->cpu->load->stats->present[core],
-                sensors->cpu->temperature->stats->present[core],
-                sensors->cpu->voltage->stats->present[core]);
+                1000 * sensors->cpu->freq->stats->per_core[core],
+                sensors->cpu->load->stats->per_core[core],
+                sensors->cpu->temperature->stats->per_core[core],
+                sensors->cpu->voltage->stats->per_core[core]);
         }
         printw("\n");
         printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\n",
-            sensors->cpu->freq->stats->runtime_avg * 1000,
-            sensors->cpu->load->stats->runtime_avg,
-            sensors->cpu->temperature->stats->runtime_avg,
-            sensors->cpu->voltage->stats->runtime_avg);
+            sensors->cpu->freq->stats->session_avg * 1000,
+            sensors->cpu->load->stats->session_avg,
+            sensors->cpu->temperature->stats->session_avg,
+            sensors->cpu->voltage->stats->session_avg);
         printw("min\t%.0f\t%.2f\t%.0f\t%.2f\n",
             sensors->cpu->freq->stats->min * 1000,
             sensors->cpu->load->stats->min,
@@ -93,19 +88,20 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
             sensors->cpu->voltage->stats->max);
         if (display_moving_average_flag == TRUE)
         {
-            compute_moving_average(ctx->history_cntr, ctx->freq_his, ctx->load_his, ctx->temp_his, ctx->voltage_his, ctx->power_his);
+            int window = ctx->period_cntr < AVG_WINDOW ? (int)ctx->period_cntr : AVG_WINDOW;
+            compute_moving_average(window, ctx->freq_his, ctx->load_his, ctx->temp_his, ctx->voltage_his, ctx->power_his);
         }
         printw("\n");
         printw("\tPkg Power: %.2f W, avg: %.2f W\n",
             sensors->cpu->power->per_domain[PKG],
-            sensors->cpu->power->stats->runtime_avg);
+            sensors->cpu->power->stats->session_avg);
         draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains,
-            sensors->cpu->power->stats->runtime_avg, sensors->cpu->designer);
+            sensors->cpu->power->stats->session_avg, sensors->cpu->designer);
         printw("\n");
         printw("GPU\t\t%.0f mV\t%.2f W\t%0.f °C\n",
-            sensors->gpu->voltage->stats->present[0],
-            sensors->gpu->power->stats->present[0] / 1e6,
-            sensors->gpu->temperature->stats->present[0] / 1e3);
+            sensors->gpu->voltage->stats->per_core[0],
+            sensors->gpu->power->stats->per_core[0] / 1e6,
+            sensors->gpu->temperature->stats->per_core[0] / 1e3);
         printw("Northbridge\t%0.f mV", sensors->gpu->voltage->northbridge);
         printw("\n");
     }
@@ -117,13 +113,13 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
         for (int i = 0; i < ctx->core_count; i++)
         {
             printw("%d \t%.1f\t%.f\n", i,
-                sensors->cpu->freq->stats->present[i],
-                sensors->cpu->load->stats->present[i]);
+                sensors->cpu->freq->stats->per_core[i],
+                sensors->cpu->load->stats->per_core[i]);
         }
         printw("\n");
         printw("avg\t%.2f\t%.2f\n",
-            sensors->cpu->freq->stats->runtime_avg,
-            sensors->cpu->load->stats->runtime_avg);
+            sensors->cpu->freq->stats->session_avg,
+            sensors->cpu->load->stats->session_avg);
         printw("min\t%.2f\t\n", sensors->cpu->freq->stats->min);
         printw("max\t%.2f\t\n", sensors->cpu->freq->stats->max);
     }
@@ -132,8 +128,8 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
     printw("---------- Battery (%s) ----------\n", sensors->battery->status);
     printw("    now      avg      min      max\n");
     printw("  %.2f W   %.2f W   %.2f W   %.2f W\n",
-        sensors->battery->stats->present[0],
-        sensors->battery->stats->runtime_avg,
+        sensors->battery->stats->per_core[0],
+        sensors->battery->stats->session_avg,
         sensors->battery->stats->min,
         sensors->battery->stats->max);
     printw("\n");

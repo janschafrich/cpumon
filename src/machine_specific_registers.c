@@ -308,8 +308,8 @@ int get_amd_msr_core_power_w(struct cpu_power *my_power, int total_cores)
     // Process each physical core, which has 2 threads
 	for(int i = 0; i < physical_core_count/2; i++) {
 		float core_power = my_power->core_energy_after[i] - my_power->core_energy_before[i];
-		my_power->stats->present[i*2] = core_power;     // First thread
-        my_power->stats->present[i*2+1] = 0;            // Second thread
+		my_power->stats->per_core[i*2] = core_power;     // First thread
+        my_power->stats->per_core[i*2+1] = 0;            // Second thread
 		my_power->per_domain[CORES] += core_power;
         my_power->core_energy_before[i] = my_power->core_energy_after[i];
     }

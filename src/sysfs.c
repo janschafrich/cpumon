@@ -51,35 +51,30 @@ char *identify_cpu(void)
     return model;
 }
 
-int * get_sysfs_power_limits_w(void)
+void get_sysfs_power_limits_w(int *power_limits)
 {
     FILE *fp;
     char results[BUFSIZE];
     long power_uw[POWER_LIMIT_COUNT];
-    static int power_limits[POWER_LIMIT_COUNT];
     char path[256];
 
-    for ( int i = 0; i < POWER_LIMIT_COUNT; i++) {
-        sprintf(path,"/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw",i);
+    for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
+        sprintf(path, "/sys/class/powercap/intel-rapl:0/constraint_%d_power_limit_uw", i);
         fp = fopen(path, "r");
         if (fp == NULL) {
 #if DEBUG_ENABLE
             printf("get_sysfs_power_limits filepath %s\n", path);
 #endif
             perror("Error opening file\n");
+            power_limits[i] = 0;
+            continue;
         }
-        if (fgets(results,BUFSIZE, fp) == NULL)
-        {
+        if (fgets(results, BUFSIZE, fp) == NULL)
             printf("Couldn't read power from %s", path);
-        }
         sscanf(results, "%ld", &power_uw[i]);
         fclose(fp);
+        power_limits[i] = (int)(power_uw[i] / 1000000);
     }
-
-    for (int i = 0; i < POWER_LIMIT_COUNT; i++) {
-        power_limits[i] = (int)(power_uw[i]/1000000);
-    }
-    return power_limits;
 }
 
 void get_power_config(bool running_with_privileges, enum cpu_designer designer)
@@ -88,7 +83,8 @@ void get_power_config(bool running_with_privileges, enum cpu_designer designer)
 
     if (running_with_privileges == TRUE && designer == INTEL)
     {
-        int *power_limits = get_sysfs_power_limits_w();
+        int power_limits[POWER_LIMIT_COUNT];
+        get_sysfs_power_limits_w(power_limits);
         printw("Power Limits: \t\tPL1 = %d W, PL2 = %d\n", power_limits[0], power_limits[1]);
     }
 
@@ -185,7 +181,7 @@ void get_sysfs_freq_ghz(float *freq_ghz, float *average, int core_count)
 
 void get_cpucore_load(float *load_per_core, float *average, int core_count) {
 
-    //  load is calculated as a difference between two jiffy counts at different time stampts
+    //  load is calculated as a difference between two jiffy counts at different time stamps
     static long long *work_jiffies_before = NULL;
     static long long *total_jiffies_before = NULL;
     static int initialized_core_count = 0;
@@ -269,28 +265,6 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count) {
 }
 
 
-int read_gpu(void){
-    
-    char file_buf[BUFSIZE];
-
-    if (read_sysfs_string("/sys/class/drm/card0/gt_cur_freq_mhz", file_buf, sizeof(file_buf)))
-        return atoi(file_buf);
-    return -1;
-    
-
-/*     FILE *fp = fopen("/sys/class/drm/card0/gt_cur_freq_mhz", "r");
-    if (fp == NULL){
-        perror("Error opening /sys/class/drm/card0/gt_cur_freq_mhz\n");
-    }
-    if (fgets(file_buf, BUFSIZE, fp) == NULL)
-    {
-        printf("Couldnt read GPU frequency from \"/sys/class/drm/card0/gt_cur_freq_mhz\"\n");
-    }
-    sscanf(file_buf, "%d", &freq_mhz);
-    fclose(fp); */
-
-}
-
 
 int get_amdgpu_hwmon_id() 
 {
@@ -324,19 +298,19 @@ int get_amdgpu_hwmon_id()
 
 
 
-int get_amdgpu_value(float *freq_mhz, char *interface) 
+int get_amdgpu_value(float *value, char *interface)
 {
     char file_buf[20];
     char path[70];
-        
+
     int8_t hwmon_id = get_amdgpu_hwmon_id();
-    
+
     if (hwmon_id >= 0)
     {
         sprintf(path, "/sys/class/hwmon/hwmon%d/%s", hwmon_id, interface);
         if (read_sysfs_string(path, file_buf, 20) != NULL)
         {
-            *freq_mhz = strtof(file_buf, NULL); // Convert string to float
+            *value = strtof(file_buf, NULL);
             return 0;
         }
     }

@@ -45,27 +45,26 @@ int acc_cmdln(char *cmd){
 }
 
 
-void  compute_moving_average(int i, float * freq, float *load, float *temp, float *voltage, float *power){
-
-    i += 1;
+void compute_moving_average(int n, float *freq, float *load, float *temp, float *voltage, float *power)
+{
     double freq_total = 0;
     long load_total = 0;
     long temp_total = 0;
     double voltage_total = 0;
     double power_total = 0;
 
-
-    for (int j = 0; j < i; j++){
-        freq_total += (double)freq[j];
-        load_total += (long)load[j];
-        temp_total += (long)temp[j];
+    for (int j = 0; j < n; j++) {
+        freq_total    += (double)freq[j];
+        load_total    += (long)load[j];
+        temp_total    += (long)temp[j];
         voltage_total += (double)voltage[j];
-        power_total += (double)power[j];
+        power_total   += (double)power[j];
     }
 
-    if (i != 0) {
-        printw("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n", freq_total/i, load_total/i, temp_total/i, voltage_total/i);
-        printw("Avg Pwr %.2f W\n", power_total/i);
+    if (n > 0) {
+        printw("CPU\t%.1f\t%ld\t%ld\t%.2f\tlast minute avg\n",
+               freq_total/n, load_total/n, temp_total/n, voltage_total/n);
+        printw("Avg Pwr %.2f W\n", power_total/n);
     }
 }
 

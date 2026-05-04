@@ -20,10 +20,10 @@ enum battery_status { CHARGING, DISCHARGING, NOT_CHARGING };
 struct statistics {
     float min;
     float max;
-    float structural_avg;
-    float runtime_avg;
+    float core_avg;
+    float session_avg;
     float cumulative;
-    float present[];
+    float per_core[];
 };
 
 struct cpu_power {
