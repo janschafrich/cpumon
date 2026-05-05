@@ -24,15 +24,15 @@ static int intel_read_power(struct cpu_sensors *cpu) {
 }
 
 static int intel_read_temperature(struct cpu_sensors *cpu) {
-    msr_temperature_c(cpu->temperature->stats->per_core,
-                      &cpu->temperature->stats->core_avg,
+    msr_temperature_c(cpu->temperature->per_core,
+                      &cpu->temperature->core_avg,
                       cpu->core_count);
     return 0;
 }
 
 static int intel_read_voltage(struct cpu_sensors *cpu) {
-    intel_voltage_v(cpu->voltage->stats->per_core,
-                    &cpu->voltage->stats->core_avg,
+    intel_voltage_v(cpu->voltage->per_core,
+                    &cpu->voltage->core_avg,
                     cpu->physical_core_count);
     return 0;
 }
@@ -63,21 +63,21 @@ static int amd_read_temperature(struct cpu_sensors *cpu) {
     if (get_k10temp_temperature_c(&pkg_temp) != 0)
         return -1;
     for (int c = 0; c < cpu->core_count; c++)
-        cpu->temperature->stats->per_core[c] = pkg_temp;
-    cpu->temperature->stats->core_avg = pkg_temp;
+        cpu->temperature->per_core[c] = pkg_temp;
+    cpu->temperature->core_avg = pkg_temp;
     return 0;
 }
 
 static int amd_read_voltage(struct cpu_sensors *cpu) {
-    amd_voltage_v(cpu->voltage->stats->per_core,
-                  &cpu->voltage->stats->core_avg,
+    amd_voltage_v(cpu->voltage->per_core,
+                  &cpu->voltage->core_avg,
                   cpu->physical_core_count);
     // Propagate per-physical-core voltage to SMT sibling threads.
     // Topology assumed: logical 0..N-1 are one thread per physical core,
     // logical N..2N-1 are the sibling threads (holds for 7840U "0,8" siblings).
     for (int c = cpu->physical_core_count; c < cpu->core_count; c++)
-        cpu->voltage->stats->per_core[c] =
-            cpu->voltage->stats->per_core[c % cpu->physical_core_count];
+        cpu->voltage->per_core[c] =
+            cpu->voltage->per_core[c % cpu->physical_core_count];
     return 0;
 }
 
@@ -153,56 +153,14 @@ struct statistics *init_statistics(int core_count)
         return NULL;
     }
     sensor->core_avg = 0;
-    sensor->session_avg = 0;
-    sensor->cumulative = 0;
-    sensor->min = 1000;
-    sensor->max = 0; 
+    sensor->session.avg = 0;
+    sensor->session.cumulative = 0;
+    sensor->session.min = 1000;
+    sensor->session.max = 0;
     
     return sensor;
 }
 
-struct frequency *init_frequency(int core_count) {
-    struct frequency *freq = malloc(sizeof(struct frequency));
-    if (!freq) return NULL;
-    freq->stats = init_statistics(core_count);
-    if (!freq->stats) { free(freq); return NULL; }
-    return freq;
-}
-
-struct temperature *init_temperature(int core_count) {
-    struct temperature *temp = malloc(sizeof(struct temperature));
-    if (!temp) return NULL;
-    temp->stats = init_statistics(core_count);
-    if (!temp->stats) { free(temp); return NULL; }
-    return temp;
-}
-
-struct voltage *init_voltage(int core_count) {
-    struct voltage *volt = malloc(sizeof(struct voltage));
-    if (!volt) return NULL;
-    volt->stats = init_statistics(core_count);
-    if (!volt->stats) { free(volt); return NULL; }
-    return volt;
-}
-
-struct cpu_load *init_sensor_load(int core_count)
-{
-    struct cpu_load *load = malloc(sizeof(struct cpu_load));
-    if (load == NULL) {
-        fprintf(stderr, "Memory allocation for \"load\" failed\n");
-        return NULL;
-    }
-
-    // Allocate statistics struct for per-core values
-    load->stats = init_statistics(core_count);
-    if (!load->stats) {
-        fprintf(stderr, "Memory allocation for load->stats failed\n");
-        free(load); 
-        return NULL; 
-    }
-
-    return load;
-}
 
 struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count, int physical_core_count)
 {
@@ -286,24 +244,13 @@ struct battery *init_sensor_battery(void)
         return NULL;
     }
 
-    battery->stats = init_statistics(0);
+    battery->stats = init_statistics(1);
     if (battery->stats == NULL) {
         free(battery);
         return NULL;
     }
 
     return battery;
-}
-
-struct gpu_power *init_gpu_power(int core_count) {
-    struct gpu_power *power = malloc(sizeof(struct gpu_power));
-    if (!power) return NULL;
-    power->stats = init_statistics(core_count);
-    if (!power->stats) { 
-        free(power); 
-        return NULL;
-    }
-    return power;
 }
 
 struct gpu_voltage *init_gpu_voltage(int core_count) {
@@ -330,10 +277,10 @@ struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_coun
     int physical_core_count = detect_physical_core_count(core_count);
 
     // CPU sensors
-    sensors->cpu->freq = init_frequency(core_count);
-    sensors->cpu->load = init_sensor_load(core_count);
-    sensors->cpu->temperature = init_temperature(core_count);
-    sensors->cpu->voltage = init_voltage(core_count);
+    sensors->cpu->freq = init_statistics(core_count);
+    sensors->cpu->load = init_statistics(core_count);
+    sensors->cpu->temperature = init_statistics(core_count);
+    sensors->cpu->voltage = init_statistics(core_count);
     sensors->cpu->power = init_sensor_power(designer, core_count, physical_core_count);
     sensors->cpu->designer = designer;
     sensors->cpu->core_count = (uint8_t)core_count;
@@ -341,34 +288,34 @@ struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_coun
     sensors->cpu->ops = (designer == INTEL) ? &intel_ops : &amd_ops;
 
     // GPU sensors
-    sensors->gpu->freq = init_frequency(1);
-    sensors->gpu->load = NULL; // or init_sensor_load(1) if you implement GPU load
-    sensors->gpu->temperature = init_temperature(1);
-    sensors->gpu->power = init_gpu_power(1);
+    sensors->gpu->freq = init_statistics(1);
+    sensors->gpu->load = NULL;
+    sensors->gpu->temperature = init_statistics(1);
+    sensors->gpu->power = init_statistics(1);
     sensors->gpu->voltage = init_gpu_voltage(1);
 
     // Check for allocation failures
     if (!sensors->cpu->freq || !sensors->cpu->load || !sensors->cpu->temperature ||
         !sensors->cpu->voltage || !sensors->cpu->power ||
-        !sensors->gpu->freq || !sensors->gpu->temperature || !sensors->gpu->voltage) goto fail;
+        !sensors->gpu->freq || !sensors->gpu->temperature ||
+        !sensors->gpu->power || !sensors->gpu->voltage) goto fail;
 
     return sensors;
 
 fail:
-    // Free all previously allocated memory
     if (sensors->cpu) {
-        if (sensors->cpu->freq) { free(sensors->cpu->freq->stats); free(sensors->cpu->freq); }
-        if (sensors->cpu->load) free(sensors->cpu->load);
-        if (sensors->cpu->temperature) { free(sensors->cpu->temperature->stats); free(sensors->cpu->temperature); }
-        if (sensors->cpu->voltage) { free(sensors->cpu->voltage->stats); free(sensors->cpu->voltage); }
-        if (sensors->cpu->power) free(sensors->cpu->power);
+        free(sensors->cpu->freq);
+        free(sensors->cpu->load);
+        free(sensors->cpu->temperature);
+        free(sensors->cpu->voltage);
+        free(sensors->cpu->power);
         free(sensors->cpu);
     }
     if (sensors->gpu) {
-        if (sensors->gpu->freq) { free(sensors->gpu->freq->stats); free(sensors->gpu->freq); }
-        if (sensors->gpu->temperature) { free(sensors->gpu->temperature->stats); free(sensors->gpu->temperature); }
+        free(sensors->gpu->freq);
+        free(sensors->gpu->temperature);
+        free(sensors->gpu->power);
         if (sensors->gpu->voltage) { free(sensors->gpu->voltage->stats); free(sensors->gpu->voltage); }
-        if (sensors->gpu->power) { free(sensors->gpu->power->stats); free(sensors->gpu->power); };
         free(sensors->gpu);
     }
     if (sensors->battery) free(sensors->battery);
@@ -390,11 +337,9 @@ int read_sensors(struct sensor_suite *sensors, struct app_context *ctx)
 
 int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
 {
-    get_sysfs_freq_ghz( cpu->freq->stats->per_core,
-                        &cpu->freq->stats->core_avg,
-                        cpu->core_count);
+    get_sysfs_freq_ghz(cpu->freq->per_core, &cpu->freq->core_avg, cpu->core_count);
 
-    get_cpucore_load(cpu->load->stats->per_core, &cpu->load->stats->core_avg, cpu->core_count);
+    get_cpucore_load(cpu->load->per_core, &cpu->load->core_avg, cpu->core_count);
 
     if (running_with_privileges == TRUE && cpu->ops) {
         if (cpu->ops->read_temperature) cpu->ops->read_temperature(cpu);
@@ -408,45 +353,46 @@ int read_gpu_sensors(struct gpu_sensors *gpu)
 {
     get_amdgpu_voltage_mV(gpu->voltage->stats->per_core);
     get_amdgpu_northbridge_mV(&gpu->voltage->northbridge);
-    get_amdgpu_soc_power_uW(gpu->power->stats->per_core);
-    get_amdgpu_temperature_mC(gpu->temperature->stats->per_core);
+    get_amdgpu_soc_power_uW(gpu->power->per_core);
+    get_amdgpu_temperature_mC(gpu->temperature->per_core);
     return 0;
 }
 
 int read_battery_sensors(struct battery *battery)
 {
     get_sysfs_power_battery_w(&battery->stats->per_core[0]);
+    battery->stats->core_avg = battery->stats->per_core[0];
     get_battery_status(battery->status);
     return 0;
 }
 
 int update_sensor_statistics(struct statistics *sensor, uint8_t core_count, long period_cntr)
 {
-    sensor->min = get_min_value(sensor->min, sensor->per_core, core_count);
-    sensor->max = get_max_value(sensor->max, sensor->per_core, core_count);
-    sensor->session_avg = get_runtime_avg(period_cntr, &sensor->cumulative, &sensor->core_avg);
+    sensor->session.min = get_min_value(sensor->session.min, sensor->per_core, core_count);
+    sensor->session.max = get_max_value(sensor->session.max, sensor->per_core, core_count);
+    sensor->session.avg = get_runtime_avg(period_cntr, &sensor->session.cumulative, &sensor->core_avg);
     return 0;
 }
 
 int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_context *ctx)
 {
-    update_sensor_statistics(sensors->cpu->freq->stats, sensors->cpu->core_count, ctx->period_cntr);
-    ctx->freq_his[ctx->history_cntr] = sensors->cpu->freq->stats->core_avg;
+    update_sensor_statistics(sensors->cpu->freq, sensors->cpu->core_count, ctx->period_cntr);
+    ctx->freq_his[ctx->history_cntr] = sensors->cpu->freq->core_avg;
 
-    update_sensor_statistics(sensors->cpu->load->stats, sensors->cpu->core_count, ctx->period_cntr);
-    ctx->load_his[ctx->history_cntr] = sensors->cpu->load->stats->core_avg;
+    update_sensor_statistics(sensors->cpu->load, sensors->cpu->core_count, ctx->period_cntr);
+    ctx->load_his[ctx->history_cntr] = sensors->cpu->load->core_avg;
 
-    reset_if_status_changed(&sensors->battery->stats->cumulative, sensors->battery->status, ctx->charging_status_before);
-    update_sensor_statistics(sensors->battery->stats, 0, ctx->period_cntr);
+    reset_if_status_changed(&sensors->battery->stats->session.cumulative, sensors->battery->status, ctx->charging_status_before);
+    update_sensor_statistics(sensors->battery->stats, 1, ctx->period_cntr);
 
     if (ctx->running_with_privileges == TRUE && sensors->cpu->ops) {
         if (sensors->cpu->ops->read_temperature) {
-            update_sensor_statistics(sensors->cpu->temperature->stats, sensors->cpu->core_count, ctx->period_cntr);
-            ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->stats->core_avg;
+            update_sensor_statistics(sensors->cpu->temperature, sensors->cpu->core_count, ctx->period_cntr);
+            ctx->temp_his[ctx->history_cntr] = sensors->cpu->temperature->core_avg;
         }
         if (sensors->cpu->ops->read_voltage) {
-            update_sensor_statistics(sensors->cpu->voltage->stats, sensors->cpu->core_count, ctx->period_cntr);
-            ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->stats->core_avg;
+            update_sensor_statistics(sensors->cpu->voltage, sensors->cpu->core_count, ctx->period_cntr);
+            ctx->voltage_his[ctx->history_cntr] = sensors->cpu->voltage->core_avg;
         }
     }
 
@@ -464,7 +410,7 @@ int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_cont
         #endif
 
         ctx->power_his[ctx->history_cntr] = sensors->cpu->power->per_domain[PKG];
-        sensors->cpu->power->stats->session_avg = get_runtime_avg(ctx->period_cntr - 1, &sensors->cpu->power->stats->cumulative, &sensors->cpu->power->per_domain[PKG]);
+        sensors->cpu->power->stats->session.avg = get_runtime_avg(ctx->period_cntr - 1, &sensors->cpu->power->stats->session.cumulative, &sensors->cpu->power->per_domain[PKG]);
     }
 
     return 0;

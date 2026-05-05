@@ -17,12 +17,16 @@ enum cpu_designer { INTEL, AMD };
 enum power_domains { PKG, CORES, GPU };
 enum battery_status { CHARGING, DISCHARGING, NOT_CHARGING };
 
-struct statistics {
+struct sensor_history {
     float min;
     float max;
-    float core_avg;
-    float session_avg;
+    float avg;
     float cumulative;
+};
+
+struct statistics {
+    float core_avg;
+    struct sensor_history session;
     float per_core[];
 };
 
@@ -32,22 +36,6 @@ struct cpu_power {
     float *per_domain;
     int n_domains;
     float time_unit, energy_unit, power_unit;
-    struct statistics *stats;
-};
-
-struct frequency {
-    struct statistics *stats;
-};
-
-struct voltage {
-    struct statistics *stats;
-};
-
-struct temperature {
-    struct statistics *stats;
-};
-
-struct cpu_load {
     struct statistics *stats;
 };
 
@@ -67,19 +55,15 @@ struct cpu_ops {
 };
 
 struct cpu_sensors {
-    struct frequency    *freq;
-    struct cpu_load     *load;
-    struct temperature  *temperature;
-    struct voltage      *voltage;
+    struct statistics   *freq;
+    struct statistics   *load;
+    struct statistics   *temperature;
+    struct statistics   *voltage;
     struct cpu_power    *power;
     enum cpu_designer    designer;
     uint8_t              core_count;
     uint8_t              physical_core_count;
     const struct cpu_ops *ops;
-};
-
-struct gpu_power {
-    struct statistics *stats;
 };
 
 struct gpu_voltage {
@@ -88,12 +72,12 @@ struct gpu_voltage {
 };
 
 struct gpu_sensors {
-    struct frequency *freq;
-    struct cpu_load *load;
-    struct temperature *temperature;
-    struct gpu_power *power;
+    struct statistics  *freq;
+    struct statistics  *load;
+    struct statistics  *temperature;
+    struct statistics  *power;
     struct gpu_voltage *voltage;
-}; 
+};
 
 struct sensor_suite {
     struct cpu_sensors *cpu;
@@ -116,11 +100,7 @@ struct app_context {
 
 void init_environment(struct app_context *ctx);
 struct statistics *init_statistics(int core_count);
-struct frequency *init_frequency(int core_count);
-struct temperature *init_temperature(int core_count);
-struct voltage *init_voltage(int core_count);
 struct cpu_power *init_sensor_power(enum cpu_designer cpu_designer, int core_count, int physical_core_count);
-struct cpu_load *init_sensor_load(int core_count);
 struct battery *init_sensor_battery(void);
 struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_count);
 
