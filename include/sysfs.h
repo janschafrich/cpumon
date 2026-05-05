@@ -19,6 +19,8 @@ int get_amdgpu_soc_power_uW(float *);
 int get_amdgpu_northbridge_mV(float*);
 int get_amdgpu_temperature_mC(float *);
 
+int get_k10temp_temperature_c(float *temperature_c);
+
 
 
 

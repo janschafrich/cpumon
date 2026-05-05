@@ -87,20 +87,24 @@ void intel_voltage_v(float *voltage, float *average, int physical_core_count)
 
 void amd_voltage_v(float *voltage, float *average, int physical_core_count)
 {
-    int fd;
-    uint64_t result_raw[physical_core_count];
     float total = 0;
 
     for (int core = 0; core < physical_core_count; core++) {
-        fd = open_msr(core);
-        result_raw[core] = read_msr(fd, AMD_MSR_PSTATE_C0 + core);
+        int fd = open_msr(core);
+
+        // Find which P-state hardware is currently running on this core
+        uint64_t hw_pstate = (uint64_t)read_msr(fd, AMD_MSR_HARDWARE_PSTATE_STATUS);
+        unsigned int cur_pstate = (unsigned int)(hw_pstate & 0x7);  // bits[2:0]
+
+        // Read that P-state's definition to get CpuVid (bits[21:14])
+        uint64_t pstate_def = (uint64_t)read_msr(fd, AMD_MSR_PSTATE_C0 + cur_pstate);
         close(fd);
-    }
-    for (int i = 0; i < physical_core_count; i++) {
-        result_raw[i] = result_raw[i] & 0x3fc0000; // bits 21:14
-        result_raw[i] = result_raw[i] >> 14;
-        voltage[i] = (1.0 / 8.0) * result_raw[i];  // AMD VID scaling
-        total += voltage[i];
+
+        uint32_t vid = (uint32_t)((pstate_def >> 14) & 0xFF);
+
+        // Linear VID-to-voltage: V = 1.55 - VID * 6.25 mV  (AMD PPR, valid for VID 0..0xF3)
+        voltage[core] = (vid <= 0xF3) ? (1.55f - 0.00625f * (float)vid) : 0.0f;
+        total += voltage[core];
     }
     *average = total / physical_core_count;
 }

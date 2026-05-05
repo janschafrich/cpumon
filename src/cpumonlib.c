@@ -58,6 +58,29 @@ static int amd_read_power(struct cpu_sensors *cpu) {
     return 0;
 }
 
+static int amd_read_temperature(struct cpu_sensors *cpu) {
+    float pkg_temp;
+    if (get_k10temp_temperature_c(&pkg_temp) != 0)
+        return -1;
+    for (int c = 0; c < cpu->core_count; c++)
+        cpu->temperature->stats->per_core[c] = pkg_temp;
+    cpu->temperature->stats->core_avg = pkg_temp;
+    return 0;
+}
+
+static int amd_read_voltage(struct cpu_sensors *cpu) {
+    amd_voltage_v(cpu->voltage->stats->per_core,
+                  &cpu->voltage->stats->core_avg,
+                  cpu->physical_core_count);
+    // Propagate per-physical-core voltage to SMT sibling threads.
+    // Topology assumed: logical 0..N-1 are one thread per physical core,
+    // logical N..2N-1 are the sibling threads (holds for 7840U "0,8" siblings).
+    for (int c = cpu->physical_core_count; c < cpu->core_count; c++)
+        cpu->voltage->stats->per_core[c] =
+            cpu->voltage->stats->per_core[c % cpu->physical_core_count];
+    return 0;
+}
+
 static void amd_display_power_config(bool privileged) {
     (void)privileged;
     char buf[BUFSIZE];
@@ -67,8 +90,8 @@ static void amd_display_power_config(bool privileged) {
 
 static const struct cpu_ops amd_ops = {
     .read_power            = amd_read_power,
-    .read_temperature      = NULL,
-    .read_voltage          = NULL,
+    .read_temperature      = amd_read_temperature,
+    .read_voltage          = amd_read_voltage,
     .display_power_config  = amd_display_power_config,
 };
 

@@ -294,6 +294,27 @@ void get_cpucore_load(float *load_per_core, float *average, int core_count)
 
 
 
+static int find_hwmon_id(const char *driver_name)
+{
+    DIR *dir = opendir("/sys/class/hwmon");
+    if (!dir) return -1;
+
+    struct dirent *entry;
+    char path[280], name[32];   // 280 = len("/sys/class/hwmon/") + NAME_MAX + len("/name")
+    int result = -1;
+    while ((entry = readdir(dir)) != NULL) {
+        if (strncmp(entry->d_name, "hwmon", 5) != 0) continue;
+        snprintf(path, sizeof(path), "/sys/class/hwmon/%s/name", entry->d_name);
+        if (read_sysfs_string(path, name, sizeof(name)) &&
+            strcmp(name, driver_name) == 0) {
+            result = atoi(entry->d_name + 5);
+            break;
+        }
+    }
+    closedir(dir);
+    return result;
+}
+
 int get_amdgpu_hwmon_id(void)
 {
     static int8_t hwmon_id = -1;
@@ -301,24 +322,36 @@ int get_amdgpu_hwmon_id(void)
 
     if (!initialized) {
         initialized = TRUE;
-        DIR *dir = opendir("/sys/class/hwmon");
-        if (!dir) return -1;
-
-        struct dirent *entry;
-        char path[280], name[32]; // 280 = len("/sys/class/hwmon/") + NAME_MAX + len("/name")
-        while ((entry = readdir(dir)) != NULL) {
-            if (strncmp(entry->d_name, "hwmon", 5) != 0) continue;
-            snprintf(path, sizeof(path), "/sys/class/hwmon/%s/name", entry->d_name);
-            if (read_sysfs_string(path, name, sizeof(name)) &&
-                strncmp(name, "amdgpu", 6) == 0) {
-                hwmon_id = (int8_t)atoi(entry->d_name + 5);
-                break;
-            }
-        }
-        closedir(dir);
+        hwmon_id = (int8_t)find_hwmon_id("amdgpu");
     }
-
     return hwmon_id;
+}
+
+int get_k10temp_temperature_c(float *temperature_c)
+{
+    static int8_t hwmon_id = -1;
+    static bool initialized = FALSE;
+
+    if (!initialized) {
+        initialized = TRUE;
+        hwmon_id = (int8_t)find_hwmon_id("k10temp");
+    }
+    if (hwmon_id < 0) return -1;
+
+    char buf[20], path[70];
+
+    // Prefer Tdie (temp2) over Tctl (temp1): Tdie has no artificial offset applied
+    snprintf(path, sizeof(path), "/sys/class/hwmon/hwmon%d/temp2_input", hwmon_id);
+    if (read_sysfs_string(path, buf, sizeof(buf))) {
+        *temperature_c = strtof(buf, NULL) / 1000.0f;
+        return 0;
+    }
+    snprintf(path, sizeof(path), "/sys/class/hwmon/hwmon%d/temp1_input", hwmon_id);
+    if (read_sysfs_string(path, buf, sizeof(buf))) {
+        *temperature_c = strtof(buf, NULL) / 1000.0f;
+        return 0;
+    }
+    return -1;
 }
 
 
