@@ -20,9 +20,10 @@
 */
 
 #include <stdio.h>
-#include <string.h>                 // strlen
-#include <stdlib.h>                 // malloc
-#include <unistd.h>                 // uid_t sleep()
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
 #include <ncurses.h>
 #include "../include/utils.h"
 #include "../include/cpumonlib.h"
@@ -30,8 +31,15 @@
 #include "../include/sysfs.h"
 
 
-static bool display_power_config_flag = TRUE;
+static bool display_power_config_flag  = TRUE;
 static bool display_moving_average_flag = FALSE;
+
+static void handle_exit(int sig)
+{
+    (void)sig;
+    endwin();
+    exit(EXIT_SUCCESS);
+}
 
 
 static void poll_sensors(struct sensor_suite *sensors, struct app_context *ctx)
@@ -47,10 +55,12 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
 {
     clear();
 
+    long n = ctx->period_cntr;  /* divisor for running averages */
+
 #if DEBUG_ENABLE
-    printw("CPU Time Uint = %f W\n", sensors->cpu->power->time_unit);
-    printw("CPU Energy Uint = %f W\n", sensors->cpu->power->energy_unit);
-    printw("CPU POWER Uint = %f W\n", sensors->cpu->power->power_unit);
+    printw("CPU Time Unit = %f\n",   sensors->cpu->power->time_unit);
+    printw("CPU Energy Unit = %f\n", sensors->cpu->power->energy_unit);
+    printw("CPU Power Unit = %f\n",  sensors->cpu->power->power_unit);
 #endif
 
     attron(A_BOLD);
@@ -72,37 +82,43 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
         }
         printw("\n");
         printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\n",
-            sensors->cpu->freq->session.avg * 1000,
-            sensors->cpu->load->session.avg,
-            sensors->cpu->temperature->session.avg,
-            sensors->cpu->voltage->session.avg);
+            sensors->cpu->freq->sum / n * 1000,
+            sensors->cpu->load->sum / n,
+            sensors->cpu->temperature->sum / n,
+            sensors->cpu->voltage->sum / n);
         printw("min\t%.0f\t%.2f\t%.0f\t%.2f\n",
-            sensors->cpu->freq->session.min * 1000,
-            sensors->cpu->load->session.min,
-            sensors->cpu->temperature->session.min,
-            sensors->cpu->voltage->session.min);
+            sensors->cpu->freq->min * 1000,
+            sensors->cpu->load->min,
+            sensors->cpu->temperature->min,
+            sensors->cpu->voltage->min);
         printw("max\t%.0f\t%.1f\t%.0f\t%.2f\n",
-            sensors->cpu->freq->session.max * 1000,
-            sensors->cpu->load->session.max,
-            sensors->cpu->temperature->session.max,
-            sensors->cpu->voltage->session.max);
+            sensors->cpu->freq->max * 1000,
+            sensors->cpu->load->max,
+            sensors->cpu->temperature->max,
+            sensors->cpu->voltage->max);
+
         if (display_moving_average_flag == TRUE)
         {
             int window = ctx->period_cntr < AVG_WINDOW ? (int)ctx->period_cntr : AVG_WINDOW;
-            compute_moving_average(window, ctx->freq_his, ctx->load_his, ctx->temp_his, ctx->voltage_his, ctx->power_his);
+            compute_moving_average(window, (int)ctx->history_cntr,
+                sensors->cpu->freq, sensors->cpu->load,
+                sensors->cpu->temperature, sensors->cpu->voltage,
+                sensors->cpu->power->domains);
         }
+
         printw("\n");
         printw("\tPkg Power: %.2f W, avg: %.2f W\n",
-            sensors->cpu->power->per_domain[PKG],
-            sensors->cpu->power->stats->session.avg);
-        draw_power(sensors->cpu->power->per_domain, sensors->cpu->power->n_domains,
-            sensors->cpu->power->stats->session.avg);
+            sensors->cpu->power->domains->per_core[PKG],
+            sensors->cpu->power->domains->sum / n);
+        draw_power(sensors->cpu->power->domains->per_core,
+                   sensors->cpu->power->domains->count,
+                   sensors->cpu->power->domains->sum / n);
         printw("\n");
         printw("GPU\t\t%.0f mV\t%.2f W\t%0.f °C\n",
-            sensors->gpu->voltage->stats->per_core[0],
-            sensors->gpu->power->per_core[0] / 1e6,
-            sensors->gpu->temperature->per_core[0] / 1e3);
-        printw("Northbridge\t%0.f mV", sensors->gpu->voltage->northbridge);
+            sensors->gpu->voltage->per_core[0],
+            sensors->gpu->power->per_core[0],
+            sensors->gpu->temperature->per_core[0]);
+        printw("Northbridge\t%0.f mV", sensors->gpu->voltage->per_core[1]);
         printw("\n");
     }
     else
@@ -118,10 +134,10 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
         }
         printw("\n");
         printw("avg\t%.2f\t%.2f\n",
-            sensors->cpu->freq->session.avg,
-            sensors->cpu->load->session.avg);
-        printw("min\t%.2f\t\n", sensors->cpu->freq->session.min);
-        printw("max\t%.2f\t\n", sensors->cpu->freq->session.max);
+            sensors->cpu->freq->sum / n,
+            sensors->cpu->load->sum / n);
+        printw("min\t%.2f\t\n", sensors->cpu->freq->min);
+        printw("max\t%.2f\t\n", sensors->cpu->freq->max);
     }
 
     printw("\n");
@@ -129,9 +145,9 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
     printw("    now      avg      min      max\n");
     printw("  %.2f W   %.2f W   %.2f W   %.2f W\n",
         sensors->battery->stats->per_core[0],
-        sensors->battery->stats->session.avg,
-        sensors->battery->stats->session.min,
-        sensors->battery->stats->session.max);
+        sensors->battery->stats->sum / n,
+        sensors->battery->stats->min,
+        sensors->battery->stats->max);
     printw("\n");
     if (display_power_config_flag == TRUE)
     {
@@ -146,7 +162,7 @@ int main(int argc, char **argv)
     init_environment(&ctx);
 
     int command;
-    while ((command = getopt(argc, argv, "c:hmps")) != -1) {
+    while ((command = getopt(argc, argv, "hp")) != -1) {
         switch (command) {
             case 'p':
                 display_power_config_flag = TRUE; break;
@@ -168,13 +184,19 @@ int main(int argc, char **argv)
 
     char *cpu_model = identify_cpu();
 
+    signal(SIGINT,  handle_exit);
+    signal(SIGTERM, handle_exit);
+
     init_gui();
 
     while (1) {
         command = kbhit();
         switch (command) {
+            case 'q':
+                endwin();
+                exit(EXIT_SUCCESS);
             case 'p':
-                display_power_config_flag = display_power_config_flag ^ 1; break;
+                display_power_config_flag ^= 1; break;
             default:
                 sleep(POLL_INTERVAL_S);
         }

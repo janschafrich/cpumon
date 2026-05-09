@@ -53,7 +53,7 @@
 #define AMD_MSR_PSTATE_C5 0xC0010069
 #define AMD_MSR_PSTATE_C6 0xC001006A
 #define AMD_MSR_PSTATE_C7 0xC001006B
-#define AMD_MSR_ACTUAL_PERFORMANCE_FREQUENCY_COUNT 0x000000E8           // AMD64 Arch Programmers Manual Vol 2 Systems Programming
+#define AMD_MSR_ACTUAL_PERFORMANCE_FREQUENCY_COUNT 0x000000E8
 #define AMD_MSR_MAXIMUM_PERFORMANCE_FREQUENCY_COUNT 0x000000E7
 
 
@@ -67,20 +67,15 @@
 int open_msr(int core);
 long long read_msr(int fd, unsigned int offset);
 
-
-
 void msr_temperature_c(float *temperature, float *average, int core_count);
 void intel_voltage_v(float *voltage, float *average, int physical_core_count);
 void amd_voltage_v(float *voltage, float *average, int physical_core_count);
 void get_msr_power_limits_w(int core_count);
-double * core_power_units(void);
-void get_intel_msr_power_w(float * power_w);
+void get_intel_msr_power_w(float *power_w);
 
 int get_msr_core_units(struct cpu_power *my_power, enum cpu_designer designer);
 int get_amd_pkg_power_w(float *pkg, float energy_unit);
-int get_amd_msr_core_power_w(struct cpu_power *my_power, int physical_core_count);
-int get_amd_core_frequency_mhz(struct statistics *freq, int total_cores);
-int get_p0_frequency_mhz();
+int get_amd_msr_core_power_w(struct sensor *domains, float energy_unit, int physical_core_count);
 
 
 

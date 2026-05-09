@@ -154,11 +154,11 @@ int get_battery_status(char *status)
 }
 
 
-void reset_if_status_changed(float *cumulative, char *status, char *status_before)
+void reset_if_status_changed(float *sum, char *status, char *status_before)
 {
     if (strcmp(status, status_before) != 0)
     {
-        *cumulative = 0;
+        *sum = 0;
         strcpy(status_before, status);
     }
 }
