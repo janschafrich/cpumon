@@ -20,6 +20,11 @@
 // CPU ops implementations
 ////////////////////////////////////////
 
+static int generic_read_ipc(struct cpu_sensors *cpu) {
+    perf_ipc_per_core(cpu->ipc->per_core, &cpu->ipc->core_avg, cpu->core_count);
+    return 0;
+}
+
 static int intel_read_power(struct cpu_sensors *cpu) {
     get_intel_msr_power_w(cpu->power->domains->per_core);
     cpu->power->domains->core_avg = cpu->power->domains->per_core[PKG];
@@ -52,6 +57,7 @@ static const struct cpu_ops intel_ops = {
     .read_power            = intel_read_power,
     .read_temperature      = intel_read_temperature,
     .read_voltage          = intel_read_voltage,
+    .read_ipc              = generic_read_ipc,
     .display_power_config  = intel_display_power_config,
 };
 
@@ -96,6 +102,7 @@ static const struct cpu_ops amd_ops = {
     .read_power            = amd_read_power,
     .read_temperature      = amd_read_temperature,
     .read_voltage          = amd_read_voltage,
+    .read_ipc              = generic_read_ipc,
     .display_power_config  = amd_display_power_config,
 };
 
@@ -220,6 +227,7 @@ struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_coun
     sensors->cpu->load        = init_sensor(core_count);
     sensors->cpu->temperature = init_sensor(core_count);
     sensors->cpu->voltage     = init_sensor(core_count);
+    sensors->cpu->ipc         = init_sensor(core_count);
     sensors->cpu->power       = init_sensor_power(designer, n_domains);
     sensors->cpu->designer          = designer;
     sensors->cpu->core_count        = (uint8_t)core_count;
@@ -227,7 +235,7 @@ struct sensor_suite *init_sensor_suite(enum cpu_designer designer, int core_coun
     sensors->cpu->ops = (designer == INTEL) ? &intel_ops : &amd_ops;
 
     if (!sensors->cpu->freq || !sensors->cpu->load || !sensors->cpu->temperature ||
-        !sensors->cpu->voltage || !sensors->cpu->power) goto fail;
+        !sensors->cpu->voltage || !sensors->cpu->ipc || !sensors->cpu->power) goto fail;
 
     // GPU sensors
     sensors->gpu->freq        = NULL;
@@ -246,6 +254,7 @@ fail:
         free(sensors->cpu->load);
         free(sensors->cpu->temperature);
         free(sensors->cpu->voltage);
+        free(sensors->cpu->ipc);
         if (sensors->cpu->power) {
             free(sensors->cpu->power->domains);
             free(sensors->cpu->power);
@@ -287,6 +296,7 @@ int read_cpu_sensors(struct cpu_sensors *cpu, bool running_with_privileges)
         if (cpu->ops->read_temperature) cpu->ops->read_temperature(cpu);
         if (cpu->ops->read_voltage)     cpu->ops->read_voltage(cpu);
         if (cpu->ops->read_power)       cpu->ops->read_power(cpu);
+        if (cpu->ops->read_ipc)         cpu->ops->read_ipc(cpu);
     }
     return 0;
 }
@@ -340,6 +350,8 @@ int update_sensor_suite_statistics(struct sensor_suite *sensors, struct app_cont
             update_sensor(sensors->cpu->temperature, ctx->history_cntr);
         if (sensors->cpu->ops->read_voltage)
             update_sensor(sensors->cpu->voltage, ctx->history_cntr);
+        if (sensors->cpu->ops->read_ipc)
+            update_sensor(sensors->cpu->ipc, ctx->history_cntr);
         if (sensors->cpu->ops->read_power) {
             if (!ctx->power_initialized) {
                 ctx->power_initialized = true;

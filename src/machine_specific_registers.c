@@ -219,6 +219,59 @@ int get_amd_msr_core_power_w(struct sensor *domains, float energy_unit, int phys
     return 0;
 }
 
+int perf_ipc_per_core(float *ipc_out, float *avg, int core_count)
+{
+    static int      *fd_insn    = NULL;
+    static int      *fd_cyc     = NULL;
+    static uint64_t *prev_insn  = NULL;
+    static uint64_t *prev_cyc   = NULL;
+
+    if (!fd_insn) {
+        fd_insn   = malloc(sizeof(int)      * core_count);
+        fd_cyc    = malloc(sizeof(int)      * core_count);
+        prev_insn = calloc(core_count, sizeof(uint64_t));
+        prev_cyc  = calloc(core_count, sizeof(uint64_t));
+        if (!fd_insn || !fd_cyc || !prev_insn || !prev_cyc) return -1;
+
+        struct perf_event_attr pe;
+        memset(&pe, 0, sizeof(pe));
+        pe.type       = PERF_TYPE_HARDWARE;
+        pe.size       = sizeof(pe);
+        pe.disabled   = 0;
+        pe.exclude_hv = 1;
+
+        for (int c = 0; c < core_count; c++) {
+            pe.config  = PERF_COUNT_HW_INSTRUCTIONS;
+            fd_insn[c] = (int)syscall(SYS_perf_event_open, &pe, -1, c, -1, 0);
+            if (fd_insn[c] < 0)
+                fprintf(stderr, "perf_ipc: failed to open instructions counter for cpu %d: %s\n",
+                        c, strerror(errno));
+
+            pe.config = PERF_COUNT_HW_CPU_CYCLES;
+            fd_cyc[c] = (int)syscall(SYS_perf_event_open, &pe, -1, c, -1, 0);
+            if (fd_cyc[c] < 0)
+                fprintf(stderr, "perf_ipc: failed to open cycles counter for cpu %d: %s\n",
+                        c, strerror(errno));
+        }
+    }
+
+    float total = 0.0f;
+    for (int c = 0; c < core_count; c++) {
+        uint64_t insn = 0, cyc = 0;
+        if (fd_insn[c] >= 0) read(fd_insn[c], &insn, sizeof insn);
+        if (fd_cyc[c]  >= 0) read(fd_cyc[c],  &cyc,  sizeof cyc);
+
+        uint64_t d_insn = insn - prev_insn[c];
+        uint64_t d_cyc  = cyc  - prev_cyc[c];
+        ipc_out[c]      = (d_cyc > 0) ? (float)d_insn / (float)d_cyc : 0.0f;
+        total          += ipc_out[c];
+        prev_insn[c]    = insn;
+        prev_cyc[c]     = cyc;
+    }
+    *avg = total / core_count;
+    return 0;
+}
+
 // report what currently limits power
 void get_msr_power_limits_w(int core_count)
 {

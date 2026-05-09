@@ -69,33 +69,37 @@ static void render_frame(struct sensor_suite *sensors, const char *cpu_model, st
 
     if (ctx->running_with_privileges == TRUE)
     {
-        printw("Core    f/MHz \tC0%%   Temp/°C\t U/V\n");
-        printw("------------------------------------\n");
+        printw("Core    f/MHz \tC0%%   Temp/°C\t U/V\t IPC\n");
+        printw("--------------------------------------------\n");
         for (int core = 0; core < ctx->core_count; core++)
         {
-            printw("%2d \t%.0f\t%2.f\t%.f\t%.2f\n",
+            printw("%2d \t%.0f\t%2.f\t%.f\t%.2f\t%.2f\n",
                 core,
                 1000 * sensors->cpu->freq->per_core[core],
                 sensors->cpu->load->per_core[core],
                 sensors->cpu->temperature->per_core[core],
-                sensors->cpu->voltage->per_core[core]);
+                sensors->cpu->voltage->per_core[core],
+                sensors->cpu->ipc->per_core[core]);
         }
         printw("\n");
-        printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\n",
+        printw("avg\t%.0f\t%.2f\t%.1f\t%.2f\t%.2f\n",
             sensors->cpu->freq->sum / n * 1000,
             sensors->cpu->load->sum / n,
             sensors->cpu->temperature->sum / n,
-            sensors->cpu->voltage->sum / n);
-        printw("min\t%.0f\t%.2f\t%.0f\t%.2f\n",
+            sensors->cpu->voltage->sum / n,
+            sensors->cpu->ipc->sum / n);
+        printw("min\t%.0f\t%.2f\t%.0f\t%.2f\t%.2f\n",
             sensors->cpu->freq->min * 1000,
             sensors->cpu->load->min,
             sensors->cpu->temperature->min,
-            sensors->cpu->voltage->min);
-        printw("max\t%.0f\t%.1f\t%.0f\t%.2f\n",
+            sensors->cpu->voltage->min,
+            sensors->cpu->ipc->min);
+        printw("max\t%.0f\t%.1f\t%.0f\t%.2f\t%.2f\n",
             sensors->cpu->freq->max * 1000,
             sensors->cpu->load->max,
             sensors->cpu->temperature->max,
-            sensors->cpu->voltage->max);
+            sensors->cpu->voltage->max,
+            sensors->cpu->ipc->max);
 
         if (display_moving_average_flag == TRUE)
         {

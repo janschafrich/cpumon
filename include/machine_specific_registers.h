@@ -77,6 +77,8 @@ int get_msr_core_units(struct cpu_power *my_power, enum cpu_designer designer);
 int get_amd_pkg_power_w(float *pkg, float energy_unit);
 int get_amd_msr_core_power_w(struct sensor *domains, float energy_unit, int physical_core_count);
 
+int perf_ipc_per_core(float *ipc_out, float *avg, int core_count);
+
 
 
 #endif

@@ -43,6 +43,7 @@ struct cpu_ops {
     int  (*read_power)          (struct cpu_sensors *cpu);
     int  (*read_temperature)    (struct cpu_sensors *cpu);
     int  (*read_voltage)        (struct cpu_sensors *cpu);
+    int  (*read_ipc)            (struct cpu_sensors *cpu);
     void (*display_power_config)(bool privileged);
 };
 
@@ -51,6 +52,7 @@ struct cpu_sensors {
     struct sensor    *load;
     struct sensor    *temperature;
     struct sensor    *voltage;
+    struct sensor    *ipc;
     struct cpu_power *power;
     enum cpu_designer designer;
     uint8_t           core_count;
